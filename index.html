@@ -1,64 +1,143 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Loading...</title>
 
-  <!-- لینک به فایل‌های CSS -->
+
+
+  <!-- CSS files -->
+
   <link rel="stylesheet" href="/material/css/font.css">
+
   <link rel="stylesheet" href="/material/css/st.css">
+
   <link rel="stylesheet" href="/material/css/styles.css">
+
   <link rel="stylesheet" href="/material/css/w.css">
 
+
+
   <style>
+
     body, html {
+
       margin: 0;
+
       padding: 0;
+
       height: 100%;
+
       width: 100%;
+
       overflow: hidden;
+
       background: black;
+
       display: flex;
+
       justify-content: center;
+
       align-items: center;
+
     }
+
+
 
     .spinner {
+
       border: 8px solid rgba(255, 255, 255, 0.1);
+
       border-left: 8px solid #013AEB;
+
       border-radius: 50%;
+
       width: 50px;
+
       height: 50px;
+
       animation: spin 1s linear infinite;
+
     }
+
+
 
     @keyframes spin {
+
       0% { transform: rotate(0deg); }
+
       100% { transform: rotate(360deg); }
+
     }
+
   </style>
 
-  <!-- اسکریپت ریدایرکت به home.html -->
+
+
+  <!-- Telegram WebApp integration -->
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <script>
-    setTimeout(function() {
-      window.location.href = 'home.html';
-    }, 2000);
+
+    Telegram.WebApp.ready();
+
+    const user = Telegram.WebApp.initDataUnsafe.user;
+
+    if (user && user.id) {
+
+      localStorage.setItem('userId', user.id);
+
+      console.log('✅ Telegram User ID stored:', user.id);
+
+    } else {
+
+      console.warn('⚠️ No Telegram user data available');
+
+    }
+
   </script>
+
+
+
+  <!-- Redirect to home.html after short delay -->
+
+  <script>
+
+    setTimeout(function() {
+
+      window.location.href = 'home.html';
+
+    }, 2000);
+
+  </script>
+
 </head>
+
+
 
 <body>
 
   <div class="spinner"></div>
 
-  <!-- لینک به فایل‌های JS -->
-  
+  <!-- JavaScript files -->
+
   <script src="/material/js/cojs.js"></script>
+
   <script src="/material/js/js.js"></script>
+
   <script src="/material/js/main.js"></script>
+
   <script src="/material/js/payment.js"></script>
+
   <script src="/material/js/Task.js"></script>
+
   <script src="/material/js/w.js"></script>
 
 </body>
