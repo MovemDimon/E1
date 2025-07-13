@@ -1,6 +1,5 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,10 +57,36 @@
     .nav-item:hover {
       color: #00ff99;
     }
+
+    /* دکمه ضربدر */
+    .close-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+      z-index: 999;
+    }
+
+    .close-btn:hover {
+      background-color: rgba(255, 80, 80, 0.8);
+      color: #fff;
+    }
+
   </style>
 </head>
-
 <body>
+
+  <!-- دکمه ضربدر -->
+  <button class="close-btn" onclick="history.back()">
+    <i class="fas fa-times"></i>
+  </button>
 
   <div class="content-container">
     <h2>💎 Welcome to Daimonium</h2>
@@ -84,6 +109,6 @@
     <p>📢 For updates and info, check our official Telegram channel.<br>
        💬 For support, reach out to our team directly in the bot.</p>
   </div>
-</body>
 
+</body>
 </html>
