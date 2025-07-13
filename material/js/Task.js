@@ -46,24 +46,7 @@ async function completeTask(taskName) {
     return;
   }
 
-  try {
-    const res = await fetch('/verify-invites', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task: taskName, userId }),
-    });
-
-    const { valid } = await res.json();
-    if (!valid) {
-      showNotification('⚠️ Server verification failed');
-      return;
-    }
-  } catch {
-    showNotification('❌ Error connecting to the server');
-    return;
-  }
-
-  // Grant reward
+  // بررسی فقط از localStorage است، بدون تماس با سرور
   let coins = parseInt(localStorage.getItem('coins')) || 0;
   coins += reward;
   localStorage.setItem('coins', coins);
@@ -84,7 +67,6 @@ function updateInviteTaskStatus() {
     if (btn) {
       const completed = localStorage.getItem(key) === 'true';
       btn.disabled = completed;
-      // Button appearance must not change
     }
   });
 
