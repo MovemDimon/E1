@@ -1,114 +1,718 @@
-<!DOCTYPE html>  
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Daimonium</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="/material/css/styles.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #000;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-
-    h2, h3, h4, p {
-      margin: 15px;
-    }
-
-    .content-container {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      text-align: left;
-      line-height: 1.6;
-    }
-
-    .content-container h2 {
-      text-align: center;
-    }
-
-    nav.bottom-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background-color: #1c1c1c;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-    }
-
-    .nav-item {
-      color: #fff;
-      text-align: center;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .nav-item i {
-      display: block;
-      font-size: 20px;
-    }
-
-    .nav-item:hover {
-      color: #00ff99;
-    }
-
-    /* دکمه ضربدر */
-    .close-btn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 10px;
-      transition: background-color 0.3s ease;
-      z-index: 999;
-    }
-
-    .close-btn:hover {
-      background-color: rgba(255, 80, 80, 0.8);
-      color: #fff;
-    }
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبیه‌ساز فرآیند خرید Daimonium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        :root {
+            --primary: #4a00e0;
+            --secondary: #8e2de2;
+            --success: #00c853;
+            --warning: #ffab00;
+            --danger: #ff1744;
+            --dark: #121826;
+            --light: #f5f7ff;
+            --gray: #6c757d;
+            --border: #e0e0e0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        header p {
+            color: #a0aec0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .progress-container {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            transform: translateY(20px);
+        }
+        
+        .step-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            border-color: rgba(142, 45, 226, 0.5);
+            box-shadow: 0 0 20px rgba(142, 45, 226, 0.3);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .step-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        
+        .step-content {
+            margin-bottom: 25px;
+            line-height: 1.8;
+            color: #cbd5e0;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(142, 45, 226, 0.5);
+            color: #d6bcfa;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(142, 45, 226, 0.4);
+        }
+        
+        .input-group {
+            margin: 20px 0;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d6bcfa;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #8e2de2;
+            box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.3);
+        }
+        
+        .merchant-address {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px dashed rgba(142, 45, 226, 0.5);
+        }
+        
+        .transaction-hash {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px dashed rgba(74, 0, 224, 0.5);
+        }
+        
+        .amount-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .status-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            color: var(--success);
+        }
+        
+        .error {
+            color: var(--danger);
+        }
+        
+        .processing {
+            color: var(--warning);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .network-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(142, 45, 226, 0.2);
+            color: #d6bcfa;
+            font-size: 0.9rem;
+            margin: 0 5px;
+        }
+        
+        .currency-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(0, 200, 83, 0.2);
+            color: #69f0ae;
+            font-size: 0.9rem;
+            margin: 0 5px;
+        }
+        
+        .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #8e2de2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        
+        .info-box i {
+            margin-left: 8px;
+            color: #8e2de2;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            .step-card {
+                padding: 20px;
+            }
+            
+            .step-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .step-title {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>شبیه‌ساز فرآیند خرید Daimonium</h1>
+            <p>این شبیه‌ساز دقیقاً منطق ربات تلگرامی خرید Daimonium را پیاده‌سازی می‌کند</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+        
+        <div class="steps-container" id="stepsContainer">
+            <!-- مرحله 1: شروع -->
+            <div class="step-card active" id="step1">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="step-title">شروع فرآیند خرید</div>
+                </div>
+                
+                <div class="step-content">
+                    <p>💎 <strong>به فرآیند خرید Daimonium خوش آمدید!</strong></p>
+                    <p>شما در حال خرید توکن‌ها با استفاده از USDT قبل از لیست شدن هستید.</p>
+                    <br>
+                    <p>روند کار به این صورت است:</p>
+                    <p>1️⃣ انتخاب <strong>ارز</strong> (فقط USDT پشتیبانی می‌شود)</p>
+                    <p>2️⃣ انتخاب <strong>شبکه</strong> (Ethereum, BSC, Polygon و غیره)</p>
+                    <p>3️⃣ وارد کردن <strong>آدرس کیف پول خود</strong> (از این آدرس USDT ارسال خواهید کرد)</p>
+                    <p>4️⃣ ربات یک <strong>آدرس مرچنت</strong> نشان می‌دهد - مبلغ دقیق را به صورت دستی از کیف پول خود به آن ارسال کنید</p>
+                    <p>5️⃣ پس از پرداخت، <strong>هش تراکنش (tx_hash)</strong> را ارسال کنید</p>
+                    <br>
+                    <p>🚫 از ارسال اسکرین‌شات یا لینک خودداری کنید - فقط هش 64 کاراکتری قابل قبول است.</p>
+                    <p>✅ مثال:</p>
+                    <p><code>0xabc1234...7890def</code></p>
+                    <p>⚠️ اگر از صرافی ارسال کنید، پرداخت ممکن است با مشکل مواجه شود یا تأخیر داشته باشد.</p>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-primary" onclick="selectCurrency('USDT')">
+                        <i class="fab fa-usd"></i> انتخاب USDT
+                    </button>
+                </div>
+            </div>
+            
+            <!-- مرحله 2: انتخاب شبکه -->
+            <div class="step-card" id="step2">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="step-title">انتخاب شبکه</div>
+                </div>
+                
+                <div class="step-content">
+                    <p>لطفاً شبکه مورد نظر برای <span class="currency-badge">USDT</span> را انتخاب کنید:</p>
+                    
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> توجه: شبکه TON برای پرداخت‌های سریع توصیه می‌شود
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-outline" onclick="selectNetwork('Ethereum')">
+                        <i class="fab fa-ethereum"></i> Ethereum
+                    </button>
+                    <button class="btn btn-outline" onclick="selectNetwork('BSC')">
+                        <i class="fas fa-coins"></i> BSC
+                    </button>
+                    <button class="btn btn-outline" onclick="selectNetwork('Polygon')">
+                        <i class="fas fa-bolt"></i> Polygon
+                    </button>
+                    <button class="btn btn-outline" onclick="selectNetwork('Arbitrum')">
+                        <i class="fas fa-link"></i> Arbitrum
+                    </button>
+                    <button class="btn btn-outline" onclick="selectNetwork('Optimism')">
+                        <i class="fas fa-rocket"></i> Optimism
+                    </button>
+                    <button class="btn btn-primary" onclick="selectNetwork('TON')">
+                        <i class="fab fa-telegram"></i> TON
+                    </button>
+                </div>
+            </div>
+            
+            <!-- مرحله 3: وارد کردن آدرس کیف پول -->
+            <div class="step-card" id="step3">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="step-title">آدرس کیف پول شما</div>
+                </div>
+                
+                <div class="step-content">
+                    <p>لطفاً آدرس کیف پول خود را وارد کنید (آدرسی که از آن USDT ارسال خواهید کرد):</p>
+                    
+                    <div class="input-group">
+                        <label class="input-label">آدرس کیف پول:</label>
+                        <input type="text" class="input-field" id="walletAddress" placeholder="مثال: 0x742d35Cc6634C0532925a3b844Bc454e4438f44e">
+                    </div>
+                    
+                    <div class="info-box">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        فرمت آدرس‌های شبکه‌های مختلف:
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>Ethereum, BSC, Polygon: با 0x شروع می‌شود (42 کاراکتر)</li>
+                            <li>TON: با EQ شروع می‌شود (48 کاراکتر)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-primary" onclick="verifyWallet()">
+                        <i class="fas fa-check"></i> تأیید آدرس
+                    </button>
+                </div>
+            </div>
+            
+            <!-- مرحله 4: اطلاعات پرداخت -->
+            <div class="step-card" id="step4">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="step-title">پرداخت</div>
+                </div>
+                
+                <div class="step-content">
+                    <p>لطفاً دقیقاً مبلغ زیر را به آدرس مرچنت ارسال کنید:</p>
+                    
+                    <div class="amount-display" id="amountDisplay">
+                        100 USDT
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">آدرس مرچنت:</label>
+                        <div class="merchant-address" id="merchantAddress">
+                            EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        پس از انجام پرداخت، هش تراکنش (tx_hash) خود را در فیلد زیر وارد کنید.
+                        هش تراکنش باید دقیقاً 64 کاراکتر هگزادسیمال باشد.
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">هش تراکنش (tx_hash):</label>
+                        <input type="text" class="input-field" id="txHash" placeholder="مثال: 0xabcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcd">
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-primary" onclick="verifyTransaction()">
+                        <i class="fas fa-paper-plane"></i> ارسال تراکنش
+                    </button>
+                </div>
+            </div>
+            
+            <!-- مرحله 5: نتیجه پرداخت -->
+            <div class="step-card" id="step5">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-title">نتیجه پرداخت</div>
+                </div>
+                
+                <div class="step-content">
+                    <div class="status-container" id="paymentStatus">
+                        <div class="status-icon processing">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <h3>در حال تأیید تراکنش شما...</h3>
+                        <p>لطفاً چند لحظه صبر کنید</p>
+                    </div>
+                    
+                    <div class="transaction-hash">
+                        <strong>هش تراکنش:</strong> 
+                        <span id="displayTxHash">0xabcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcd</span>
+                    </div>
+                    
+                    <div class="info-box">
+                        <i class="fas fa-database"></i> 
+                        <strong>اطلاعات ارسال شده به سرور پرداخت:</strong>
+                        <pre id="paymentData" style="margin-top: 10px; white-space: pre-wrap; word-break: break-all;"></pre>
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-primary" onclick="restartProcess()">
+                        <i class="fas fa-redo"></i> شروع مجدد فرآیند
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- دکمه ضربدر -->
-  <button class="close-btn" onclick="history.back()">
-    <i class="fas fa-times"></i>
-  </button>
-
-  <div class="content-container">
-    <h2>💎 Welcome to Daimonium</h2>
-
-    <p><strong>Daimonium</strong> is a next-generation Telegram airdrop project — similar in structure to Notcoin — where users earn tokens through simple tasks and later exchange them after listing.</p>
-
-    <p>However, Daimonium introduces something completely new: <strong>the ability to pre-purchase tokens before listing</strong> using small amounts of USDT. This means you can invest early and potentially gain much more when the token goes live on a real exchange.</p>
-
-    <p>Our token distribution system is uniquely designed: only around <strong>2–5% of users are expected to purchase token packages</strong>. This gives buyers a major advantage compared to the 95% who only use the free route. Free users still earn tokens through daily tasks and referrals, but in smaller amounts.</p>
-
-    <p>In your <strong>Home</strong> page, below your token balance, you’ll see a <strong>USD estimation</strong> of your holdings. This is based on realistic projections and current distribution trends. The <span style="color: #ff5050;">red value</span> represents the lowest-case estimate, and the <span style="color: #00ff99;">green value</span> shows a normal/good projection.</p>
-
-    <p>When you click to buy a token package, you’ll be redirected to the <strong>Daimonium Telegram bot chat</strong>. There, the full step-by-step purchase process and payment instructions will be provided. You’ll send USDT and submit your transaction hash for verification.</p>
-
-    <p>🚫 No promises of guaranteed profit — all token values are speculative until listing.  
-    ✅ Full transparency and risk notice is provided during the process.</p>
-
-    <p>Join us early, be part of a growing community, and access a unique opportunity in the Telegram crypto ecosystem. Your participation is voluntary and secure.</p>
-
-    <p>📢 For updates and info, check our official Telegram channel.<br>
-       💬 For support, reach out to our team directly in the bot.</p>
-  </div>
-
+    <script>
+        // وضعیت فعلی کاربر
+        const userState = {
+            stage: 'START',
+            currency: '',
+            network: '',
+            wallet: '',
+            amount: 100,
+            merchant: '',
+            txHash: ''
+        };
+        
+        // آدرس‌های مرچنت
+        const merchantAddresses = {
+            TON: 'EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0',
+            Ethereum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            BSC: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            Polygon: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            Arbitrum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            Optimism: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        };
+        
+        // تابع فعال کردن مرحله بعدی
+        function nextStep(currentStep, nextStep) {
+            document.getElementById(currentStep).classList.remove('active');
+            document.getElementById(nextStep).classList.add('active');
+            
+            // به روزرسانی نوار پیشرفت
+            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+            const currentIndex = steps.indexOf(nextStep);
+            const progress = ((currentIndex + 1) / steps.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // اسکرول به مرحله فعال
+            document.getElementById(nextStep).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // انتخاب ارز
+        function selectCurrency(currency) {
+            userState.currency = currency;
+            nextStep('step1', 'step2');
+        }
+        
+        // انتخاب شبکه
+        function selectNetwork(network) {
+            userState.network = network;
+            userState.merchant = merchantAddresses[network];
+            document.getElementById('merchantAddress').textContent = userState.merchant;
+            nextStep('step2', 'step3');
+        }
+        
+        // تأیید آدرس کیف پول
+        function verifyWallet() {
+            const walletAddress = document.getElementById('walletAddress').value.trim();
+            
+            // اعتبارسنجی آدرس کیف پول
+            const evmRegex = /^0x[a-fA-F0-9]{40}$/;
+            const tonRegex = /^EQ[a-zA-Z0-9_-]{48}$/;
+            
+            if ((userState.network !== 'TON' && evmRegex.test(walletAddress)) {
+                userState.wallet = walletAddress;
+                nextStep('step3', 'step4');
+            } else if (userState.network === 'TON' && tonRegex.test(walletAddress)) {
+                userState.wallet = walletAddress;
+                nextStep('step3', 'step4');
+            } else {
+                alert('❌ فرمت آدرس کیف پول نامعتبر است. لطفاً آدرس معتبر وارد کنید.');
+            }
+        }
+        
+        // تأیید تراکنش
+        function verifyTransaction() {
+            const txHash = document.getElementById('txHash').value.trim();
+            const txRegex = /^[A-Fa-f0-9]{64}$/;
+            
+            if (txRegex.test(txHash)) {
+                userState.txHash = txHash;
+                document.getElementById('displayTxHash').textContent = userState.txHash;
+                nextStep('step4', 'step5');
+                
+                // شبیه‌سازی ارسال به سرور پرداخت
+                setTimeout(sendPaymentData, 2000);
+            } else {
+                alert('❌ فرمت هش تراکنش نامعتبر است. لطفاً یک هش 64 کاراکتری معتبر وارد کنید.');
+            }
+        }
+        
+        // ارسال داده‌های پرداخت به سرور
+        function sendPaymentData() {
+            // ساختار داده‌های ارسالی به سرور
+            const paymentData = {
+                user_id: `user_${Math.floor(Math.random() * 10000)}`,
+                currency: userState.currency,
+                network: userState.network,
+                amount: userState.amount,
+                merchant_wallet: userState.merchant,
+                sender_wallet: userState.wallet,
+                tx_hash: userState.txHash,
+                timestamp: new Date().toISOString()
+            };
+            
+            // نمایش داده‌های ارسالی
+            document.getElementById('paymentData').textContent = JSON.stringify(paymentData, null, 2);
+            
+            // شبیه‌سازی تأیید پرداخت (80% موفقیت)
+            setTimeout(() => {
+                const isSuccess = Math.random() > 0.2;
+                showPaymentResult(isSuccess);
+            }, 3000);
+        }
+        
+        // نمایش نتیجه پرداخت
+        function showPaymentResult(isSuccess) {
+            const statusContainer = document.getElementById('paymentStatus');
+            
+            if (isSuccess) {
+                statusContainer.innerHTML = `
+                    <div class="status-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>پرداخت شما با موفقیت تأیید شد!</h3>
+                    <p>خرید شما اکنون فعال شده است</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="showTransactionDetails()">
+                            <i class="fas fa-receipt"></i> مشاهده جزئیات تراکنش
+                        </button>
+                    </div>
+                `;
+            } else {
+                statusContainer.innerHTML = `
+                    <div class="status-icon error">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h3>پرداخت ناموفق بود</h3>
+                    <p>مبلغ ارسالی کمتر از مقدار مورد نیاز است (مورد نیاز: 100 USDT، دریافتی: 99.5 USDT)</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-outline" onclick="retryPayment()">
+                            <i class="fas fa-redo"></i> تلاش مجدد
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // مشاهده جزئیات تراکنش
+        function showTransactionDetails() {
+            alert('جزئیات تراکنش در حال نمایش است...\n\nاین بخش در پیاده‌سازی کامل به صفحه تراکنش متصل می‌شود.');
+        }
+        
+        // تلاش مجدد برای پرداخت
+        function retryPayment() {
+            nextStep('step5', 'step4');
+        }
+        
+        // شروع مجدد فرآیند
+        function restartProcess() {
+            // ریست وضعیت کاربر
+            userState.stage = 'START';
+            userState.currency = '';
+            userState.network = '';
+            userState.wallet = '';
+            userState.txHash = '';
+            
+            // ریست فرم
+            document.getElementById('walletAddress').value = '';
+            document.getElementById('txHash').value = '';
+            
+            // بازگشت به مرحله اول
+            document.getElementById('step5').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('progressBar').style.width = '20%';
+            document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // مقداردهی اولیه
+        window.onload = function() {
+            // شبیه‌سازی مقداردهی اولیه
+            document.getElementById('merchantAddress').textContent = merchantAddresses.TON;
+        };
+    </script>
 </body>
-</html>
+  </html>
