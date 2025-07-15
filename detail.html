@@ -20,7 +20,7 @@
             --success: #00c853;
             --warning: #ffab00;
             --danger: #ff1744;
-            --dark: #121826;
+            --dark: #000000;
             --light: #f5f7ff;
             --gray: #6c757d;
             --border: #e0e0e0;
@@ -679,7 +679,8 @@
             
             // Wallet address validation
             const evmRegex = /^0x[a-fA-F0-9]{40}$/;
-            const tonRegex = /^EQ[a-zA-Z0-9_-]{48}$/;
+            const tonRegex = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/;
+            
             
             if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
