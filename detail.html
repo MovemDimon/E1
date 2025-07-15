@@ -97,7 +97,7 @@
             padding: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
             opacity: 0.7;
             transform: translateY(20px);
             filter: grayscale(50%);
@@ -284,11 +284,40 @@
             transform: translateY(-2px);
         }
         
+        .copy-btn.copied {
+            background: rgba(0, 200, 83, 0.2);
+            color: #69f0ae;
+            border-color: rgba(0, 200, 83, 0.5);
+        }
+        
         .address-container {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-top: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: rgba(0, 200, 83, 0.9);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: rgba(255, 23, 68, 0.9);
         }
         
         @keyframes pulse {
@@ -502,7 +531,7 @@
                             <div class="merchant-address" id="merchantAddress">
                                 EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0
                             </div>
-                            <button class="copy-btn" onclick="copyMerchantAddress()">
+                            <button class="copy-btn" id="copyBtn" onclick="copyMerchantAddress()">
                                 <i class="fas fa-copy"></i> Copy
                             </button>
                         </div>
@@ -565,6 +594,8 @@
             </div>
         </div>
     </div>
+    
+    <div class="notification" id="notification">Address copied to clipboard!</div>
 
     <script>
         // User state
@@ -588,22 +619,50 @@
             Optimism: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
         };
         
+        // DOM Elements
+        const notification = document.getElementById('notification');
+        const copyBtn = document.getElementById('copyBtn');
+        
+        // Show notification function
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (isError) {
+                notification.classList.add('error');
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
         // Activate next step
-        function nextStep(currentStep, nextStep) {
-            document.getElementById(currentStep).classList.remove('active');
-            document.getElementById(nextStep).classList.add('active');
+        function nextStep(currentStepId, nextStepId) {
+            // Deactivate current step
+            const currentStep = document.getElementById(currentStepId);
+            currentStep.classList.remove('active');
+            
+            // Activate next step
+            const nextStep = document.getElementById(nextStepId);
+            nextStep.classList.add('active');
             
             // Update progress bar
             const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
-            const currentIndex = steps.indexOf(nextStep);
+            const currentIndex = steps.indexOf(nextStepId);
             const progress = ((currentIndex + 1) / steps.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
             
-            // Auto-scroll to active step
-            document.getElementById(nextStep).scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
+            // Auto-scroll to next step with smooth animation
+            setTimeout(() => {
+                nextStep.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }, 300);
         }
         
         // Select network
@@ -622,14 +681,14 @@
             const evmRegex = /^0x[a-fA-F0-9]{40}$/;
             const tonRegex = /^EQ[a-zA-Z0-9_-]{48}$/;
             
-            if ((userState.network !== 'TON' && evmRegex.test(walletAddress)) {
+            if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
                 nextStep('step3', 'step4');
             } else if (userState.network === 'TON' && tonRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
                 nextStep('step3', 'step4');
             } else {
-                alert('❌ Invalid wallet address format. Please enter a valid address.');
+                showNotification('❌ Invalid wallet address format. Please enter a valid address.', true);
             }
         }
         
@@ -646,8 +705,42 @@
                 // Simulate sending to payment server
                 setTimeout(sendPaymentData, 2000);
             } else {
-                alert('❌ Invalid transaction hash format. Please enter a valid 64-character hash.');
+                showNotification('❌ Invalid transaction hash format. Please enter a valid 64-character hash.', true);
             }
+        }
+        
+        // Copy merchant address to clipboard
+        function copyMerchantAddress() {
+            const address = document.getElementById('merchantAddress').textContent;
+            
+            // Create temporary textarea for copying
+            const textArea = document.createElement('textarea');
+            textArea.value = address;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('✅ Address copied to clipboard!');
+                    
+                    // Visual feedback
+                    copyBtn.classList.add('copied');
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    }, 2000);
+                } else {
+                    showNotification('❌ Failed to copy address. Please try again.', true);
+                }
+            } catch (err) {
+                showNotification('❌ Failed to copy address. Please try again.', true);
+            }
+            
+            // Clean up
+            document.body.removeChild(textArea);
         }
         
         // Send payment data to server
@@ -733,17 +826,9 @@
             document.getElementById('step5').classList.remove('active');
             document.getElementById('step1').classList.add('active');
             document.getElementById('progressBar').style.width = '20%';
+            
+            // Scroll to top
             document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Copy merchant address
-        function copyMerchantAddress() {
-            const address = document.getElementById('merchantAddress').textContent;
-            navigator.clipboard.writeText(address).then(() => {
-                alert('Address copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy: ' + err);
-            });
         }
         
         // Initialize
@@ -753,5 +838,5 @@
             userState.merchant = merchantAddresses.TON;
         };
     </script>
-</body>
+</body> 
 </html>
