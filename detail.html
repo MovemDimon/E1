@@ -20,7 +20,7 @@
             --success: #00c853;
             --warning: #ffab00;
             --danger: #ff1744;
-            --dark: #000000;
+            --dark: #121826;
             --light: #f5f7ff;
             --gray: #6c757d;
             --border: #e0e0e0;
@@ -320,6 +320,19 @@
             background: rgba(255, 23, 68, 0.9);
         }
         
+        .coin-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .coin-info strong {
+            background: linear-gradient(to right, #003366, #001F3F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        
         @keyframes pulse {
             0% { opacity: 0.6; }
             50% { opacity: 1; }
@@ -519,10 +532,14 @@
                 </div>
                 
                 <div class="step-content">
+                    <div class="coin-info">
+                        You are purchasing <strong><span id="coin-amount"></span> tokens</strong>
+                    </div>
+                    
                     <p>Please send the exact amount below to the merchant address:</p>
                     
                     <div class="amount-display" id="amountDisplay">
-                        100 USDT
+                        <span id="usd-amount"></span> USDT
                     </div>
                     
                     <div class="input-group">
@@ -598,18 +615,10 @@
     <div class="notification" id="notification">Address copied to clipboard!</div>
 
     <script>
-        // User state
-        const userState = {
-            stage: 'START',
-            currency: 'USDT',
-            network: '',
-            wallet: '',
-            amount: 100,
-            merchant: '',
-            txHash: ''
-        };
-        
-        // Merchant addresses
+        // User state and dynamic parameters
+        let coins = 1000;
+        let usdPrice = 100;
+        let userId = "test-user";
         const merchantAddresses = {
             TON: 'EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0',
             Ethereum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
@@ -618,6 +627,30 @@
             Arbitrum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             Optimism: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
         };
+        
+        // Parse URL parameters and initialize values
+        function initDynamicValues() {
+            const url = new URL(window.location.href);
+            
+            // Get coins parameter
+            const coinsParam = url.searchParams.get("coins");
+            if (coinsParam) {
+                coins = parseInt(coinsParam, 10);
+            }
+            
+            // Get USD price parameter
+            const usdPriceParam = url.searchParams.get("usdPrice");
+            if (usdPriceParam) {
+                usdPrice = parseFloat(usdPriceParam);
+            }
+            
+            // Get user ID from localStorage or use default
+            userId = localStorage.getItem("userId") || "test-user";
+            
+            // Update UI with dynamic values
+            document.getElementById("usd-amount").textContent = usdPrice.toFixed(2);
+            document.getElementById("coin-amount").textContent = coins.toLocaleString();
+        }
         
         // DOM Elements
         const notification = document.getElementById('notification');
@@ -680,7 +713,6 @@
             // Wallet address validation
             const evmRegex = /^0x[a-fA-F0-9]{40}$/;
             const tonRegex = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/;
-            
             
             if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
@@ -746,12 +778,12 @@
         
         // Send payment data to server
         function sendPaymentData() {
-            // Payment data structure
+            // Payment data structure with dynamic values
             const paymentData = {
-                user_id: `user_${Math.floor(Math.random() * 10000)}`,
+                user_id: userId,
                 currency: userState.currency,
                 network: userState.network,
-                amount: userState.amount,
+                amount: usdPrice,
                 merchant_wallet: userState.merchant,
                 sender_wallet: userState.wallet,
                 tx_hash: userState.txHash,
@@ -778,32 +810,42 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h3>Your payment was successfully verified!</h3>
-                    <p>Your purchase is now activated</p>
+                    <p>Your purchase of ${coins.toLocaleString()} tokens is now activated</p>
                     <div style="margin-top: 20px;">
                         <button class="btn btn-primary" onclick="showTransactionDetails()">
                             <i class="fas fa-receipt"></i> View Transaction Details
                         </button>
                     </div>
                 `;
+                
+                // Store payment success in localStorage
+                localStorage.setItem("payment_status", "success");
+                localStorage.setItem("coins", coins);
+                localStorage.setItem("last_usd_price", usdPrice);
             } else {
+                const errorMessage = "Insufficient amount sent";
                 statusContainer.innerHTML = `
                     <div class="status-icon error">
                         <i class="fas fa-times-circle"></i>
                     </div>
                     <h3>Payment failed</h3>
-                    <p>Amount sent is less than required (required: 100 USDT, received: 99.5 USDT)</p>
+                    <p>Amount sent is less than required (required: ${usdPrice.toFixed(2)} USDT, received: ${(usdPrice * 0.995).toFixed(2)} USDT)</p>
                     <div style="margin-top: 20px;">
                         <button class="btn btn-outline" onclick="retryPayment()">
                             <i class="fas fa-redo"></i> Try Again
                         </button>
                     </div>
                 `;
+                
+                // Store payment failure in localStorage
+                localStorage.setItem("payment_status", "failed");
+                localStorage.setItem("payment_error", errorMessage);
             }
         }
         
         // View transaction details
         function showTransactionDetails() {
-            alert('Transaction details are being displayed...\n\nThis section will connect to the transaction page in the full implementation.');
+            alert(`Transaction details are being displayed...\n\nPurchased: ${coins.toLocaleString()} tokens\nAmount: ${usdPrice.toFixed(2)} USDT`);
         }
         
         // Retry payment
@@ -837,7 +879,20 @@
             // Set initial merchant address
             document.getElementById('merchantAddress').textContent = merchantAddresses.TON;
             userState.merchant = merchantAddresses.TON;
+            
+            // Initialize dynamic values from URL parameters
+            initDynamicValues();
+        };
+        
+        // User state
+        const userState = {
+            stage: 'START',
+            currency: 'USDT',
+            network: '',
+            wallet: '',
+            merchant: '',
+            txHash: ''
         };
     </script>
-</body> 
-</html>
+</body>
+    </html>
