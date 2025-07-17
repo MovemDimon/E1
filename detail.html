@@ -820,7 +820,9 @@
                 
                 // Store payment success in localStorage
                 localStorage.setItem("payment_status", "success");
-                localStorage.setItem("coins", coins);
+                const prev = parseInt(localStorage.getItem("coins") || "0", 10);
+                const updated = prev + coins;
+                localStorage.setItem("coins", updated);
                 localStorage.setItem("last_usd_price", usdPrice);
             } else {
                 const errorMessage = "Insufficient amount sent";
@@ -895,4 +897,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
