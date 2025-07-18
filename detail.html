@@ -649,7 +649,7 @@
             
             // Update UI with dynamic values
             document.getElementById("usd-amount").textContent = usdPrice.toFixed(2);
-            document.getElementById("coin-amount").textContent = coins.toLocaleString();
+            document.getElementById("coin-amount").textContent = coins.toLocaleString('en-US');
         }
         
         // DOM Elements
@@ -810,7 +810,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h3>Your payment was successfully verified!</h3>
-                    <p>Your purchase of ${coins.toLocaleString()} tokens is now activated</p>
+                    <p>Your purchase of ${coins.toLocaleString('en-US')} tokens is now activated</p>
                     <div style="margin-top: 20px;">
                         <button class="btn btn-primary" onclick="showTransactionDetails()">
                             <i class="fas fa-receipt"></i> View Transaction Details
@@ -847,7 +847,7 @@
         
         // View transaction details
         function showTransactionDetails() {
-            alert(`Transaction details are being displayed...\n\nPurchased: ${coins.toLocaleString()} tokens\nAmount: ${usdPrice.toFixed(2)} USDT`);
+            alert(`Transaction details are being displayed...\n\nPurchased: ${coins.toLocaleString('en-US')} tokens\nAmount: ${usdPrice.toFixed(2)} USDT`);
         }
         
         // Retry payment
