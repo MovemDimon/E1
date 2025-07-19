@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daimonium Purchase Process Simulator</title>
+    <title>Daimonium Purchase Process</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        // مدیریت API_KEY برای محیط‌های مختلف
+        (async function() {
+            const DEV_API_KEY = 'test_key_123456'; // فقط برای توسعه
+            
+            async function loadProductionKey() {
+                try {
+                    // در محیط Cloudflare Pages
+                    if (window.location.hostname !== 'localhost') {
+                        const response = await fetch('/cdn-cgi/env');
+                        const env = await response.json();
+                        return env.API_KEY;
+                    }
+                    return DEV_API_KEY;
+                } catch (error) {
+                    console.error('Failed to load API key:', error);
+                    return null;
+                }
+            }
+
+            window.API_KEY = await loadProductionKey();
+            
+            if (!window.API_KEY) {
+                document.body.innerHTML = `
+                    <div style="color:red;padding:20px;text-align:center;font-family:Vazirmatn">
+                        سیستم موقتاً غیرفعال است - لطفاً بعداً تلاش کنید
+                    </div>`;
+            }
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -333,6 +363,15 @@
             font-weight: bold;
         }
         
+        .auth-error {
+            background: rgba(255, 23, 68, 0.2);
+            border-left: 4px solid var(--danger);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
         @keyframes pulse {
             0% { opacity: 0.6; }
             50% { opacity: 1; }
@@ -407,8 +446,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>Daimonium Purchase Process Simulator</h1>
-            <p>This simulator exactly implements the logic of the Daimonium purchase Telegram bot</p>
+            <h1>Daimonium Purchase Process</h1>
+            <p>Secure token purchase system</p>
             
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
@@ -428,6 +467,9 @@
                 <div class="step-content">
                     <p>💎 <strong>Welcome to the Daimonium purchase process!</strong></p>
                     <p>You are purchasing tokens using USDT before listing.</p>
+                    
+                    <div id="authStatus"></div>
+                    
                     <br>
                     <p>The process is as follows:</p>
                     <p>1️⃣ <strong>Currency</strong>: USDT (only supported currency)</p>
@@ -443,7 +485,7 @@
                 </div>
                 
                 <div class="buttons-container">
-                    <button class="btn btn-primary" onclick="nextStep('step1', 'step2')">
+                    <button class="btn btn-primary" id="startButton" onclick="nextStep('step1', 'step2')">
                         <i class="fas fa-arrow-right"></i> Proceed to Network Selection
                     </button>
                 </div>
@@ -618,7 +660,7 @@
         // User state and dynamic parameters
         let coins = 1000;
         let usdPrice = 100;
-        let userId = "test-user";
+        let userId = null;
         const merchantAddresses = {
             TON: 'EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0',
             Ethereum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
@@ -626,6 +668,16 @@
             Polygon: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             Arbitrum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             Optimism: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        };
+        
+        // User state
+        const userState = {
+            stage: 'START',
+            currency: 'USDT',
+            network: '',
+            wallet: '',
+            merchant: '',
+            txHash: ''
         };
         
         // Parse URL parameters and initialize values
@@ -644,12 +696,26 @@
                 usdPrice = parseFloat(usdPriceParam);
             }
             
-            // Get user ID from localStorage or use default
-            userId = localStorage.getItem("userId") || "test-user";
-            
             // Update UI with dynamic values
             document.getElementById("usd-amount").textContent = usdPrice.toFixed(2);
             document.getElementById("coin-amount").textContent = coins.toLocaleString('en-US');
+            
+            // Get user ID from localStorage
+            userId = localStorage.getItem("userId");
+            
+            // Check if userId exists
+            if (!userId) {
+                const authStatus = document.getElementById("authStatus");
+                authStatus.innerHTML = `
+                    <div class="auth-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Authentication required:</strong> UserID not found in localStorage. 
+                        Please set a valid UserID to proceed.
+                    </div>`;
+                
+                // Disable start button
+                document.getElementById("startButton").disabled = true;
+            }
         }
         
         // DOM Elements
@@ -674,6 +740,12 @@
         
         // Activate next step
         function nextStep(currentStepId, nextStepId) {
+            // Check if userId exists
+            if (!userId) {
+                showNotification('UserID not found. Please set a valid UserID in localStorage.', true);
+                return;
+            }
+            
             // Deactivate current step
             const currentStep = document.getElementById(currentStepId);
             currentStep.classList.remove('active');
@@ -714,6 +786,7 @@
             const evmRegex = /^0x[a-fA-F0-9]{40}$/;
             const tonRegex = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/;
             
+            
             if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
                 nextStep('step3', 'step4');
@@ -726,19 +799,115 @@
         }
         
         // Verify transaction
-        function verifyTransaction() {
+        async function verifyTransaction() {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                showNotification('UserID not found. Please set a valid UserID in localStorage.', true);
+                return;
+            }
+            
             const txHash = document.getElementById('txHash').value.trim();
             const txRegex = /^[A-Fa-f0-9]{64}$/;
             
-            if (txRegex.test(txHash)) {
-                userState.txHash = txHash;
-                document.getElementById('displayTxHash').textContent = userState.txHash;
-                nextStep('step4', 'step5');
-                
-                // Simulate sending to payment server
-                setTimeout(sendPaymentData, 2000);
-            } else {
+            if (!txRegex.test(txHash)) {
                 showNotification('❌ Invalid transaction hash format. Please enter a valid 64-character hash.', true);
+                return;
+            }
+            
+            userState.txHash = txHash;
+            document.getElementById('displayTxHash').textContent = txHash;
+            nextStep('step4', 'step5');
+            
+            // ارسال به سرور واقعی (آدرس باید جایگزین شود)
+            const VERIFICATION_SERVER = "https://your-real-verification-server.com/api/verify";
+            
+            try {
+                // نمایش وضعیت در حال بررسی
+                document.getElementById('paymentStatus').innerHTML = `
+                    <div class="status-icon processing">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h3>Verifying your transaction...</h3>
+                    <p>Please wait a moment</p>`;
+                
+                // ساختار داده‌های ارسالی
+                const paymentData = {
+                    user_id: userId,
+                    currency: userState.currency,
+                    network: userState.network,
+                    amount: usdPrice,
+                    merchant_wallet: userState.merchant,
+                    sender_wallet: userState.wallet,
+                    tx_hash: txHash,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // نمایش داده‌های ارسالی
+                document.getElementById('paymentData').textContent = JSON.stringify(paymentData, null, 2);
+                
+                // ارسال درخواست به سرور واقعی
+                const response = await fetch(VERIFICATION_SERVER, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.API_KEY}`
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                const result = await response.json();
+                
+                // پردازش پاسخ سرور
+                if (result.status === 'confirmed') {
+                    showPaymentResult(true, 'Payment confirmed successfully');
+                    localStorage.setItem("payment_status", "success");
+                    localStorage.setItem("coins", coins);
+                    localStorage.setItem("last_usd_price", usdPrice);
+                } else {
+                    showPaymentResult(false, result.message || 'Payment failed');
+                    localStorage.setItem("payment_status", "failed");
+                    localStorage.setItem("payment_error", result.message || "unknown");
+                }
+                
+            } catch (error) {
+                console.error('Verification failed:', error);
+                showPaymentResult(false, 'Connection error');
+                localStorage.setItem("payment_status", "failed");
+                localStorage.setItem("payment_error", 'Connection error');
+            }
+        }
+        
+        // Show payment result
+        function showPaymentResult(isSuccess, message = '') {
+            const statusContainer = document.getElementById('paymentStatus');
+            
+            if (isSuccess) {
+                statusContainer.innerHTML = `
+                    <div class="status-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Your payment was successfully verified!</h3>
+                    <p>${message || 'Your purchase is now activated'}</p>
+                    <p>Purchased: <strong>${coins.toLocaleString('en-US')} tokens</strong></p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="showTransactionDetails()">
+                            <i class="fas fa-receipt"></i> View Transaction Details
+                        </button>
+                    </div>
+                `;
+            } else {
+                statusContainer.innerHTML = `
+                    <div class="status-icon error">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h3>Payment failed</h3>
+                    <p>${message || 'Payment could not be processed'}</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-outline" onclick="retryPayment()">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
             }
         }
         
@@ -774,75 +943,6 @@
             
             // Clean up
             document.body.removeChild(textArea);
-        }
-        
-        // Send payment data to server
-        function sendPaymentData() {
-            // Payment data structure with dynamic values
-            const paymentData = {
-                user_id: userId,
-                currency: userState.currency,
-                network: userState.network,
-                amount: usdPrice,
-                merchant_wallet: userState.merchant,
-                sender_wallet: userState.wallet,
-                tx_hash: userState.txHash,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Display sent data
-            document.getElementById('paymentData').textContent = JSON.stringify(paymentData, null, 2);
-            
-            // Simulate payment verification (80% success rate)
-            setTimeout(() => {
-                const isSuccess = Math.random() > 0.2;
-                showPaymentResult(isSuccess);
-            }, 3000);
-        }
-        
-        // Show payment result
-        function showPaymentResult(isSuccess) {
-            const statusContainer = document.getElementById('paymentStatus');
-            
-            if (isSuccess) {
-                statusContainer.innerHTML = `
-                    <div class="status-icon success">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>Your payment was successfully verified!</h3>
-                    <p>Your purchase of ${coins.toLocaleString('en-US')} tokens is now activated</p>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="showTransactionDetails()">
-                            <i class="fas fa-receipt"></i> View Transaction Details
-                        </button>
-                    </div>
-                `;
-                
-                // Store payment success in localStorage
-                localStorage.setItem("payment_status", "success");
-                const prev = parseInt(localStorage.getItem("coins") || "0", 10);
-                const updated = prev + coins;
-                localStorage.setItem("coins", updated);
-                localStorage.setItem("last_usd_price", usdPrice);
-            } else {
-                const errorMessage = "Insufficient amount sent";
-                statusContainer.innerHTML = `
-                    <div class="status-icon error">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <h3>Payment failed</h3>
-                    <p>Amount sent is less than required (required: ${usdPrice.toFixed(2)} USDT, received: ${(usdPrice * 0.995).toFixed(2)} USDT)</p>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-outline" onclick="retryPayment()">
-                            <i class="fas fa-redo"></i> Try Again
-                        </button>
-                    </div>
-                `;
-                
-                // Store payment failure in localStorage
-                localStorage.setItem("payment_status", "failed");
-                localStorage.setItem("payment_error", errorMessage);
-            }
         }
         
         // View transaction details
@@ -884,16 +984,6 @@
             
             // Initialize dynamic values from URL parameters
             initDynamicValues();
-        };
-        
-        // User state
-        const userState = {
-            stage: 'START',
-            currency: 'USDT',
-            network: '',
-            wallet: '',
-            merchant: '',
-            txHash: ''
         };
     </script>
 </body>
