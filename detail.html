@@ -7,33 +7,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <script>
-        // مدیریت API_KEY برای محیط‌های مختلف
-        (async function() {
-            const DEV_API_KEY = 'test_key_123456'; // فقط برای توسعه
-            
-            async function loadProductionKey() {
-                try {
-                    // در محیط Cloudflare Pages
-                    if (window.location.hostname !== 'localhost') {
-                        const response = await fetch('/cdn-cgi/env');
-                        const env = await response.json();
-                        return env.API_KEY;
-                    }
-                    return DEV_API_KEY;
-                } catch (error) {
-                    console.error('Failed to load API key:', error);
-                    return null;
-                }
-            }
+      (async function () {
+        const DEV_API_KEY = 'test_key_123456'; // فقط برای محیط تست
 
-            window.API_KEY = await loadProductionKey();
-            
-            if (!window.API_KEY) {
-                document.body.innerHTML = `
-                    <div style="color:red;padding:20px;text-align:center;font-family:Vazirmatn">
-                        The system is temporarily unavailable – please try again later.
-                    </div>`;
+        async function loadApiKey() {
+          const isLocal = location.hostname === 'localhost' || location.hostname.startsWith('127.') || location.hostname === '';
+          const isTest = isLocal || !location.hostname.endsWith('.pages.dev'); // اگر دامنه مخصوص Cloudflare نیست
+
+          if (isTest) {
+            // محیط تست (مثلاً لوکال یا محیط توسعه روی Vercel)
+            return DEV_API_KEY;
+          } else {
+            try {
+              const res = await fetch('/cdn-cgi/env');
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              const env = await res.json();
+              return env.API_KEY;
+            } catch (err) {
+              console.error('Failed to load API key from Cloudflare:', err);
+              return null; // در محیط واقعی اگر لود نشه، خطا نمایش داده میشه
             }
+          }
+        }
+
+        window.API_KEY = await loadApiKey();
+
+        if (!window.API_KEY) {
+          // فقط در محیط واقعی پیام خطا نشون بده
+          if (location.hostname.endsWith('.pages.dev')) {
+            document.body.innerHTML = `
+              <div style="color:red;padding:20px;text-align:center;font-family:Vazirmatn">
+                The system is temporarily unavailable – please try again later.
+              </div>`;
+          }
+        }
         })();
     </script>
     <style>
