@@ -31,7 +31,7 @@
             if (!window.API_KEY) {
                 document.body.innerHTML = `
                     <div style="color:red;padding:20px;text-align:center;font-family:Vazirmatn">
-                        سیستم موقتاً غیرفعال است - لطفاً بعداً تلاش کنید
+                        The system is temporarily unavailable – please try again later.
                     </div>`;
             }
         })();
@@ -786,7 +786,6 @@
             const evmRegex = /^0x[a-fA-F0-9]{40}$/;
             const tonRegex = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/;
             
-            
             if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
                 userState.wallet = walletAddress;
                 nextStep('step3', 'step4');
@@ -861,7 +860,8 @@
                 if (result.status === 'confirmed') {
                     showPaymentResult(true, 'Payment confirmed successfully');
                     localStorage.setItem("payment_status", "success");
-                    localStorage.setItem("coins", coins);
+                    const previousCoins = parseInt(localStorage.getItem("coins") || "0", 10);
+                    localStorage.setItem("coins", previousCoins + coins);
                     localStorage.setItem("last_usd_price", usdPrice);
                 } else {
                     showPaymentResult(false, result.message || 'Payment failed');
