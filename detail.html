@@ -595,7 +595,7 @@
                         <label class="input-label">Merchant Address:</label>
                         <div class="address-container">
                             <div class="merchant-address" id="merchantAddress">
-                                EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0
+                                UQD-_u6BRI63PvjYQEt9sa0j3lwlCO7DHMkKrH0o9azDL3xP
                             </div>
                             <button class="copy-btn" id="copyBtn" onclick="copyMerchantAddress()">
                                 <i class="fas fa-copy"></i> Copy
@@ -669,12 +669,12 @@
         let usdPrice = 100;
         let userId = null;
         const merchantAddresses = {
-            TON: 'EQDrjaMAd1uV7tQwYe2j5F5h2cLg5tJ6Z7Xa5Yf6h8I9j0K1L2M3N4O5P6Q7R8S9T0',
-            Ethereum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            BSC: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            Polygon: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            Arbitrum: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            Optimism: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+            TON: 'UQD-_u6BRI63PvjYQEt9sa0j3lwlCO7DHMkKrH0o9azDL3xP',
+            Ethereum: '0x3904d407B928430d48143952f7073B4E4C331e03',
+            BSC: '0x3904d407B928430d48143952f7073B4E4C331e03',
+            Polygon: '0x3904d407B928430d48143952f7073B4E4C331e03',
+            Arbitrum: '0x3904d407B928430d48143952f7073B4E4C331e03',
+            Optimism: '0x3904d407B928430d48143952f7073B4E4C331e03'
         };
         
         // User state
@@ -826,11 +826,11 @@
             
             // ارسال به سرور واقعی (آدرس باید جایگزین شود)
             const VERIFICATION_SERVERS = [
-              "https://host1.vercel.app/api/verify",
-              "https://host2.vercel.app/api/verify",
-              "https://host3.vercel.app/api/verify",
-              "https://host4.vercel.app/api/verify",
-              "https://host5.vercel.app/api/verify"
+              "https://host1.vercel.app/api/v1/transaction",
+              "https://host2.vercel.app/api/v1/transaction",
+              "https://host3.vercel.app/api/v1/transaction",
+              "https://host4.vercel.app/api/v1/transaction",
+              "https://host5.vercel.app/api/v1/transaction"
             ];
 
             function pickVerificationServer() {
@@ -868,7 +868,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.API_KEY}`
+                        'X-API-KEY': window.API_KEY
+
                     },
                     body: JSON.stringify(paymentData)
                 });
