@@ -95,7 +95,7 @@ async function verifyTelegramSubscribe() {
     const data = await response.json();
     return data.ok === true;
   } catch (error) {
-    showNotification('❌ Server error. Please try again later.');
+    showNotification('❌ Server error. Please try again later.', "error");
     return false;
   }
 }
@@ -105,7 +105,7 @@ async function onTelegramSubscribeClick() {
   if (await verifyTelegramSubscribe()) {
     completeOneTimeTask('subscribeTelegram', 100);
   } else {
-    showNotification('❌ Verification failed. Please join the channel first.');
+    showNotification('❌ Verification failed. Please join the channel first.', "error");
   }
 }
 
