@@ -200,7 +200,8 @@
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         if (typeof showNotification === 'function') {
-          showNotification("❌ امکان اتصال ولت شما تا تاریخ 2025/09/09 مقدور نیست!", "error");
+          showNotification("🔒 Wallet connection will be available starting 2025/09/09, coinciding with the listing of Daimonium tokens on exchanges.
+We kindly ask for your patience until then 🙏", "error");
         } else {
           console.warn('showNotification is not defined yet');
         }
