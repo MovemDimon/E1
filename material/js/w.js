@@ -1,23 +1,32 @@
-const openModalBtn = document.getElementById('openModalBtn');
-const walletModal   = document.getElementById('walletModal');
-const closeBtn      = walletModal.querySelector('.close-btn');
-const connectBtn    = document.getElementById('connectWallet');
-const cancelBtn     = document.getElementById('cancelWallet');
-const statusMsg     = document.getElementById('statusMessage');
-
-function closeModal() {
-  walletModal.style.display = 'none';
-  statusMsg.textContent = '';
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
 }
-openModalBtn.addEventListener('click', () => walletModal.style.display = 'flex');
-closeBtn.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-window.addEventListener('click', e => {
-  if (e.target === walletModal) closeModal();
-});
-connectBtn.addEventListener('click', () => {
-  statusMsg.textContent = 'Connecting to your TON wallet...';
-  setTimeout(() => {
-    statusMsg.textContent = 'Connection failed. Please try again.';
-  }, 2000);
-});
+
+// تابع نمایش نوتیفیکیشن
+function showNotification(message) {
+  // اگر مرورگر از Notification پشتیبانی نمی‌کند
+  if (!("Notification" in window)) {
+    alert(message);
+    return;
+  }
+
+  // اگر اجازه داده نشده
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        new Notification(message);
+      } else {
+        alert(message);
+      }
+    });
+  } else {
+    new Notification(message);
+  }
+}
+
+// بررسی پارامتر و نمایش پیام مناسب
+const reason = getQueryParam("w");
+if (reason === "wallet_blocked") {
+  showNotification("امکان اتصال ولت شما تا تاریخ 2025/09/09 مقدور نیست!");
+}
