@@ -159,7 +159,7 @@
           </div>
         </div>
       </div>
-      <button class="task-button">CONNECT</button>
+      <button id="connectBtn" class="task-button">CONNECT</button>
     </div>
 
     <br /><br />
@@ -191,8 +191,24 @@
   </nav>
   
   <script src="/material/js/toast.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('connectBtn');
+
+    if (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (typeof showNotification === 'function') {
+          showNotification("❌ امکان اتصال ولت شما تا تاریخ 2025/09/09 مقدور نیست!", "error");
+        } else {
+          console.warn('showNotification is not defined yet');
+        }
+      });
+    }
+  });
+</script>
   <script src="/material/js/interactions.js" defer></script>
-  <script src="/material/js/w.js" defer></script>
   <script src="/material/js/js.js" defer></script>
   <script src="/material/js/main.js" defer></script>
 </body>
