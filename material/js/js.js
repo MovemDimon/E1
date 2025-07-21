@@ -38,7 +38,7 @@ function completeTaskUrl(taskId, reward, dummyUrl, taskStorageKey) {
     updateCoinDisplay();
 
     // Notify
-    showNotification(`🎉 Congratulations! You earned ${reward.toLocaleString()} coins.`);
+    showNotification(`🎉 Congratulations! You earned ${reward.toLocaleString('en-US')} coins.`);
   }, 2000);
 }
 function showLoadingOverlay(text = "Loading...") {
