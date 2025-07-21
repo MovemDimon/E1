@@ -1,246 +1,991 @@
 <!DOCTYPE html>
+
+
+
 <html lang="en">
+
+
+
 <head>
+
+
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+
   <title>Complete Tasks</title>
+
+
+
+
+
+
+
   <link rel="stylesheet" href="background.css" />
+
+
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+
+
   <link rel="stylesheet" href="/material/css/font.css" />
+
+
+
   <link rel="stylesheet" href="/material/css/styles.css" />
+
+
+
   <link rel="stylesheet" href="/material/css/st.css" />
+
+
+
   <link rel="stylesheet" href="/material/css/animations.css" />
+
+
+
+
+
+
+
   <style>
+
+
+
     html, body {
+
+
+
       margin: 0;
+
+
+
       padding: 0;
+
+
+
       height: 100vh;
+
+
+
       overflow: hidden;
+
+
+
       box-sizing: border-box;
+
+
+
       font-family: Arial, sans-serif;
+
+
+
       background-color: #000;
+
+
+
       color: #fff;
+
+
+
     }
+
+
+
+
+
+
+
     main {
+
+
+
       flex: 1;
+
+
+
       min-height: 100vh;
+
+
+
       display: flex;
+
+
+
       flex-direction: column;
+
+
+
       justify-content: flex-start;
+
+
+
       align-items: center;
+
+
+
       padding-top: 10px;
+
+
+
     }
+
+
+
+
+
+
+
     #balance-container {
+
+
+
       margin: 10px;
+
+
+
       font-size: 18px;
+
+
+
       text-align: center;
+
+
+
     }
+
+
+
+
+
+
+
     #coinDollarRange {
+
+
+
       font-size: 20px;
+
+
+
       font-weight: 700;
+
+
+
       color: #bbb;
+
+
+
       margin-top: 8px;
+
+
+
       text-align: center;
+
+
+
       letter-spacing: 0.5px;
+
+
+
       opacity: 0.9;
+
+
+
     }
+
+
+
+
+
+
+
     #coinDollarRange span {
+
+
+
       font-family: 'Arial Black', sans-serif;
+
+
+
     }
+
+
+
+
+
+
+
     .task-container {
+
+
+
       margin: 10px auto;
+
+
+
       max-width: 600px;
+
+
+
     }
+
+
+
+
+
+
+
     .task {
+
+
+
       margin: 10px auto;
+
+
+
       padding: 20px;
+
+
+
       display: flex;
+
+
+
       align-items: center;
+
+
+
       justify-content: space-between;
+
+
+
       border: 1px solid #000;
+
+
+
       border-radius: 12px;
+
+
+
       background-color: #333030;
+
+
+
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+
+
       transition: transform 0.3s ease;
+
+
+
       width: 80%;
+
+
+
     }
+
+
+
+
+
+
+
     .task:hover {
+
+
+
       transform: translateY(-5px);
+
+
+
     }
+
+
+
+
+
+
+
     .task-detail {
+
+
+
       display: flex;
+
+
+
       align-items: center;
+
+
+
     }
+
+
+
+
+
+
+
     .task-image img {
+
+
+
       border-radius: 8px;
+
+
+
       margin-right: 10px;
+
+
+
     }
+
+
+
+
+
+
+
     .task h4 {
+
+
+
       margin: 0;
+
+
+
       font-size: 18px;
+
+
+
       color: #f2f2f2;
+
+
+
     }
+
+
+
+
+
+
+
     .task-data {
+
+
+
       display: flex;
+
+
+
       align-items: center;
+
+
+
       margin-top: 8px;
+
+
+
     }
+
+
+
+
+
+
+
     .task-data img {
+
+
+
       margin-right: 5px;
+
+
+
     }
+
+
+
+
+
+
+
     .task-data h5 {
+
+
+
       margin: 0;
+
+
+
       color: #ffcc00;
+
+
+
       font-size: 18px;
+
+
+
     }
+
+
+
+
+
+
+
     .task-button {
+
+
+
       background-color: #fff;
+
+
+
       color: #000;
+
+
+
       border: none;
+
+
+
       padding: 10px 20px;
+
+
+
       font-size: 16px;
+
+
+
       cursor: pointer;
+
+
+
       border-radius: 8px;
+
+
+
       transition: background-color 0.3s ease;
+
+
+
     }
+
+
+
+
+
+
+
     .task-button:hover {
+
+
+
       background-color: #a2aaa0;
+
+
+
     }
+
+
+
+
+
+
+
     .nav-item {
+
+
+
       color: #fff;
+
+
+
       text-decoration: none;
+
+
+
       font-size: 12px;
+
+
+
       display: flex;
+
+
+
       flex-direction: column;
+
+
+
       align-items: center;
+
+
+
     }
+
+
+
+
+
+
+
     .nav-item i {
+
+
+
       font-size: 18px;
+
+
+
       margin-bottom: 3px;
+
+
+
     }
+
+
+
+
+
+
+
     .bottom-padding {
+
+
+
       height: 60px;
+
+
+
     }
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
+
+
+
+
+
+
+
+    @media (max-width: 600px) {
+
+
+
+      .task-container {
+
+
+
+        max-width: 100%;
+
+
+
+      }
+
+
+
+
+
+
+
+      .task-button {
+
+
+
+        padding: 10px 15px;
+
+
+
+        font-size: 14px;
+
+
+
+      }
+
+
+
+
+
+
+
+      .task h4 {
+
+
+
+        font-size: 16px;
+
+
+
+      }
+
+
+
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+
+
+
   </style>
+
+
+
+
+
+
+
   <script src="background.js" defer></script>
+
+
+
 </head>
+
+
+
+
+
+
+
 <body>
+
+
+
   <main>
-    <div style="height: 72px; width: 100%; background: transparent;"></div>
+
+
+
+	<div style="height: 72px; width: 100%; background: transparent;"></div>
+
+
+
     <div id="balance-container">
+
+
+
       <h2><b></b></h2>
+
+
+
       <span id="coinCount">0</span> 💎 total Diamonium
+
+
+
     </div>
-    <div class="task-container">
-      <div id="coinDollarRange">
-        <span id="minUsd" style="color: #d32f2f;">$0.00</span>
-        <span style="margin: 0 8px; color: #888;">≈</span>
-        <span id="maxUsd" style="color: #2e7d32;">$0.00</span>
-      </div>
+
+
+
+    
+
+
+
+  <div class="task-container">
+
+
+
+    <div id="coinDollarRange">
+
+
+
+      <span id="minUsd" style="color: #d32f2f;">$0.00</span>
+
+
+
+      <span style="margin: 0 8px; color: #888;">≈</span>
+
+
+
+      <span id="maxUsd" style="color: #2e7d32;">$0.00</span>
+
+
+
+    </div>
+
+
+
+
+
+
+
       <div class="task">
+
+
+
         <div class="task-detail">
+
+
+
           <div class="task-image">
+
+
+
             <img src="material/images/logo.png" width="45px" alt="">
+
+
+
           </div>
+
+
+
           <div>
+
+
+
             <h4>claim rewards</h4>
+
+
+
             <div class="task-data">
+
+
+
               <img src="material/images/logo.png" width="20px" alt="Coin Icon">
+
+
+
               <h5>100</h5>
+
+
+
             </div>
+
+
+
           </div>
+
+
+
         </div>
-        <button class="task-button" onclick="completeTaskUrl('task1', 100, 'internalReword()', 'task1_done')">💎 claim</button>
+
+
+
+        <button class="task-button" onclick="completeTaskUrl('task1', 100, 'reword.html', 'task1_done')">💎 claim</button>
+
+
+
       </div>
+
+
+
+
+
+
+
       <div class="task">
+
+
+
         <div class="task-detail">
+
+
+
           <div class="task-image">
+
+
+
             <img src="material/images/logo.png" width="45px" alt="">
+
+
+
           </div>
+
+
+
           <div>
+
+
+
             <h4>verify and earn</h4>
+
+
+
             <div class="task-data">
+
+
+
               <img src="material/images/logo.png" width="20px" alt="Coin Icon">
+
+
+
               <h5>100</h5>
+
+
+
             </div>
+
+
+
           </div>
+
+
+
         </div>
-        <button class="task-button" onclick="completeTaskUrl('task2', 100, 'internalVerify()', 'task2_done')">💎 claim</button>
+
+
+
+        <button class="task-button" onclick="completeTaskUrl('task2', 100, 'verify.html', 'task2_done')">💎 claim</button>
+
+
+
       </div>
+
+
+
+
+
+
+
       <div class="coin-container" style="text-align: center; margin-top: 20px;">
+
+
+
         <img src="material/images/logo.png" width="80%" alt="">
+
+
+
       </div>
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="bottom-padding"></div>
+
+
+
   </main>
+
+
+
+
+
+
+
   <nav class="bottom-nav">
+
+
+
     <a href="home.html" class="nav-item">
+
+
+
       <i class="fas fa-home"></i>
+
+
+
       <span>HOME</span>
+
+
+
     </a>
+
+
+
     <a href="leaderboard.html" class="nav-item">
+
+
+
       <i class="fas fa-trophy"></i>
+
+
+
       <span>LEADERBOARD</span>
+
+
+
     </a>
+
+
+
     <a href="invite-friends.html" class="nav-item">
+
+
+
       <i class="fas fa-user-friends"></i>
+
+
+
       <span>FRIENDS</span>
+
+
+
     </a>
+
+
+
     <a href="task.html" class="nav-item">
+
+
+
       <i class="fas fa-tasks"></i>
+
+
+
       <span>TASKS</span>
+
+
+
     </a>
+
+
+
     <a href="balance.html" class="nav-item">
+
+
+
       <i class="fas fa-wallet"></i>
+
+
+
       <span>BALANCE</span>
+
     </a>
+
   </nav>
-  <div class="modal" id="rewordModal">
-    <div class="loading-container">
-      <h1>Adding...</h1>
-      <div class="spinner"></div>
-    </div>
-  </div>
-  <div class="modal" id="verifyModal">
-    <div class="loading-container">
-      <h1>Checking...</h1>
-      <div class="spinner"></div>
-    </div>
-  </div>
-  <script>
-    function internalReword() {
-      document.getElementById('rewordModal').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('rewordModal').style.display = 'none';
-      }, 5000);
-    }
-    function internalVerify() {
-      document.getElementById('verifyModal').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('verifyModal').style.display = 'none';
-      }, 5000);
-    }
-  </script>
+
+
+
   <script src="material/js/toast.js"></script>
+
   <script src="/material/js/interactions.js" defer></script>
+
   <script src="/material/js/js.js"></script>
+
   <script src="/material/js/price-range.js"></script>
+
   <script src="/material/js/main.js"></script>
+
 </body>
+
+ <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; flex-direction: column;">
+
+  <div class="spinner" style="border: 8px solid rgba(255, 255, 255, 0.1); border-left: 8px solid #ffffff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;"></div>
+
+  <p style="color:white; margin-top: 12px; font-family: Arial;">Processing...</p>
+
+</div>
+
+
+
+<style>
+
+@keyframes spin {
+
+  0% { transform: rotate(0deg); }
+
+  100% { transform: rotate(360deg); }
+
+}
+
+</style>
+
 </html>
