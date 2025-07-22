@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daimonium Purchase Process</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <script>
@@ -653,7 +654,7 @@
                 </div>
                 
                 <div class="buttons-container">
-                    <button class="btn btn-primary" onclick="window.close()">
+                    <button class="btn btn-primary" onclick="closeWebView()">
                         <i class="fas fa-times"></i> Close Window
                     </button>
                 </div>
@@ -1004,7 +1005,7 @@
             
             // Initialize dynamic values from URL parameters
             initDynamicValues();
-        };
+        };  
     </script>
 </body>
 </html>
