@@ -17,7 +17,7 @@ async function handlePayment(coins, usdPrice, btn) {
   try {
     let userId = localStorage.getItem('userId') || 'test-user';
     const paymentUrl = `/detail.html?coins=${encodeURIComponent(coins)}&usdPrice=${encodeURIComponent(usdPrice)}`;
-    window.open(paymentUrl, '_blank');
+    window.location.href = paymentUrl;
 
     // Polling localStorage every 1s to detect payment success
     const pollInterval = setInterval(async () => {
