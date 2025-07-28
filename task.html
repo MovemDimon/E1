@@ -197,8 +197,30 @@
     <div id="coins-container">
         <h2><b>_____________</b></h2>
         <h2><b> TASKS </b></h2>
-        <span id="coinCount">0</span> 💎 total Diamonium
-    </div>
+        <span style="
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  color: white;
+">
+  <span id="coinCount" style="color: #FFD700;">0</span>
+  <img src="material/images/logo.png" alt="logo" style="
+    height: 1em;
+    width: auto;
+    vertical-align: middle;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  " 
+  onmouseover="this.style.transform='scale(1.2)'; this.style.filter='brightness(1.4)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';"
+  />
+  <span>total Diamonium</span>
+</span>
     <h2><b>_______________</b></h2>
     
     <div class="purchase-container">
