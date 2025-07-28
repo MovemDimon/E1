@@ -178,12 +178,17 @@
   line-height: 1.4;
   color: white;
 ">
-  <img src="material/images/logo.png" alt="logo" style="
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-  " />
   <span id="coinCount" style="color: #FFD700;">0</span>
+  <img src="material/images/logo.png" alt="logo" style="
+    height: 1em;
+    width: auto;
+    vertical-align: middle;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  " 
+  onmouseover="this.style.transform='scale(1.2)'; this.style.filter='brightness(1.4)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';"
+  />
   <span>total Diamonium</span>
 </span>
 
