@@ -4,10 +4,10 @@
 // ██║░░██╗██║░░██║██║██║╚████║██╔══╝░░
 // ╚█████╔╝╚█████╔╝██║██║░╚███║███████╗
 // ░╚════╝░░╚════╝░╚═╝╚═╝░░╚══╝╚══════╝
-
 // Constants
-const YOUTUBE_CHANNEL_URL = 'https://youtube.com/@vantar-holding?si=9E5GCxb8k5l5NFur';
-const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/vantar_holding/profilecard/?igsh=MXFmdTFucGxlaXlxOA==';
+const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@vantar-holding';
+const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/vantar_holding/';
+const TELEGRAM_CHANNEL_LINK = 'https://t.me/DaimoniumCommunity';
 
 // Initialize coins
 function initCoins() {
@@ -27,7 +27,7 @@ function updateCoinDisplay() {
 // Reward handling
 function completeOneTimeTask(taskKey, reward) {
   if (localStorage.getItem(taskKey) === 'done') {
-    showNotification('⚠️ You have already completed this task.');
+    showNotification('⚠️ You’ve already completed this task.');
     return false;
   }
 
@@ -36,7 +36,7 @@ function completeOneTimeTask(taskKey, reward) {
   localStorage.setItem(taskKey, 'done');
 
   updateCoinDisplay();
-  showNotification(`🎉 Congratulations! You earned ${reward} coins.`);
+  showNotification(`🎉 Success! You earned ${reward} coins.`);
   return true;
 }
 
@@ -48,39 +48,31 @@ async function fakeVerifyTask(taskKey, reward, redirectUrl) {
   }
 
   if (localStorage.getItem(`${taskKey}_inProgress`) === 'true') {
-    showNotification('⏳ Your action is being verified. Please wait...');
+    showNotification('⏳ Verification in progress. Please wait...');
     return false;
   }
 
-  // اولین بار: باز کردن لینک و ست کردن وضعیت در حال بررسی
   localStorage.setItem(`${taskKey}_inProgress`, 'true');
   window.open(redirectUrl, '_blank');
 
   showNotification('⏳ Please wait while we verify your action...');
-
-  // صبر برای 30 ثانیه
   await new Promise(resolve => setTimeout(resolve, 30000));
 
-  // بعد از 30 ثانیه، اعطای پاداش
   const granted = completeOneTimeTask(taskKey, reward);
-
-  // حذف فلگ inProgress
   localStorage.removeItem(`${taskKey}_inProgress`);
-
   return granted;
 }
 
 // Telegram verification (real)
 async function verifyTelegramSubscribe() {
   const userId = localStorage.getItem('telegramUserId');
-  
   if (!userId) {
     showNotification('⚠️ Please log in with Telegram first.');
     return false;
   }
 
   try {
-    showNotification('⏳ Verifying your Telegram subscription...');
+    showNotification('⏳ Checking your Telegram channel subscription...');
     const response = await fetch('/api/verify-telegram-subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -95,17 +87,27 @@ async function verifyTelegramSubscribe() {
     const data = await response.json();
     return data.ok === true;
   } catch (error) {
-    showNotification('❌ Server error. Please try again later.', "error");
+    showNotification('❌ Server error. Please try again later.');
     return false;
   }
 }
 
 // Event Handlers
 async function onTelegramSubscribeClick() {
-  if (await verifyTelegramSubscribe()) {
+  // 1. Open Telegram channel
+  window.open(TELEGRAM_CHANNEL_LINK, '_blank');
+  showNotification('📢 Redirecting you to the Telegram channel. Please join.');
+
+  // 2. Wait 20 seconds
+  showNotification('⏳ Waiting 20 seconds before verifying your subscription...');
+  await new Promise(resolve => setTimeout(resolve, 20000));
+
+  // 3. Verify with server
+  const verified = await verifyTelegramSubscribe();
+  if (verified) {
     completeOneTimeTask('subscribeTelegram', 100);
   } else {
-    showNotification('❌ Verification failed. Please join the channel first.', "error");
+    showNotification('❌ You are not a member yet or Telegram hasn’t updated your status. Please make sure to join and try again.');
   }
 }
 
@@ -120,20 +122,19 @@ async function onInstagramFollowClick() {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
   initCoins();
-  
-  // Attach event listeners to buttons
+
   const btnTelegram = document.getElementById('btnTelegram');
   const btnYouTube = document.getElementById('btnYouTube');
   const btnInstagram = document.getElementById('btnInstagram');
-  
+
   if (btnTelegram) {
     btnTelegram.addEventListener('click', onTelegramSubscribeClick);
   }
-  
+
   if (btnYouTube) {
     btnYouTube.addEventListener('click', onYouTubeSubscribeClick);
   }
-  
+
   if (btnInstagram) {
     btnInstagram.addEventListener('click', onInstagramFollowClick);
   }
