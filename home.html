@@ -58,7 +58,25 @@
       margin: 10px auto;
       max-width: 600px;
     }
+	  
+    html, body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    }
 
+    button, a, input, textarea, select {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent;
+    }
+
+    * {
+    -webkit-tap-highlight-color: transparent;
+    }
+ 
     .task {
       margin: 10px auto;
       padding: 20px;
@@ -159,15 +177,6 @@
   </style>
 
   <script src="background.js" defer></script>
-<style>
-  html, body {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-  }
-</style>
 </head>	
 <body>
   <main>
