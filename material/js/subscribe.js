@@ -6,10 +6,33 @@
 // ░╚════╝░░╚════╝░╚═╝╚═╝░░╚══╝╚══════╝
 // Constants
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@vantar-holding';
-const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/vantar_holding/';
+const INSTAGRAM_PROFILE_URL = 'instagram://user?username=vantar_holding'; // ✅ Deep Link
 const TELEGRAM_CHANNEL_LINK = 'https://t.me/DaimoniumCommunity';
 
-// Initialize coins
+const TELEGRAM_BOT_TOKEN = '3539344.gynnbhv';
+const TELEGRAM_CHANNEL_USERNAME = 'DaimoniumCommunity'; 
+
+// Telegram init
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    const initData = Telegram.WebApp.initDataUnsafe;
+    if (initData && initData.user) {
+      localStorage.setItem('telegramUserId', initData.user.id);
+    }
+  }
+
+  initCoins();
+
+  const btnTelegram = document.getElementById('btnTelegram');
+  const btnYouTube = document.getElementById('btnYouTube');
+  const btnInstagram = document.getElementById('btnInstagram');
+
+  if (btnTelegram) btnTelegram.addEventListener('click', onTelegramSubscribeClick);
+  if (btnYouTube) btnYouTube.addEventListener('click', onYouTubeSubscribeClick);
+  if (btnInstagram) btnInstagram.addEventListener('click', onInstagramFollowClick);
+});
+
 function initCoins() {
   if (!localStorage.getItem('coins')) {
     localStorage.setItem('coins', '0');
@@ -17,14 +40,12 @@ function initCoins() {
   updateCoinDisplay();
 }
 
-// Update coin display
 function updateCoinDisplay() {
   const coins = parseInt(localStorage.getItem('coins')) || 0;
   const coinDisplay = document.getElementById('coinCount');
   if (coinDisplay) coinDisplay.textContent = coins.toLocaleString('en-US');
 }
 
-// Reward handling
 function completeOneTimeTask(taskKey, reward) {
   if (localStorage.getItem(taskKey) === 'done') {
     showNotification('⚠️ You’ve already completed this task.');
@@ -40,7 +61,6 @@ function completeOneTimeTask(taskKey, reward) {
   return true;
 }
 
-// Fake verification (YouTube & Instagram)
 async function fakeVerifyTask(taskKey, reward, redirectUrl) {
   if (localStorage.getItem(taskKey) === 'done') {
     showNotification('✅ You’ve already completed this task.');
@@ -63,7 +83,7 @@ async function fakeVerifyTask(taskKey, reward, redirectUrl) {
   return granted;
 }
 
-// Telegram verification (real)
+// ✅ Telegram verification using Telegram Bot API directly
 async function verifyTelegramSubscribe() {
   const userId = localStorage.getItem('telegramUserId');
   if (!userId) {
@@ -73,36 +93,32 @@ async function verifyTelegramSubscribe() {
 
   try {
     showNotification('⏳ Checking your Telegram channel subscription...');
-    const response = await fetch('/api/verify-telegram-subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
-    });
 
-    if (!response.ok) {
-      showNotification('⚠️ Verification failed. Please try again.');
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember?chat_id=@${TELEGRAM_CHANNEL_USERNAME}&user_id=${userId}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.ok) {
+      console.error('Telegram API error:', data);
+      showNotification('❌ Verification failed. Please try again.');
       return false;
     }
 
-    const data = await response.json();
-    return data.ok === true;
+    const status = data.result.status;
+    return ['member', 'creator', 'administrator'].includes(status);
   } catch (error) {
+    console.error('Error verifying Telegram membership:', error);
     showNotification('❌ Server error. Please try again later.');
     return false;
   }
 }
 
-// Event Handlers
 async function onTelegramSubscribeClick() {
-  // 1. Open Telegram channel
   window.open(TELEGRAM_CHANNEL_LINK, '_blank');
   showNotification('📢 Redirecting you to the Telegram channel. Please join.');
-
-  // 2. Wait 20 seconds
   showNotification('⏳ Waiting 20 seconds before verifying your subscription...');
   await new Promise(resolve => setTimeout(resolve, 20000));
 
-  // 3. Verify with server
   const verified = await verifyTelegramSubscribe();
   if (verified) {
     completeOneTimeTask('subscribeTelegram', 100);
@@ -118,24 +134,3 @@ async function onYouTubeSubscribeClick() {
 async function onInstagramFollowClick() {
   await fakeVerifyTask('followInstagram', 100, INSTAGRAM_PROFILE_URL);
 }
-
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  initCoins();
-
-  const btnTelegram = document.getElementById('btnTelegram');
-  const btnYouTube = document.getElementById('btnYouTube');
-  const btnInstagram = document.getElementById('btnInstagram');
-
-  if (btnTelegram) {
-    btnTelegram.addEventListener('click', onTelegramSubscribeClick);
-  }
-
-  if (btnYouTube) {
-    btnYouTube.addEventListener('click', onYouTubeSubscribeClick);
-  }
-
-  if (btnInstagram) {
-    btnInstagram.addEventListener('click', onInstagramFollowClick);
-  }
-});
