@@ -79,12 +79,6 @@
             font-size: 18px;
         }
 
-        .disabled-task {
-           opacity: 0.5;          /* کم‌رنگ شدن کارت */
-           pointer-events: none;  /* غیرقابل کلیک و بدون حرکت */
-           filter: grayscale(60%);/* کمی تیره‌تر شدن */
-        }
-
         .task-button {
             background-color: #ffffff; 
             color: rgb(0, 0, 0);
@@ -267,7 +261,56 @@
     
     <section class="tasks scrollable">        
 
+    <div class="task-container">
+   <div class="task-detail">
+    <div class="task-detail">
+        <div class="task-image">
+             <img src="/material/images/you.gif" width="45px" alt="">
+          </div>
+        <div>
+           <h4>Subscribe</h4>
+             <div class="task-data">
+               <img src="/material/images/logo.png" width="20px" alt="Coin Icon">
+                 <h5>100</h5>
+               </div>
+            </div>
+        </div>
+        <button id="btnYouTube" class="task-button disabled">💎 claim</button>    
+   </div>
     
+   <div class="task">
+        <div class="task-detail">
+            <div class="task-image">
+                <img src="/material/images/tele.png" width="45px" alt="">
+            </div>
+            <div>
+                <h4>Subscribe</h4>
+                <div class="task-data">
+                    <img src="/material/images/logo.png" width="20px" alt="Coin Icon">
+                    <h5>100</h5>
+                </div>
+            </div>
+        </div>
+        <button id="btnTelegram" class="task-button disabled">💎 claim</button>
+    </div>
+            
+    <div class="task-detail">
+        <div class="task-detail">
+            <div class="task-image">
+                <img src="/material/images/ista.png" width="45px" alt="">
+            </div>
+            <div>
+                <h4>follow</h4>
+                <div class="task-data">
+                    <img src="/material/images/logo.png" width="20px" alt="Coin Icon">
+                    <h5>100</h5>
+                </div>
+            </div>
+        </div>
+        <button id="btnInstagram" class="task-button disabled">💎 claim</button>
+    </div>  
+ </div>
+        
         <!-- Task elements go here -->
  <div class="task-container">
     <div class="task">
@@ -377,5 +420,6 @@
 
   </body>
 </html>
+
 
 
