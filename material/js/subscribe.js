@@ -4,13 +4,12 @@
 // ██║░░██╗██║░░██║██║██║╚████║██╔══╝░░
 // ╚█████╔╝╚█████╔╝██║██║░╚███║███████╗
 // ░╚════╝░░╚════╝░╚═╝╚═╝░░╚══╝╚══════╝
-// Constants
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@vantar-holding';
 const INSTAGRAM_PROFILE_URL = 'instagram://user?username=vantar_holding'; // ✅ Deep Link
 const TELEGRAM_CHANNEL_LINK = 'https://t.me/DaimoniumCommunity';
 
 const TELEGRAM_BOT_TOKEN = '3539344.gynnbhv';
-const TELEGRAM_CHANNEL_USERNAME = 'DaimoniumCommunity'; 
+const TELEGRAM_CHANNEL_USERNAME = 'DaimoniumCommunity';
 
 // Telegram init
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,9 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnYouTube = document.getElementById('btnYouTube');
   const btnInstagram = document.getElementById('btnInstagram');
 
-  if (btnTelegram) btnTelegram.addEventListener('click', onTelegramSubscribeClick);
-  if (btnYouTube) btnYouTube.addEventListener('click', onYouTubeSubscribeClick);
-  if (btnInstagram) btnInstagram.addEventListener('click', onInstagramFollowClick);
+  // ✅ دکمه‌هایی که disabled هستند رو فقط پیام می‌دیم
+  [btnTelegram, btnYouTube, btnInstagram].forEach(btn => {
+    if (!btn) return;
+    if (btn.classList.contains('disabled')) {
+      btn.addEventListener('click', () => {
+        showNotification('⚠️ این بخش فعلاً غیرفعال است و به‌زودی فعال خواهد شد.');
+      });
+    }
+  });
+
+  // ✅ فقط اگر disabled نبودند، رفتار اصلی فعال میشه
+  if (btnTelegram && !btnTelegram.classList.contains('disabled')) {
+    btnTelegram.addEventListener('click', onTelegramSubscribeClick);
+  }
+  if (btnYouTube && !btnYouTube.classList.contains('disabled')) {
+    btnYouTube.addEventListener('click', onYouTubeSubscribeClick);
+  }
+  if (btnInstagram && !btnInstagram.classList.contains('disabled')) {
+    btnInstagram.addEventListener('click', onInstagramFollowClick);
+  }
 });
 
 function initCoins() {
