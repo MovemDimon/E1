@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-
+<!DOCTYPE html> 
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,9 +54,21 @@
             align-items: center;
         }
 
-        .task-image img {
+        .task-image {
+            width: 45px;
+            height: 45px;
             border-radius: 8px;
             margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            font-size: 28px;
+        }
+
+        .task-image span {
+            color: #fff;
+            font-weight: 700;
         }
 
         .task h4 {
@@ -103,6 +113,24 @@
                 max-width: 100%;
             }
 
+            html, body {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+            }
+
+            button, a, input, textarea, select {
+                outline: none !important;
+                box-shadow: none !important;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
+
             .task-button {
                 padding: 10px 15px;
                 font-size: 14px;
@@ -118,9 +146,31 @@
 <body>
     <h2><b>🏆</b></h2>
 
-    <div id="coinCount-container">
-        <span id="coinCount">0</span> 💎 total Diamonium
-    </div><br>
+    <span style="
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      color: white;
+    ">
+      <span id="coinCount" style="color: #FFD700;">0</span>
+      <img src="material/images/logo.png" alt="logo" style="
+        height: 1em;
+        width: auto;
+        vertical-align: middle;
+        flex-shrink: 0;
+        transition: transform 0.2s ease, filter 0.2s ease;
+      " 
+      onmouseover="this.style.transform='scale(1.2)'; this.style.filter='brightness(1.4)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';"
+      />
+      <span>total Diamonium</span>
+    </span>
+    <br>
 
     <h2><u><b>🏆 our mission 🏆</b></u></h2>
 
@@ -128,16 +178,13 @@
     <div class="task-container gold-card">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Alexey avatar">
-                </div>
+                <div class="task-image"><span>🥇</span></div>
                 <div>
-                    <h4>Alexey <span class="medal-icon">🥇</span></h4>
+                    <h4>Alexey</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>75,501,700+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:100%;"></div>
                 </div>
             </div>
         </div>
@@ -147,16 +194,13 @@
     <div class="task-container silver-card">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Felipe avatar">
-                </div>
+                <div class="task-image"><span>🥈</span></div>
                 <div>
-                    <h4>FelipeA <span class="medal-icon">🥈</span></h4>
+                    <h4>FelipeA</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>51,566,700+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:68%;"></div>
                 </div>
             </div>
         </div>
@@ -166,16 +210,13 @@
     <div class="task-container bronze-card">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Ilye avatar">
-                </div>
+                <div class="task-image"><span>🥉</span></div>
                 <div>
-                    <h4>Ilye Smi <span class="medal-icon">🥉</span></h4>
+                    <h4>Ilye Smi</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>48,006,000+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:60%;"></div>
                 </div>
             </div>
         </div>
@@ -185,16 +226,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Vikram avatar">
-                </div>
+                <div class="task-image"><span>4</span></div>
                 <div>
                     <h4>Vikram #4</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>42,330,400+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:58%;"></div>
                 </div>
             </div>
         </div>
@@ -204,16 +242,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Jacky avatar">
-                </div>
+                <div class="task-image"><span>5</span></div>
                 <div>
                     <h4>Jacky G #5</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>37,269,300+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:48%;"></div>
                 </div>
             </div>
         </div>
@@ -223,16 +258,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Nishcal avatar">
-                </div>
+                <div class="task-image"><span>6</span></div>
                 <div>
                     <h4>Nishcal #6</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>32,645,800+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:42%;"></div>
                 </div>
             </div>
         </div>
@@ -242,16 +274,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Hossein avatar">
-                </div>
+                <div class="task-image"><span>7</span></div>
                 <div>
                     <h4>Hossein #7</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>27,639,300+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:36%;"></div>
                 </div>
             </div>
         </div>
@@ -261,16 +290,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Flasher avatar">
-                </div>
+                <div class="task-image"><span>8</span></div>
                 <div>
                     <h4>flasher #8</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>22,350,000+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:33%;"></div>
                 </div>
             </div>
         </div>
@@ -280,16 +306,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Anatoly avatar">
-                </div>
+                <div class="task-image"><span>9</span></div>
                 <div>
                     <h4>Anatoly #9</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>20,853,300+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:27%;"></div>
                 </div>
             </div>
         </div>
@@ -299,16 +322,13 @@
     <div class="task-container">
         <div class="task">
             <div class="task-detail">
-                <div class="task-image">
-                    <img src="/material/images/logo.png" width="45" alt="Sergey avatar">
-                </div>
+                <div class="task-image"><span>10</span></div>
                 <div>
                     <h4>Sergey #10</h4>
                     <div class="task-data">
                         <img src="/material/images/logo.png" width="20" alt="Coin">
                         <h5>15,780,000+</h5>
                     </div>
-                    <div class="progress-bar" style="--progress:20%;"></div>
                 </div>
             </div>
         </div>
@@ -342,5 +362,4 @@
     <script src="/material/js/main.js"></script>
 </body>
 <div class="bottom-padding"></div>
-
 </html>
