@@ -3,47 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daimonium Purchase Process</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Daimonium Token Airdrop</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <script>
-      (async function () {
-        const DEV_API_KEY = 'test_key_123456'; // فقط برای محیط تست
-
-        async function loadApiKey() {
-          const isLocal = location.hostname === 'localhost' || location.hostname.startsWith('127.') || location.hostname === '';
-          const isTest = isLocal || !location.hostname.endsWith('.pages.dev'); // اگر دامنه مخصوص Cloudflare نیست
-
-          if (isTest) {
-            // محیط تست (مثلاً لوکال یا محیط توسعه روی Vercel)
-            return DEV_API_KEY;
-          } else {
-            try {
-              const res = await fetch('/cdn-cgi/env');
-              if (!res.ok) throw new Error(`HTTP ${res.status}`);
-              const env = await res.json();
-              return env.API_KEY;
-            } catch (err) {
-              console.error('Failed to load API key from Cloudflare:', err);
-              return null; // در محیط واقعی اگر لود نشه، خطا نمایش داده میشه
-            }
-          }
-        }
-
-        window.API_KEY = await loadApiKey();
-
-        if (!window.API_KEY) {
-          // فقط در محیط واقعی پیام خطا نشون بده
-          if (location.hostname.endsWith('.pages.dev')) {
-            document.body.innerHTML = `
-              <div style="color:red;padding:20px;text-align:center;font-family:Vazirmatn">
-                The system is temporarily unavailable – please try again later.
-              </div>`;
-          }
-        }
-        })();
-    </script>
     <style>
         * {
             margin: 0;
@@ -62,102 +24,101 @@
             --light: #f5f7ff;
             --gray: #6c757d;
             --border: #e0e0e0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background: linear-gradient(135deg, #000000, #0a0a0a);
             color: var(--light);
             min-height: 100vh;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 450px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
         }
         
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000, #0a0a0a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--light);
+            text-align: center;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Header */
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding: 20px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
         }
         
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        .token-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .token-amount {
+            font-size: 2.8rem;
+            font-weight: 900;
             background: linear-gradient(to right, #FFEA2A, #DB8A10);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-right: 15px;
+            text-shadow: 0 0 10px rgba(255, 234, 42, 0.3);
         }
         
-        header p {
-            color: #a0aec0;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-        
-        .progress-container {
-            position: relative;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin: 30px 0;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            width: 20%;
-            background: linear-gradient(to right, #003366, #001F3F);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-        
-        .steps-container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .step-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            transition: all 0.5s ease;
-            opacity: 0.7;
-            transform: translateY(20px);
-            filter: grayscale(50%);
-        }
-        
-        .step-card.active {
-            opacity: 1;
-            transform: translateY(0);
-            filter: grayscale(0%);
-            border-color: rgba(0, 49, 102, 0.5);
-            box-shadow: 0 0 20px rgba(0, 49, 102, 0.3);
-        }
-        
-        .step-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .step-icon {
+        .token-logo {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -165,176 +126,353 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-right: 15px;
-            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        .step-title {
-            font-size: 1.4rem;
+        .token-logo img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+        
+        header p {
+            color: #a0aec0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* Price Circles */
+        .price-circles {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        .price-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .price-circle:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .price-circle.min {
+            border-color: rgba(255, 23, 68, 0.3);
+        }
+        
+        .price-circle.max {
+            border-color: rgba(0, 200, 83, 0.3);
+        }
+        
+        .price-circle.center {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #003366, #001F3F);
+            cursor: pointer;
+        }
+        
+        .price-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #a0aec0;
+        }
+        
+        .price-value {
+            font-size: 1rem;
             font-weight: 700;
         }
         
-        .step-content {
-            margin-bottom: 25px;
-            line-height: 1.8;
-            color: #cbd5e0;
+        .min-price {
+            color: #ff5252;
         }
         
-        .buttons-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 20px;
+        .max-price {
+            color: #69f0ae;
         }
         
-        .btn {
-            padding: 14px 25px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(to right, #003366, #001F3F);
+        .center-icon {
+            font-size: 2rem;
             color: white;
         }
         
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(0, 49, 102, 0.5);
+        /* Cards */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
             color: #a0c8ff;
         }
         
-        .btn:hover {
+        /* Tasks */
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .task:last-child {
+            border-bottom: none;
+        }
+        
+        .task:hover {
+            transform: translateX(5px);
+        }
+        
+        .task-detail {
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+        
+        .task-image img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+        
+        .task-info h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+            color: var(--light);
+        }
+        
+        .task-data {
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-data img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+        
+        .task-data h5 {
+            font-size: 0.9rem;
+            color: #FFD700;
+            font-weight: 600;
+        }
+        
+        .task-button {
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: linear-gradient(to right, #003366, #001F3F);
+            color: white;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .task-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 49, 102, 0.4);
         }
         
-        .input-group {
-            margin: 20px 0;
+        /* Invite Card */
+        .invite-stats {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
         }
         
-        .input-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #a0c8ff;
+        .invite-link-container {
+            display: flex;
+            margin-bottom: 25px;
         }
         
-        .input-field {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
+        .invite-link {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px 0 0 12px;
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #003366;
-            box-shadow: 0 0 0 3px rgba(0, 49, 102, 0.3);
-        }
-        
-        .merchant-address {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            word-break: break-all;
-            font-family: monospace;
             font-size: 0.9rem;
-            line-height: 1.6;
-            border: 1px dashed rgba(0, 49, 102, 0.5);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
-        .transaction-hash {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            border: 1px dashed rgba(0, 31, 63, 0.5);
-        }
-        
-        .amount-display {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 20px 0;
-            background: linear-gradient(to right, #FFEA2A, #DB8A10);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .status-container {
-            text-align: center;
-            padding: 30px;
-            border-radius: 20px;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        
-        .status-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-        
-        .success {
-            color: var(--success);
-        }
-        
-        .error {
-            color: var(--danger);
-        }
-        
-        .processing {
-            color: var(--warning);
-            animation: pulse 1.5s infinite;
-        }
-        
-        .copy-btn {
-            background: rgba(0, 49, 102, 0.2);
-            color: #a0c8ff;
-            border: 1px solid rgba(0, 49, 102, 0.5);
-            padding: 8px 15px;
-            border-radius: 8px;
+        .copy-button {
+            padding: 14px 20px;
+            border-radius: 0 12px 12px 0;
+            background: linear-gradient(to right, #003366, #001F3F);
+            color: white;
+            border: none;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            background: linear-gradient(to right, #004080, #00264d);
+        }
+        
+        /* Purchase Card */
+        .package-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .package-row:last-child {
+            border-bottom: none;
+        }
+        
+        .package-info {
             display: flex;
             align-items: center;
-            gap: 5px;
         }
         
-        .copy-btn:hover {
-            background: rgba(0, 49, 102, 0.4);
-            transform: translateY(-2px);
+        .package-info img {
+            width: 30px;
+            height: 30px;
+            margin-right: 12px;
         }
         
-        .copy-btn.copied {
-            background: rgba(0, 200, 83, 0.2);
-            color: #69f0ae;
-            border-color: rgba(0, 200, 83, 0.5);
+        .package-info span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FFD700;
         }
         
-        .address-container {
+        .buy-btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: linear-gradient(to right, #003366, #001F3F);
+            color: white;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 49, 102, 0.4);
+        }
+        
+        .payment-footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+        
+        /* Wallet Card */
+        .wallet-card {
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 450px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
+            justify-content: space-around;
+            z-index: 100;
+            animation: fadeInUp 0.8s ease 0.8s both;
         }
         
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-item.active {
+            background: rgba(0, 49, 102, 0.2);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #a0c8ff;
+        }
+        
+        .nav-label {
+            font-size: 0.7rem;
+            color: #a0aec0;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Notification */
         .notification {
             position: fixed;
             top: 20px;
@@ -358,380 +496,354 @@
             background: rgba(255, 23, 68, 0.9);
         }
         
-        .coin-info {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        
-        .coin-info strong {
-            background: linear-gradient(to right, #FFEA2A, #DB8A10);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
-        
-        .auth-error {
-            background: rgba(255, 23, 68, 0.2);
-            border-left: 4px solid var(--danger);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-        
-        .network-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            background: rgba(0, 49, 102, 0.2);
-            color: #a0c8ff;
-            font-size: 0.9rem;
-            margin: 0 5px;
-        }
-        
-        .currency-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            background: rgba(0, 200, 83, 0.2);
-            color: #69f0ae;
-            font-size: 0.9rem;
-            margin: 0 5px;
-        }
-        
-        .info-box {
-            background: rgba(0, 0, 0, 0.2);
-            border-left: 4px solid #003366;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-        
-        .info-box i {
-            margin-right: 8px;
-            color: #003366;
-        }
-        
-        @media (max-width: 768px) {
+        /* Responsive */
+        @media (max-width: 480px) {
             .container {
-                padding: 10px;
+                padding: 0 10px;
             }
             
-            header {
-                padding: 15px;
+            .token-amount {
+                font-size: 2.3rem;
             }
             
-            .step-card {
+            .token-logo {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .price-circle {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .price-circle.center {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .center-icon {
+                font-size: 1.7rem;
+            }
+            
+            .card {
                 padding: 20px;
             }
             
-            .step-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-            
-            .step-title {
-                font-size: 1.2rem;
-            }
-            
-            .btn {
-                padding: 12px 20px;
-                font-size: 0.9rem;
+            .bottom-nav {
+                width: calc(100% - 20px);
             }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Daimonium Mini App...</div>
+    </div>
+    
     <div class="container">
-        <header>
-            <h1>Daimonium Purchase Process</h1>
-            <p>Secure token purchase system</p>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
+        <!-- Header with Token Balance -->
+        <header id="headerSection">
+            <div class="token-display">
+                <div class="token-amount" id="coinCount">0</div>
+                <div class="token-logo">
+                    <img src="logo.png" alt="Daimonium Logo">
+                </div>
             </div>
+            <p>Your Daimonium Token Balance</p>
         </header>
         
-        <div class="steps-container" id="stepsContainer">
-            <!-- Step 1: Start -->
-            <div class="step-card active" id="step1">
-                <div class="step-header">
-                    <div class="step-icon">
-                        <i class="fas fa-gem"></i>
-                    </div>
-                    <div class="step-title">Purchase Process Start</div>
-                </div>
-                
-                <div class="step-content">
-                    <p>💎 <strong>Welcome to the Daimonium purchase process!</strong></p>
-                    <p>You are purchasing tokens using USDT before listing.</p>
-                    
-                    <div id="authStatus"></div>
-                    
-                    <br>
-                    <p>The process is as follows:</p>
-                    <p>1️⃣ <strong>Currency</strong>: USDT (only supported currency)</p>
-                    <p>2️⃣ Select <strong>network</strong> (Ethereum, BSC, Polygon, etc.)</p>
-                    <p>3️⃣ Enter your <strong>wallet address</strong> (you'll send USDT from this address)</p>
-                    <p>4️⃣ The bot will show a <strong>merchant address</strong> - send the exact amount manually from your wallet</p>
-                    <p>5️⃣ After payment, submit your <strong>transaction hash (tx_hash)</strong></p>
-                    <br>
-                    <p>🚫 Do not send screenshots or links - only 64-character hash is acceptable.</p>
-                    <p>✅ Example:</p>
-                    <p><code>0xabc1234...7890def</code></p>
-                    <p>⚠️ If you send from an exchange, payment may fail or be delayed.</p>
-                </div>
-                
-                <div class="buttons-container">
-                    <button class="btn btn-primary" id="startButton" onclick="nextStep('step1', 'step2')">
-                        <i class="fas fa-arrow-right"></i> Proceed to Network Selection
-                    </button>
-                </div>
+        <!-- Price Circles -->
+        <div class="price-circles">
+            <div class="price-circle min">
+                <div class="price-label">MIN</div>
+                <div class="price-value min-price" id="minUsd">$0.00</div>
             </div>
-            
-            <!-- Step 2: Network Selection -->
-            <div class="step-card" id="step2">
-                <div class="step-header">
-                    <div class="step-icon">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <div class="step-title">Network Selection</div>
-                </div>
-                
-                <div class="step-content">
-                    <p>Please select the network for <span class="currency-badge">USDT</span>:</p>
-                    
-                    <div class="info-box">
-                        <i class="fas fa-info-circle"></i> Note: TON network is recommended for fast payments
-                    </div>
-                </div>
-                
-                <div class="buttons-container">
-                    <button class="btn btn-outline" onclick="selectNetwork('Ethereum')">
-                        <i class="fab fa-ethereum"></i> Ethereum
-                    </button>
-                    <button class="btn btn-outline" onclick="selectNetwork('BSC')">
-                        <i class="fas fa-coins"></i> BSC
-                    </button>
-                    <button class="btn btn-outline" onclick="selectNetwork('Polygon')">
-                        <i class="fas fa-bolt"></i> Polygon
-                    </button>
-                    <button class="btn btn-outline" onclick="selectNetwork('Arbitrum')">
-                        <i class="fas fa-link"></i> Arbitrum
-                    </button>
-                    <button class="btn btn-outline" onclick="selectNetwork('Optimism')">
-                        <i class="fas fa-rocket"></i> Optimism
-                    </button>
-                    <button class="btn btn-primary" onclick="selectNetwork('TON')">
-                        <i class="fab fa-telegram"></i> TON
-                    </button>
-                </div>
+            <div class="price-circle center" onclick="window.location.href='detail.html'">
+                <i class="fas fa-question center-icon"></i>
             </div>
-            
-            <!-- Step 3: Enter Wallet Address -->
-            <div class="step-card" id="step3">
-                <div class="step-header">
-                    <div class="step-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <div class="step-title">Your Wallet Address</div>
-                </div>
-                
-                <div class="step-content">
-                    <p>Please enter your wallet address (the address you'll send USDT from):</p>
-                    
-                    <div class="input-group">
-                        <label class="input-label">Wallet Address:</label>
-                        <input type="text" class="input-field" id="walletAddress" placeholder="Example: 0x742d35Cc6634C0532925a3b844Bc454e4438f44e">
-                    </div>
-                    
-                    <div class="info-box">
-                        <i class="fas fa-exclamation-triangle"></i> 
-                        Address formats for different networks:
-                        <ul style="padding-left: 20px; margin-top: 10px;">
-                            <li>Ethereum, BSC, Polygon: Starts with 0x (42 characters)</li>
-                            <li>TON: Starts with EQ (48 characters)</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="buttons-container">
-                    <button class="btn btn-primary" onclick="verifyWallet()">
-                        <i class="fas fa-check"></i> Verify Address
-                    </button>
-                </div>
+            <div class="price-circle max">
+                <div class="price-label">MAX</div>
+                <div class="price-value max-price" id="maxUsd">$0.00</div>
             </div>
+        </div>
+        
+        <!-- Daily Tasks Card -->
+        <div class="card" id="tasksSection">
+            <div class="card-title">Daily Tasks</div>
             
-            <!-- Step 4: Payment Information -->
-            <div class="step-card" id="step4">
-                <div class="step-header">
-                    <div class="step-icon">
-                        <i class="fas fa-money-bill-wave"></i>
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="task.png" alt="Task Icon">
                     </div>
-                    <div class="step-title">Payment</div>
-                </div>
-                
-                <div class="step-content">
-                    <div class="coin-info">
-                        You are purchasing <strong><span id="coin-amount"></span> tokens</strong>
-                    </div>
-                    
-                    <p>Please send the exact amount below to the merchant address:</p>
-                    
-                    <div class="amount-display" id="amountDisplay">
-                        <span id="usd-amount"></span> USDT
-                    </div>
-                    
-                    <div class="input-group">
-                        <label class="input-label">Merchant Address:</label>
-                        <div class="address-container">
-                            <div class="merchant-address" id="merchantAddress">
-                                UQD-_u6BRI63PvjYQEt9sa0j3lwlCO7DHMkKrH0o9azDL3xP
-                            </div>
-                            <button class="copy-btn" id="copyBtn" onclick="copyMerchantAddress()">
-                                <i class="fas fa-copy"></i> Copy
-                            </button>
+                    <div class="task-info">
+                        <h4>claim rewards</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>100</h5>
                         </div>
                     </div>
-                    
-                    <div class="info-box">
-                        <i class="fas fa-exclamation-circle"></i> 
-                        After completing the payment, enter your transaction hash (tx_hash) in the field below.
-                        The transaction hash must be exactly 64 hexadecimal characters.
-                    </div>
-                    
-                    <div class="input-group">
-                        <label class="input-label">Transaction Hash (tx_hash):</label>
-                        <input type="text" class="input-field" id="txHash" placeholder="Example: 0xabcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcd">
-                    </div>
                 </div>
-                
-                <div class="buttons-container">
-                    <button class="btn btn-primary" onclick="verifyTransaction()">
-                        <i class="fas fa-paper-plane"></i> Submit Transaction
-                    </button>
-                </div>
+                <button class="task-button" onclick="completeTaskUrl('task1', 100, 'reword.html', 'task1_done')">💎 claim</button>
             </div>
             
-            <!-- Step 5: Payment Result -->
-            <div class="step-card" id="step5">
-                <div class="step-header">
-                    <div class="step-icon">
-                        <i class="fas fa-check-circle"></i>
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="task2.png" alt="Task Icon">
                     </div>
-                    <div class="step-title">Payment Result</div>
-                </div>
-                
-                <div class="step-content">
-                    <div class="status-container" id="paymentStatus">
-                        <div class="status-icon processing">
-                            <i class="fas fa-spinner fa-spin"></i>
+                    <div class="task-info">
+                        <h4>verify and earn</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>100</h5>
                         </div>
-                        <h3>Verifying your transaction...</h3>
-                        <p>Please wait a moment</p>
-                    </div>
-                    
-                    <div class="transaction-hash">
-                        <strong>Transaction Hash:</strong> 
-                        <span id="displayTxHash">0xabcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcd</span>
-                    </div>
-                    
-                    <div class="info-box">
-                        <i class="fas fa-database"></i> 
-                        <strong>Data sent to payment server:</strong>
-                        <pre id="paymentData" style="margin-top: 10px; white-space: pre-wrap; word-break: break-all;"></pre>
                     </div>
                 </div>
-                
-                <div class="buttons-container">
-                    <button class="btn btn-primary" onclick="Telegram.WebApp.close()">
-                        <i class="fas fa-times"></i> Close Window
-                    </button>
+                <button class="task-button" onclick="completeTaskUrl('task2', 100, 'verify.html', 'task2_done')">💎 claim</button>
+            </div>
+        </div>
+        
+        <!-- Invite Friends Card -->
+        <div class="card" id="inviteSection">
+            <div class="card-title">Invite Friends</div>
+            
+            <div class="invite-stats">
+                Invited Friends: <span id="invitedCount">0</span>
+            </div>
+            
+            <div class="invite-link-container">
+                <input type="text" class="invite-link" value="https://t.me/Daimonium_bot" id="link" readonly />
+                <button class="copy-button" id="copyButton">Copy</button>
+            </div>
+            
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="Invite.png" alt="Invite Icon">
+                    </div>
+                    <div class="task-info">
+                        <h4>Invite 3 friends</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>5,000</h5>
+                        </div>
+                    </div>
                 </div>
+                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">💎 claim</button>
+            </div>
+            
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="Invite.png" alt="Invite Icon">
+                    </div>
+                    <div class="task-info">
+                        <h4>Invite 5 friends</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>10,000</h5>
+                        </div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">💎 claim</button>
+            </div>
+            
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="Invite.png" alt="Invite Icon">
+                    </div>
+                    <div class="task-info">
+                        <h4>Invite 10 friends</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>30,000</h5>
+                        </div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">💎 claim</button>
+            </div>
+            
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="Invite.png" alt="Invite Icon">
+                    </div>
+                    <div class="task-info">
+                        <h4>Invite 20 friends</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>100,000</h5>
+                        </div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">💎 claim</button>
+            </div>
+        </div>
+        
+        <!-- Purchase Card -->
+        <div class="card" id="purchaseSection">
+            <div class="card-title">Shopping Packages</div>
+            
+            <div class="package-row">
+                <div class="package-info">
+                    <img src="logo.png" alt="Logo">
+                    <span>10,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(10000, 1, this)">1 USDT</button>
+            </div>
+            
+            <div class="package-row">
+                <div class="package-info">
+                    <img src="logo.png" alt="Logo">
+                    <span>80,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(80000, 5, this)">5 USDT</button>
+            </div>
+            
+            <div class="package-row">
+                <div class="package-info">
+                    <img src="logo.png" alt="Logo">
+                    <span>200,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(200000, 10, this)">10 USDT</button>
+            </div>
+            
+            <div class="package-row">
+                <div class="package-info">
+                    <img src="logo.png" alt="Logo">
+                    <span>1,000,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(1000000, 50, this)">50 USDT</button>
+            </div>
+            
+            <div class="package-row">
+                <div class="package-info">
+                    <img src="logo.png" alt="Logo">
+                    <span>3,000,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(3000000, 100, this)">100 USDT</button>
+            </div>
+            
+            <div class="payment-footer">Payment with various digital currencies</div>
+        </div>
+        
+        <!-- Wallet Card -->
+        <div class="card wallet-card" id="walletSection">
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image">
+                        <img src="ton.png" alt="TON Icon">
+                    </div>
+                    <div class="task-info">
+                        <h4>Link your wallet</h4>
+                        <div class="task-data">
+                            <img src="logo.png" alt="Coin Icon">
+                            <h5>Daimonium</h5>
+                        </div>
+                    </div>
+                </div>
+                <button id="connectBtn" class="task-button">CONNECT</button>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="scrollToSection('headerSection')">
+                <i class="fas fa-home nav-icon"></i>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" onclick="scrollToSection('inviteSection')">
+                <i class="fas fa-user-friends nav-icon"></i>
+                <div class="nav-label">Invite</div>
+            </div>
+            <div class="nav-item" onclick="scrollToSection('purchaseSection')">
+                <i class="fas fa-shopping-cart nav-icon"></i>
+                <div class="nav-label">Shop</div>
+            </div>
+            <div class="nav-item" onclick="scrollToSection('walletSection')">
+                <i class="fas fa-wallet nav-icon"></i>
+                <div class="nav-label">Wallet</div>
             </div>
         </div>
     </div>
     
-    <div class="notification" id="notification">Address copied to clipboard!</div>
+    <div class="notification" id="notification">Copied to clipboard!</div>
 
     <script>
-        // User state and dynamic parameters
-        let coins = 1000;
-        let usdPrice = 100;
-        let userId = null;
-        const merchantAddresses = {
-            TON: 'UQD-_u6BRI63PvjYQEt9sa0j3lwlCO7DHMkKrH0o9azDL3xP',
-            Ethereum: '0x3904d407B928430d48143952f7073B4E4C331e03',
-            BSC: '0x3904d407B928430d48143952f7073B4E4C331e03',
-            Polygon: '0x3904d407B928430d48143952f7073B4E4C331e03',
-            Arbitrum: '0x3904d407B928430d48143952f7073B4E4C331e03',
-            Optimism: '0x3904d407B928430d48143952f7073B4E4C331e03'
-        };
-        
-        // User state
-        const userState = {
-            stage: 'START',
-            currency: 'USDT',
-            network: '',
-            wallet: '',
-            merchant: '',
-            txHash: ''
-        };
-        
-        // Parse URL parameters and initialize values
-        function initDynamicValues() {
-            const url = new URL(window.location.href);
-            
-            // Get coins parameter
-            const coinsParam = url.searchParams.get("coins");
-            if (coinsParam) {
-                coins = parseInt(coinsParam, 10);
-            }
-            
-            // Get USD price parameter
-            const usdPriceParam = url.searchParams.get("usdPrice");
-            if (usdPriceParam) {
-                usdPrice = parseFloat(usdPriceParam);
-            }
-            
-            // Update UI with dynamic values
-            document.getElementById("usd-amount").textContent = usdPrice.toFixed(2);
-            document.getElementById("coin-amount").textContent = coins.toLocaleString('en-US');
-            
-            // Get user ID from localStorage
-            userId = localStorage.getItem("userId");
-            
-            // Check if userId exists
-            if (!userId) {
-                const authStatus = document.getElementById("authStatus");
-                authStatus.innerHTML = `
-                    <div class="auth-error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Authentication required:</strong> UserID not found in localStorage. 
-                        Please set a valid UserID to proceed.
-                    </div>`;
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading
+            setTimeout(function() {
+                document.getElementById('loadingScreen').classList.add('hidden');
                 
-                // Disable start button
-                document.getElementById("startButton").disabled = true;
+                // Initialize values
+                initValues();
+                
+                // Set up event listeners
+                setupEventListeners();
+            }, 2000);
+        });
+        
+        // Initialize dynamic values
+        function initValues() {
+            // Set token count
+            const coinCount = localStorage.getItem("coins") || "0";
+            document.getElementById("coinCount").textContent = parseInt(coinCount).toLocaleString('en-US');
+            
+            // Set price range (example values)
+            document.getElementById("minUsd").textContent = "$0.0012";
+            document.getElementById("maxUsd").textContent = "$0.0034";
+            
+            // Set invited friends count
+            document.getElementById("invitedCount").textContent = localStorage.getItem("invitedCount") || "0";
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Copy invite link
+            document.getElementById('copyButton').addEventListener('click', copyInviteLink);
+            
+            // Wallet connection
+            document.getElementById('connectBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
+            });
+            
+            // Navigation active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        // Copy invite link to clipboard
+        function copyInviteLink() {
+            const link = document.getElementById('link');
+            link.select();
+            link.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('✅ Invite link copied to clipboard!');
+                } else {
+                    showNotification('❌ Failed to copy link. Please try again.', true);
+                }
+            } catch (err) {
+                showNotification('❌ Failed to copy link. Please try again.', true);
             }
         }
         
-        // DOM Elements
-        const notification = document.getElementById('notification');
-        const copyBtn = document.getElementById('copyBtn');
-        
-        // Show notification function
+        // Show notification
         function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = 'notification';
             
@@ -746,266 +858,75 @@
             }, 3000);
         }
         
-        // Activate next step
-        function nextStep(currentStepId, nextStepId) {
-            // Check if userId exists
-            if (!userId) {
-                showNotification('UserID not found. Please set a valid UserID in localStorage.', true);
-                return;
-            }
-            
-            // Deactivate current step
-            const currentStep = document.getElementById(currentStepId);
-            currentStep.classList.remove('active');
-            
-            // Activate next step
-            const nextStep = document.getElementById(nextStepId);
-            nextStep.classList.add('active');
-            
-            // Update progress bar
-            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
-            const currentIndex = steps.indexOf(nextStepId);
-            const progress = ((currentIndex + 1) / steps.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-            
-            // Auto-scroll to next step with smooth animation
-            setTimeout(() => {
-                nextStep.scrollIntoView({
+        // Scroll to section
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({
                     behavior: 'smooth',
-                    block: 'center',
-                    inline: 'nearest'
+                    block: 'start'
                 });
-            }, 300);
+            }
         }
         
-        // Select network
-        function selectNetwork(network) {
-            userState.network = network;
-            userState.merchant = merchantAddresses[network];
-            document.getElementById('merchantAddress').textContent = userState.merchant;
-            nextStep('step2', 'step3');
-        }
-        
-        // Verify wallet address
-        function verifyWallet() {
-            const walletAddress = document.getElementById('walletAddress').value.trim();
-            
-            // Wallet address validation
-            const evmRegex = /^0x[a-fA-F0-9]{40}$/;
-            const tonRegex = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/;
-            
-            if (userState.network !== 'TON' && evmRegex.test(walletAddress)) {
-                userState.wallet = walletAddress;
-                nextStep('step3', 'step4');
-            } else if (userState.network === 'TON' && tonRegex.test(walletAddress)) {
-                userState.wallet = walletAddress;
-                nextStep('step3', 'step4');
+        // Task completion functions (placeholder implementations)
+        function completeTaskUrl(taskId, reward, url, storageKey) {
+            if (!localStorage.getItem(storageKey)) {
+                // Add coins
+                const currentCoins = parseInt(localStorage.getItem("coins") || "0", 10);
+                localStorage.setItem("coins", currentCoins + reward);
+                document.getElementById("coinCount").textContent = (currentCoins + reward).toLocaleString('en-US');
+                
+                // Mark task as completed
+                localStorage.setItem(storageKey, "completed");
+                
+                // Show success message
+                showNotification(`✅ Task completed! You earned ${reward} tokens.`);
+                
+                // Redirect to task page
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 1000);
             } else {
-                showNotification('❌ Invalid wallet address format. Please enter a valid address.', true);
+                showNotification("⚠️ You've already completed this task.");
             }
         }
         
-        // Verify transaction
-        async function verifyTransaction() {
-            const userId = localStorage.getItem("userId");
-            if (!userId) {
-                showNotification('UserID not found. Please set a valid UserID in localStorage.', true);
-                return;
-            }
+        function completeTask(taskId) {
+            const rewardMap = {
+                'invite3': 5000,
+                'invite5': 10000,
+                'invite10': 30000,
+                'invite20': 100000
+            };
             
-            const txHash = document.getElementById('txHash').value.trim();
-            const txRegex = /^[A-Fa-f0-9]{64}$/;
+            const reward = rewardMap[taskId];
+            const storageKey = `${taskId}_done`;
             
-            if (!txRegex.test(txHash)) {
-                showNotification('❌ Invalid transaction hash format. Please enter a valid 64-character hash.', true);
-                return;
-            }
-            
-            userState.txHash = txHash;
-            document.getElementById('displayTxHash').textContent = txHash;
-            nextStep('step4', 'step5');
-            
-            // ارسال به سرور واقعی (آدرس باید جایگزین شود)
-            const VERIFICATION_SERVERS = [
-              "https://vercel-app-110-fmej.vercel.app/api/v1/transaction",
-              "https://vercel-app-50-5ymi.vercel.app/api/v1/transaction",
-              "https://vercel-app-120-vjh6.vercel.app/api/v1/transaction",
-              "https://vercel-app-10-njo6.vercel.app/api/v1/transaction",
-              "https://vercel-app-70-swvx.vercel.app/api/v1/transaction"
-            ];
-
-            function pickVerificationServer() {
-              const idx = Math.floor(Math.random() * VERIFICATION_SERVERS.length);
-              return VERIFICATION_SERVERS[idx];
-            }
-            
-            try {
-                // نمایش وضعیت در حال بررسی
-                document.getElementById('paymentStatus').innerHTML = `
-                    <div class="status-icon processing">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
-                    <h3>Verifying your transaction...</h3>
-                    <p>Please wait a moment</p>`;
+            if (!localStorage.getItem(storageKey)) {
+                // Add coins
+                const currentCoins = parseInt(localStorage.getItem("coins") || "0", 10);
+                localStorage.setItem("coins", currentCoins + reward);
+                document.getElementById("coinCount").textContent = (currentCoins + reward).toLocaleString('en-US');
                 
-                // ساختار داده‌های ارسالی
-                const paymentData = {
-                    user_id: userId,
-                    currency: userState.currency,
-                    network: userState.network,
-                    amount: usdPrice,
-                    merchant_wallet: userState.merchant,
-                    sender_wallet: userState.wallet,
-                    tx_hash: txHash,
-                    timestamp: new Date().toISOString()
-                };
+                // Mark task as completed
+                localStorage.setItem(storageKey, "completed");
                 
-                // نمایش داده‌های ارسالی
-                document.getElementById('paymentData').textContent = JSON.stringify(paymentData, null, 2);
-                
-                const VERIFICATION_SERVER = pickVerificationServer(); 
-                // ارسال درخواست به سرور واقعی
-                const response = await fetch(VERIFICATION_SERVER, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-API-KEY': window.API_KEY
-
-                    },
-                    body: JSON.stringify(paymentData)
-                });
-                
-                const result = await response.json();
-                
-                // پردازش پاسخ سرور
-                if (result.status === 'confirmed') {
-                    showPaymentResult(true, 'Payment confirmed successfully');
-                    localStorage.setItem("payment_status", "success");
-                    const previousCoins = parseInt(localStorage.getItem("coins") || "0", 10);
-                    localStorage.setItem("coins", previousCoins + coins);
-                    localStorage.setItem("last_usd_price", usdPrice);
-                } else {
-                    showPaymentResult(false, result.message || 'Payment failed');
-                    localStorage.setItem("payment_status", "failed");
-                    localStorage.setItem("payment_error", result.message || "unknown");
-                }
-                
-            } catch (error) {
-                console.error('Verification failed:', error);
-                showPaymentResult(false, 'Connection error');
-                localStorage.setItem("payment_status", "failed");
-                localStorage.setItem("payment_error", 'Connection error');
-            }
-        }
-        
-        // Show payment result
-        function showPaymentResult(isSuccess, message = '') {
-            const statusContainer = document.getElementById('paymentStatus');
-            
-            if (isSuccess) {
-                statusContainer.innerHTML = `
-                    <div class="status-icon success">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>Your payment was successfully verified!</h3>
-                    <p>${message || 'Your purchase is now activated'}</p>
-                    <p>Purchased: <strong>${coins.toLocaleString('en-US')} tokens</strong></p>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="showTransactionDetails()">
-                            <i class="fas fa-receipt"></i> View Transaction Details
-                        </button>
-                    </div>
-                `;
+                // Show success message
+                showNotification(`✅ Task completed! You earned ${reward} tokens.`);
             } else {
-                statusContainer.innerHTML = `
-                    <div class="status-icon error">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <h3>Payment failed</h3>
-                    <p>${message || 'Payment could not be processed'}</p>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-outline" onclick="retryPayment()">
-                            <i class="fas fa-redo"></i> Try Again
-                        </button>
-                    </div>
-                `;
+                showNotification("⚠️ You've already completed this task.");
             }
         }
         
-        // Copy merchant address to clipboard
-        function copyMerchantAddress() {
-            const address = document.getElementById('merchantAddress').textContent;
+        function handlePayment(tokens, usdt, button) {
+            // Store purchase details
+            localStorage.setItem("purchase_tokens", tokens);
+            localStorage.setItem("purchase_usdt", usdt);
             
-            // Create temporary textarea for copying
-            const textArea = document.createElement('textarea');
-            textArea.value = address;
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showNotification('✅ Address copied to clipboard!');
-                    
-                    // Visual feedback
-                    copyBtn.classList.add('copied');
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    
-                    setTimeout(() => {
-                        copyBtn.classList.remove('copied');
-                        copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
-                    }, 2000);
-                } else {
-                    showNotification('❌ Failed to copy address. Please try again.', true);
-                }
-            } catch (err) {
-                showNotification('❌ Failed to copy address. Please try again.', true);
-            }
-            
-            // Clean up
-            document.body.removeChild(textArea);
+            // Redirect to payment page with parameters
+            window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
         }
-        
-        // View transaction details
-        function showTransactionDetails() {
-            alert(`Transaction details are being displayed...\n\nPurchased: ${coins.toLocaleString('en-US')} tokens\nAmount: ${usdPrice.toFixed(2)} USDT`);
-        }
-        
-        // Retry payment
-        function retryPayment() {
-            nextStep('step5', 'step4');
-        }
-        
-        // Restart process
-        function restartProcess() {
-            // Reset user state
-            userState.stage = 'START';
-            userState.network = '';
-            userState.wallet = '';
-            userState.txHash = '';
-            
-            // Reset form
-            document.getElementById('walletAddress').value = '';
-            document.getElementById('txHash').value = '';
-            
-            // Return to first step
-            document.getElementById('step5').classList.remove('active');
-            document.getElementById('step1').classList.add('active');
-            document.getElementById('progressBar').style.width = '20%';
-            
-            // Scroll to top
-            document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Initialize
-        window.onload = function() {
-            // Set initial merchant address
-            document.getElementById('merchantAddress').textContent = merchantAddresses.TON;
-            userState.merchant = merchantAddresses.TON;
-            
-            // Initialize dynamic values from URL parameters
-            initDynamicValues();
-        };  
     </script>
 </body>
 </html>
