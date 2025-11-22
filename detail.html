@@ -37,13 +37,63 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Background Lights */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .light-right {
+            position: fixed;
+            width: 250px;
+            height: 250px;
+            background: rgba(100, 200, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(50px);
+            top: 15%;
+            right: -50px;
+            z-index: -1;
+        }
+        
+        .light-left {
+            position: fixed;
+            width: 250px;
+            height: 250px;
+            background: rgba(100, 180, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(50px);
+            bottom: 15%;
+            left: -50px;
+            z-index: -1;
         }
         
         .container {
-            max-width: 450px;
+            max-width: 480px;
             width: 100%;
             margin: 0 auto;
             position: relative;
+            padding-bottom: 100px; /* Space for bottom nav */
         }
         
         /* Loading Screen */
@@ -71,7 +121,7 @@
             width: 60px;
             height: 60px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--secondary);
+            border-left: 4px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
@@ -88,41 +138,28 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding: 20px;
-            border-radius: 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: fadeInUp 0.8s ease;
-        }
-        
+        /* Token Display (Without Card) */
         .token-display {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            padding: 20px 0;
+            animation: fadeInUp 0.8s ease;
         }
         
         .token-amount {
-            font-size: 2.8rem;
+            font-size: 3rem;
             font-weight: 900;
-            background: linear-gradient(to right, #FFEA2A, #DB8A10);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
             margin-right: 15px;
-            text-shadow: 0 0 10px rgba(255, 234, 42, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
         
         .token-logo {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #003366, #001F3F);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -130,15 +167,10 @@
         }
         
         .token-logo img {
-            width: 70%;
-            height: 70%;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-        }
-        
-        header p {
-            color: #a0aec0;
-            font-size: 1rem;
-            line-height: 1.6;
+            border-radius: 50%;
         }
         
         /* Price Circles */
@@ -151,8 +183,8 @@
         }
         
         .price-circle {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -172,17 +204,15 @@
         }
         
         .price-circle.min {
-            border-color: rgba(255, 23, 68, 0.3);
+            background: rgba(255, 82, 82, 0.15);
         }
         
         .price-circle.max {
-            border-color: rgba(0, 200, 83, 0.3);
+            background: rgba(105, 240, 174, 0.15);
         }
         
         .price-circle.center {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #003366, #001F3F);
+            background: var(--glass-bg);
             cursor: pointer;
         }
         
@@ -195,14 +225,7 @@
         .price-value {
             font-size: 1rem;
             font-weight: 700;
-        }
-        
-        .min-price {
-            color: #ff5252;
-        }
-        
-        .max-price {
-            color: #69f0ae;
+            color: white;
         }
         
         .center-icon {
@@ -221,6 +244,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             transition: all 0.5s ease;
             animation: fadeInUp 0.8s ease 0.4s both;
+            width: 100%;
         }
         
         .card-title {
@@ -228,7 +252,7 @@
             margin-bottom: 20px;
             font-weight: 700;
             text-align: center;
-            color: #a0c8ff;
+            color: white;
         }
         
         /* Tasks */
@@ -292,15 +316,15 @@
         
         .task-data h5 {
             font-size: 0.9rem;
-            color: #FFD700;
+            color: white;
             font-weight: 600;
         }
         
         .task-button {
             padding: 10px 18px;
             border-radius: 12px;
-            background: linear-gradient(to right, #003366, #001F3F);
-            color: white;
+            background: white;
+            color: black;
             border: none;
             font-weight: 500;
             cursor: pointer;
@@ -310,7 +334,7 @@
         
         .task-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 49, 102, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
         }
         
         /* Invite Card */
@@ -318,39 +342,26 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 1.1rem;
+            color: white;
         }
         
-        .invite-link-container {
-            display: flex;
+        .invite-button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            background: white;
+            color: black;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
             margin-bottom: 25px;
         }
         
-        .invite-link {
-            flex: 1;
-            padding: 14px 20px;
-            border-radius: 12px 0 0 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 0.9rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .copy-button {
-            padding: 14px 20px;
-            border-radius: 0 12px 12px 0;
-            background: linear-gradient(to right, #003366, #001F3F);
-            color: white;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .copy-button:hover {
-            background: linear-gradient(to right, #004080, #00264d);
+        .invite-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
         }
         
         /* Purchase Card */
@@ -380,14 +391,14 @@
         .package-info span {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #FFD700;
+            color: white;
         }
         
         .buy-btn {
             padding: 10px 20px;
             border-radius: 12px;
-            background: linear-gradient(to right, #003366, #001F3F);
-            color: white;
+            background: white;
+            color: black;
             border: none;
             font-weight: 500;
             cursor: pointer;
@@ -396,7 +407,7 @@
         
         .buy-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 49, 102, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
         }
         
         .payment-footer {
@@ -409,6 +420,7 @@
         /* Wallet Card */
         .wallet-card {
             animation: fadeInUp 0.8s ease 0.6s both;
+            margin-bottom: 40px; /* Extra space at bottom */
         }
         
         /* Bottom Navigation */
@@ -418,7 +430,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 40px);
-            max-width: 450px;
+            max-width: 480px;
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -446,13 +458,13 @@
         }
         
         .nav-item.active {
-            background: rgba(0, 49, 102, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .nav-icon {
             font-size: 1.3rem;
             margin-bottom: 5px;
-            color: #a0c8ff;
+            color: white;
         }
         
         .nav-label {
@@ -499,26 +511,21 @@
         /* Responsive */
         @media (max-width: 480px) {
             .container {
-                padding: 0 10px;
+                padding: 0 15px 100px 15px;
             }
             
             .token-amount {
-                font-size: 2.3rem;
+                font-size: 2.5rem;
             }
             
             .token-logo {
-                width: 45px;
-                height: 45px;
+                width: 50px;
+                height: 50px;
             }
             
             .price-circle {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .price-circle.center {
-                width: 80px;
-                height: 80px;
+                width: 75px;
+                height: 75px;
             }
             
             .center-icon {
@@ -530,12 +537,21 @@
             }
             
             .bottom-nav {
-                width: calc(100% - 20px);
+                width: calc(100% - 30px);
+            }
+            
+            .light-right, .light-left {
+                width: 200px;
+                height: 200px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Background Lights -->
+    <div class="light-right"></div>
+    <div class="light-left"></div>
+    
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="spinner"></div>
@@ -543,29 +559,26 @@
     </div>
     
     <div class="container">
-        <!-- Header with Token Balance -->
-        <header id="headerSection">
-            <div class="token-display">
-                <div class="token-amount" id="coinCount">0</div>
-                <div class="token-logo">
-                    <img src="logo.png" alt="Daimonium Logo">
-                </div>
+        <!-- Token Display (Without Card) -->
+        <div class="token-display" id="headerSection">
+            <div class="token-amount" id="coinCount">0</div>
+            <div class="token-logo">
+                <img src="logo.png" alt="Daimonium Logo">
             </div>
-            <p>Your Daimonium Token Balance</p>
-        </header>
+        </div>
         
         <!-- Price Circles -->
         <div class="price-circles">
             <div class="price-circle min">
                 <div class="price-label">MIN</div>
-                <div class="price-value min-price" id="minUsd">$0.00</div>
+                <div class="price-value" id="minUsd">$0.0012</div>
             </div>
             <div class="price-circle center" onclick="window.location.href='detail.html'">
                 <i class="fas fa-question center-icon"></i>
             </div>
             <div class="price-circle max">
                 <div class="price-label">MAX</div>
-                <div class="price-value max-price" id="maxUsd">$0.00</div>
+                <div class="price-value" id="maxUsd">$0.0034</div>
             </div>
         </div>
         
@@ -614,10 +627,9 @@
                 Invited Friends: <span id="invitedCount">0</span>
             </div>
             
-            <div class="invite-link-container">
-                <input type="text" class="invite-link" value="https://t.me/Daimonium_bot" id="link" readonly />
-                <button class="copy-button" id="copyButton">Copy</button>
-            </div>
+            <button class="invite-button" id="inviteButton">
+                <i class="fas fa-user-friends"></i> Invite Friends
+            </button>
             
             <div class="task">
                 <div class="task-detail">
@@ -794,18 +806,34 @@
             const coinCount = localStorage.getItem("coins") || "0";
             document.getElementById("coinCount").textContent = parseInt(coinCount).toLocaleString('en-US');
             
-            // Set price range (example values)
-            document.getElementById("minUsd").textContent = "$0.0012";
-            document.getElementById("maxUsd").textContent = "$0.0034";
-            
             // Set invited friends count
             document.getElementById("invitedCount").textContent = localStorage.getItem("invitedCount") || "0";
         }
         
         // Set up event listeners
         function setupEventListeners() {
-            // Copy invite link
-            document.getElementById('copyButton').addEventListener('click', copyInviteLink);
+            // Invite button
+            document.getElementById('inviteButton').addEventListener('click', function() {
+                // Create temporary textarea for copying
+                const textArea = document.createElement('textarea');
+                textArea.value = "https://t.me/Daimonium_bot";
+                document.body.appendChild(textArea);
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showNotification('✅ Invite link copied to clipboard!');
+                    } else {
+                        showNotification('❌ Failed to copy link. Please try again.', true);
+                    }
+                } catch (err) {
+                    showNotification('❌ Failed to copy link. Please try again.', true);
+                }
+                
+                // Clean up
+                document.body.removeChild(textArea);
+            });
             
             // Wallet connection
             document.getElementById('connectBtn').addEventListener('click', function(e) {
@@ -821,24 +849,6 @@
                     this.classList.add('active');
                 });
             });
-        }
-        
-        // Copy invite link to clipboard
-        function copyInviteLink() {
-            const link = document.getElementById('link');
-            link.select();
-            link.setSelectionRange(0, 99999); // For mobile devices
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showNotification('✅ Invite link copied to clipboard!');
-                } else {
-                    showNotification('❌ Failed to copy link. Please try again.', true);
-                }
-            } catch (err) {
-                showNotification('❌ Failed to copy link. Please try again.', true);
-            }
         }
         
         // Show notification
