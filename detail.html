@@ -14,15 +14,13 @@
         :root{
             --primary: #001F3F;
             --light: #f5f7ff;
-            --glass-weak: rgba(255,255,255,0.03); /* for very transparent cards */
+            --glass-weak: rgba(255,255,255,0.03);
             --glass-weak-2: rgba(255,255,255,0.02);
-            --glass-border: rgba(255,255,255,0.08); /* preserved border for bottom nav */
-            --nav-border-white: rgba(255,255,255,0.9);
-            --nav-bg-opaque: rgba(0,0,0,0.98);
-            --nav-bg-translucent: rgba(0,0,0,0.55);
-            --deep-blue: rgba(0,120,255,0.30);
-            --deep-blue-strong: rgba(0,120,255,0.45);
-            --shadow-strong: 0 10px 30px rgba(0,0,0,0.35);
+            --glass-border: rgba(255,255,255,0.08);
+            --nav-border-white: rgba(255,255,255,0.15);
+            --nav-bg-opaque: rgba(0,0,0,0.55);
+            --deep-green: rgba(0, 255, 120, 0.35);
+            --shadow-strong: 0 12px 35px rgba(0,0,0,0.6);
         }
 
         /* -------------------------
@@ -40,43 +38,22 @@
             position:relative;
         }
 
-        /* stronger, deeper blue lights per user request */
-        .light-right, .light-left, body::after {
-            position:fixed;
-            border-radius:50%;
+        /* نور سبز زمردی جدید */
+        .green-light {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at 90% 20%,
+                var(--deep-green),
+                rgba(0, 0, 0, 0) 70%
+            );
             filter: blur(70px);
-            pointer-events:none;
-            z-index:-2;
-        }
-
-        .light-right{
-            width:320px;
-            height:320px;
-            top:12%;
-            right:-40px;
-            background: var(--deep-blue);
-            opacity:0.9; /* much brighter */
-        }
-
-        .light-left{
-            width:320px;
-            height:320px;
-            bottom:12%;
-            left:-40px;
-            background: var(--deep-blue-strong);
-            opacity:0.9;
-        }
-
-        body::after{
-            content:'';
-            width:420px;
-            height:420px;
-            left:50%;
-            top:10%;
-            transform:translateX(-40%);
-            background: radial-gradient(circle at 30% 30%, rgba(0,140,255,0.25), rgba(0,40,80,0));
-            z-index:-3;
-            opacity:0.9;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.9;
         }
 
         /* -------------------------
@@ -84,12 +61,12 @@
            ------------------------- */
         .container{
             width:100%;
-            max-width:540px; /* slightly wider so cards become wider */
+            max-width:540px;
             margin: 0 auto;
-            padding-bottom:130px; /* space for bottom nav */
+            padding-bottom:130px;
         }
 
-        /* Loading screen (unchanged except kept compatible) */
+        /* Loading screen */
         .loading-screen{
             position:fixed; inset:0;
             display:flex; align-items:center; justify-content:center;
@@ -116,7 +93,7 @@
 
         .price-circles{
             display:flex;
-            justify-content:center; /* center so three circles stay close together */
+            justify-content:center;
             gap:14px;
             margin:18px 0 26px;
             animation:fadeInUp .6s ease;
@@ -137,10 +114,7 @@
         .price-value{ font-size:1rem; font-weight:700; color:white; }
 
         /* -------------------------
-           Card system — Differentiated materials
-           -------------------------
-           .card.mini => the "transparent / plastic (تلق)" cards that show section content.
-           .card (default) or .card--solid => for things that should remain like current (slightly frosted).
+           Card system
            ------------------------- */
         .card{
             width:100%;
@@ -152,25 +126,17 @@
             animation:fadeInUp .6s ease;
         }
 
-        /* MINI cards: fully see-through "تلق"، no border, let background pass through.
-           We'll keep a subtle inner sheen and very light highlight to read text on top. */
+        /* MINI cards */
         .card.mini{
             background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            border: none; /* remove border as requested */
-            backdrop-filter: blur(2px) saturate(1.05); /* slight blur for readability but mostly transparent */
+            border: none;
+            backdrop-filter: blur(2px) saturate(1.05);
             box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
-        }
-
-        /* Keep a slightly frosted variant for "menu-like" cards (but we will apply to bottom nav separately) */
-        .card--frosted{
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(8px);
         }
 
         .card-title{ font-size:1.25rem; font-weight:700; color:white; text-align:center; margin-bottom:14px; }
 
-        /* task rows — unchanged visual but now inside .card.mini */
+        /* task rows */
         .task{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
         .task:last-child{ border-bottom:none; }
         .task-detail{ display:flex; gap:12px; align-items:center; }
@@ -192,31 +158,30 @@
         .wallet-card{ margin-bottom:28px; }
 
         /* -------------------------
-           Bottom Navigation (fixed) — Improved responsiveness + behavior
+           Bottom Navigation (fixed) - Updated Style
            ------------------------- */
         .bottom-nav{
             position:fixed;
             bottom:20px;
             left:50%;
             transform:translateX(-50%);
-            width: min(520px, calc(100% - 28px)); /* always fits inside viewport with margin */
+            width: min(520px, calc(100% - 28px));
             max-width:520px;
             padding:12px;
-            border-radius:20px;
+            border-radius:30px; /* افزایش radius برای گردی کامل */
             display:flex;
             justify-content:space-between;
             gap:8px;
             align-items:center;
             z-index:120;
-            transition: all .25s ease, background .25s ease, box-shadow .25s ease;
-            box-shadow: var(--shadow-strong);
-            /* default as requested: black card when no content behind it */
+            /* استایل جدید: شیشه مات دودی */
             background: var(--nav-bg-opaque);
-            border: 1px solid var(--nav-border-white); /* preserve white border */
-            backdrop-filter: none; /* no blur by default */
+            backdrop-filter: blur(25px); /* بلور قوی */
+            border: 1px solid var(--nav-border-white); /* حاشیه ظریف سفید */
+            box-shadow: var(--shadow-strong); /* سایه سنگین برای اثر شناور بودن */
         }
 
-        /* nav items spread evenly and centered; ensures icons/labels are centered and visible */
+        /* nav items */
         .nav-item{
             display:flex; flex-direction:column; align-items:center; justify-content:center;
             gap:6px; flex:1 1 0; min-width:56px;
@@ -228,14 +193,10 @@
 
         .nav-item.active{ background: rgba(255,255,255,0.06); }
 
-        /* When page is scrolled and content sits behind the nav, make nav smoky translucent (matte/dim) and keep white border */
-        .bottom-nav.overlay{
-            background: var(--nav-bg-translucent);
-            backdrop-filter: blur(8px);
-        }
+        /* حذف حالت overlay - همیشه دودی مات می‌ماند */
 
         /* -------------------------
-           Notification (unchanged)
+           Notification
            ------------------------- */
         .notification{
             position:fixed; top:18px; right:18px;
@@ -261,7 +222,7 @@
 
         @media (max-width:380px){
             .container{ padding:0 8px 110px; }
-            .nav-item .nav-label{ display:none; } /* hide labels on very narrow phones so items don't get cut off */
+            .nav-item .nav-label{ display:none; }
             .nav-item .nav-icon{ font-size:1.1rem; }
             .price-circle{ width:66px; height:66px; }
         }
@@ -275,9 +236,8 @@
 </head>
 <body>
 
-    <!-- Background lights -->
-    <div class="light-right" aria-hidden="true"></div>
-    <div class="light-left" aria-hidden="true"></div>
+    <!-- نور سبز زمردی جدید -->
+    <div class="green-light" aria-hidden="true"></div>
 
     <!-- Loading screen -->
     <div class="loading-screen" id="loadingScreen">
@@ -294,7 +254,7 @@
             </div>
         </div>
 
-        <!-- Price Circles (kept close together) -->
+        <!-- Price Circles -->
         <div class="price-circles" aria-hidden="false">
             <div class="price-circle min">
                 <div class="price-label">MIN</div>
@@ -311,7 +271,7 @@
             </div>
         </div>
 
-        <!-- Daily Tasks (these are MINI cards — transparent, no border) -->
+        <!-- Daily Tasks -->
         <div class="card mini" id="tasksSection">
             <div class="card-title">Daily Tasks</div>
 
@@ -323,7 +283,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task1',100,'reword.html','task1_done')">💎 claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task1',100,'reword.html','task1_done')">claim</button>
             </div>
 
             <div class="task">
@@ -334,11 +294,11 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task2',100,'verify.html','task2_done')">💎 claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task2',100,'verify.html','task2_done')">claim</button>
             </div>
         </div>
 
-        <!-- Invite Friends (MINI card transparent) -->
+        <!-- Invite Friends -->
         <div class="card mini" id="inviteSection">
             <div class="card-title">Invite Friends</div>
             <div class="invite-stats">
@@ -355,7 +315,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">💎 claim</button>
+                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">claim</button>
             </div>
 
             <div class="task">
@@ -366,7 +326,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">💎 claim</button>
+                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">claim</button>
             </div>
 
             <div class="task">
@@ -377,7 +337,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">💎 claim</button>
+                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">claim</button>
             </div>
 
             <div class="task">
@@ -388,11 +348,11 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">💎 claim</button>
+                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">claim</button>
             </div>
         </div>
 
-        <!-- Shopping / Purchase (MINI card transparent) -->
+        <!-- Shopping / Purchase -->
         <div class="card mini" id="purchaseSection">
             <div class="card-title">Shopping Packages</div>
 
@@ -439,7 +399,7 @@
             <div class="payment-footer" style="margin-top:12px;color:#a0aec0">Payment with various digital currencies</div>
         </div>
 
-        <!-- Wallet card (mini) -->
+        <!-- Wallet card -->
         <div class="card mini wallet-card" id="walletSection">
             <div class="task">
                 <div class="task-detail">
@@ -455,7 +415,7 @@
 
     </div><!-- /container -->
 
-    <!-- Bottom Navigation (keeps white border; becomes translucent on scroll) -->
+    <!-- Bottom Navigation (سبک جدید: شیشه مات دودی) -->
     <div class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
         <div class="nav-item active" onclick="scrollToSection('headerSection')">
             <i class="fas fa-home nav-icon"></i>
@@ -485,12 +445,10 @@
            Initialization & helpers
            ------------------------- */
         document.addEventListener('DOMContentLoaded', function(){
-            // simulate loading, then initialize values & listeners
             setTimeout(function(){
                 document.getElementById('loadingScreen').classList.add('hidden');
                 initValues();
                 setupEventListeners();
-                handleNavOverlayOnLoad();
             }, 900);
         });
 
@@ -515,7 +473,7 @@
                 document.body.removeChild(textArea);
             });
 
-            // Wallet connect (placeholder message)
+            // Wallet connect
             document.getElementById('connectBtn').addEventListener('click', function(e){
                 e.preventDefault();
                 showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
@@ -530,9 +488,7 @@
                 });
             });
 
-            // bottom nav overlay effect on scroll
-            window.addEventListener('scroll', throttle(handleNavOverlayOnScroll, 120), {passive:true});
-            window.addEventListener('resize', throttle(handleNavOverlayOnScroll, 200));
+            // حذف مدیریت overlay - کارت منو همیشه دودی مات می‌ماند
         }
 
         /* Show notification */
@@ -551,7 +507,7 @@
             if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
         }
 
-        /* Task completion functions (same logic as before) */
+        /* Task completion functions */
         function completeTaskUrl(taskId,reward,url,storageKey){
             if(!localStorage.getItem(storageKey)){
                 const curr = parseInt(localStorage.getItem("coins")||"0",10);
@@ -583,41 +539,7 @@
         function handlePayment(tokens, usdt, button){
             localStorage.setItem("purchase_tokens", tokens);
             localStorage.setItem("purchase_usdt", usdt);
-            // direct to payment page (example)
             window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
-        }
-
-        /* -------------------------
-           Bottom nav overlay behavior
-           - Keeps nav fully visible on all screen sizes
-           - Switches to translucent "matte/dim" when content scrolls UNDER it
-           ------------------------- */
-        const bottomNav = document.getElementById('bottomNav');
-
-        function handleNavOverlayOnLoad(){
-            // on load, check scroll position
-            handleNavOverlayOnScroll();
-        }
-
-        function handleNavOverlayOnScroll(){
-            const trigger = window.scrollY || document.documentElement.scrollTop;
-            // if scrolled enough that content may be under nav, make nav translucent and add backdrop blur
-            if(trigger > 50){
-                bottomNav.classList.add('overlay');
-            } else {
-                bottomNav.classList.remove('overlay');
-            }
-        }
-
-        // simple throttle helper
-        function throttle(fn, wait){
-            let time = Date.now();
-            return function(){
-                if((time + wait - Date.now()) < 0){
-                    fn();
-                    time = Date.now();
-                }
-            };
         }
 
     </script>
