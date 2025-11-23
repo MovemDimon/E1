@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Daimonium</title>
+    <title>Daimonium Token Airdrop</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -24,7 +24,7 @@
             --light: #f5f7ff;
             --gray: #6c757d;
             --border: #e0e0e0;
-            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(30, 30, 30, 0.7); /* Darker smoky glass */
             --glass-border: rgba(255, 255, 255, 0.1);
         }
         
@@ -40,56 +40,33 @@
             position: relative;
         }
         
-        /* Background Lights */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        body::after {
-            content: '';
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
+        /* Background Lights - Brighter */
         .light-right {
             position: fixed;
-            width: 250px;
-            height: 250px;
-            background: rgba(100, 200, 255, 0.1);
+            width: 280px;
+            height: 280px;
+            background: rgba(120, 200, 255, 0.25);
             border-radius: 50%;
-            filter: blur(50px);
+            filter: blur(60px);
             top: 15%;
-            right: -50px;
+            right: -60px;
             z-index: -1;
         }
         
         .light-left {
             position: fixed;
-            width: 250px;
-            height: 250px;
-            background: rgba(100, 180, 255, 0.1);
+            width: 280px;
+            height: 280px;
+            background: rgba(120, 180, 255, 0.25);
             border-radius: 50%;
-            filter: blur(50px);
+            filter: blur(60px);
             bottom: 15%;
-            left: -50px;
+            left: -60px;
             z-index: -1;
         }
         
         .container {
-            max-width: 480px;
+            max-width: 500px; /* Slightly wider */
             width: 100%;
             margin: 0 auto;
             position: relative;
@@ -233,7 +210,7 @@
             color: white;
         }
         
-        /* Cards */
+        /* Cards - Wider and Darker */
         .card {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -241,7 +218,7 @@
             padding: 25px;
             margin-bottom: 20px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             transition: all 0.5s ease;
             animation: fadeInUp 0.8s ease 0.4s both;
             width: 100%;
@@ -420,17 +397,17 @@
         /* Wallet Card */
         .wallet-card {
             animation: fadeInUp 0.8s ease 0.6s both;
-            margin-bottom: 40px; /* Extra space at bottom */
+            margin-bottom: 80px; /* Extra space at bottom */
         }
         
-        /* Bottom Navigation */
+        /* Bottom Navigation - Fixed Position */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 40px);
-            max-width: 480px;
+            max-width: 500px; /* Match container width */
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -509,9 +486,10 @@
         }
         
         /* Responsive */
-        @media (max-width: 480px) {
+        @media (max-width: 500px) {
             .container {
                 padding: 0 15px 100px 15px;
+                max-width: 100%;
             }
             
             .token-amount {
@@ -538,17 +516,33 @@
             
             .bottom-nav {
                 width: calc(100% - 30px);
+                max-width: calc(100% - 30px);
             }
             
             .light-right, .light-left {
-                width: 200px;
-                height: 200px;
+                width: 220px;
+                height: 220px;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .price-circle {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .price-value {
+                font-size: 0.9rem;
+            }
+            
+            .center-icon {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background Lights -->
+    <!-- Background Lights - Brighter -->
     <div class="light-right"></div>
     <div class="light-left"></div>
     
@@ -599,7 +593,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task1', 100, 'reword.html', 'task1_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task1', 100, 'reword.html', 'task1_done')">💎 claim</button>
             </div>
             
             <div class="task">
@@ -615,7 +609,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task2', 100, 'verify.html', 'task2_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task2', 100, 'verify.html', 'task2_done')">💎 claim</button>
             </div>
         </div>
         
@@ -644,7 +638,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">claim</button>
+                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">💎 claim</button>
             </div>
             
             <div class="task">
@@ -660,7 +654,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">claim</button>
+                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">💎 claim</button>
             </div>
             
             <div class="task">
@@ -676,7 +670,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">claim</button>
+                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">💎 claim</button>
             </div>
             
             <div class="task">
@@ -692,7 +686,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">claim</button>
+                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">💎 claim</button>
             </div>
         </div>
         
@@ -762,7 +756,7 @@
             </div>
         </div>
         
-        <!-- Bottom Navigation -->
+        <!-- Bottom Navigation - Fixed Position -->
         <div class="bottom-nav">
             <div class="nav-item active" onclick="scrollToSection('headerSection')">
                 <i class="fas fa-home nav-icon"></i>
@@ -940,4 +934,3 @@
     </script>
 </body>
 </html>
-
