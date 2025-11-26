@@ -26,11 +26,11 @@
         }
 
         /* -------------------------
-           Body + Background lights
+           Body + Background
            ------------------------- */
         body{
             min-height:100vh;
-            background: linear-gradient(135deg,#000000,#050509 60%);
+            background: #000000;
             color:var(--light);
             display:flex;
             justify-content:center;
@@ -40,35 +40,49 @@
             position:relative;
         }
 
-        /* نور پس‌زمینه خطی با Bloom */
-        .bg-light-strip{
+        /* الماس‌های متحرک به عنوان پس‌زمینه */
+        .diamonds {
             position: fixed;
-            top: 0;
-            right: -16%;
-            width: 48vw;
-            max-width: 780px;
-            height: 120vh;
-            pointer-events: none;
+            inset: 0;
+            overflow: hidden;
             z-index: -3;
-            transform: rotate(-14deg) translateY(-5%);
-            background: linear-gradient(160deg,
-                rgba(0,200,125,0.55) 0%,
-                rgba(0,200,125,0.30) 28%,
-                rgba(0,200,125,0.12) 55%,
-                rgba(0,200,125,0.02) 75%,
-                rgba(0,200,125,0) 100% );
-            filter: blur(96px);
-            opacity: 0.95;
         }
 
-        .bg-light-strip::before{
-            content: "";
-            position:absolute;
-            inset:0;
-            background: radial-gradient(circle at 82% 12%, rgba(0,200,125,0.24), rgba(0,200,125,0) 45%);
-            filter: blur(120px);
-            opacity:0.85;
-            z-index:-1;
+        .diamond {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: rgba(0, 300, 255, 0.35);
+            clip-path: polygon(
+                80% 20%,   /* گوشه راست بالا */
+                100% 40%,  /* گوشه راست */
+                50% 100%,  /* نوک پایین */
+                0% 40%,    /* گوشه چپ */
+                20% 20%    /* گوشه چپ بالا */
+            );
+            opacity: 0;
+            filter: drop-shadow(0 0 3px rgba(0, 150, 255, 0.15));
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.6);
+            }
+            10% {
+                opacity: 0.28;
+            }
+            50% {
+                opacity: 0.18;
+                transform: translateY(-40px) scale(0.75);
+            }
+            90% {
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(-60px) scale(0.6);
+            }
         }
 
         /* -------------------------
@@ -79,6 +93,8 @@
             max-width:560px; /* افزایش عرض */
             margin: 0 auto;
             padding: 0 12px 140px; /* فضای بیشتر برای bottom nav */
+            position: relative;
+            z-index: 1;
         }
 
         /* Loading screen */
@@ -86,7 +102,7 @@
             position:fixed; inset:0;
             display:flex; align-items:center; justify-content:center;
             z-index:9999;
-            background: linear-gradient(135deg,#000,#06060a);
+            background: #000000;
             transition:opacity .4s ease, visibility .4s ease;
         }
         .loading-screen.hidden{ opacity:0; visibility:hidden; }
@@ -279,8 +295,8 @@
 </head>
 <body>
 
-    <!-- نور پس‌زمینه خطی با Bloom -->
-    <div class="bg-light-strip" aria-hidden="true"></div>
+    <!-- الماس‌های متحرک به عنوان پس‌زمینه -->
+    <div class="diamonds" id="diamonds"></div>
 
     <!-- Loading screen -->
     <div class="loading-screen" id="loadingScreen">
@@ -488,6 +504,27 @@
            Initialization & helpers
            ------------------------- */
         document.addEventListener('DOMContentLoaded', function(){
+            // ایجاد الماس‌های متحرک
+            const container = document.getElementById("diamonds");
+            const count = 25;
+
+            for (let i = 0; i < count; i++) {
+                const d = document.createElement("div");
+                d.classList.add("diamond");
+
+                const size = Math.random() * 10 + 6;
+                d.style.width = `${size}px`;
+                d.style.height = `${size}px`;
+
+                d.style.left = `${Math.random() * 100}%`;
+                d.style.top = `${Math.random() * 100}%`;
+
+                d.style.animationDuration = `${10 + Math.random() * 10}s`;
+                d.style.animationDelay = `${Math.random() * 8}s`;
+
+                container.appendChild(d);
+            }
+
             setTimeout(function(){
                 document.getElementById('loadingScreen').classList.add('hidden');
                 initValues();
