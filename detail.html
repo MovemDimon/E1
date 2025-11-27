@@ -123,7 +123,7 @@
             display:flex; 
             align-items:center; 
             justify-content:center; 
-            margin:60px 0; /* افزایش فاصله */
+            margin:30px 0; /* افزایش فاصله */
             gap:12px; 
         }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
@@ -181,20 +181,19 @@
            ------------------------- */
         .card{
             width:100%;
-            margin: 40px 0; /* افزایش فاصله بین کارت‌ها */
+            margin: 80px 0; /* فاصله 2 برابر شده */
             border-radius:18px;
             padding:20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.35);
             transition:all .35s ease;
             animation:fadeInUp .6s ease;
         }
 
-        /* MINI cards - کاملاً شفاف با مشکی روشن */
+        /* MINI cards - 100% شفاف، بدون حاشیه، مشکی نیمه شفاف */
         .card.mini{
-            background: rgba(15, 15, 20, 0.75); /* مشکی روشن و بسیار شفاف */
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(5px); /* کاهش blur برای شفافیت بیشتر */
-            box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            background: rgba(5, 5, 8, 0.9); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
+            border: none; /* حذف کامل حاشیه */
+            backdrop-filter: blur(3px); /* کاهش blur برای شفافیت بیشتر */
+            box-shadow: none; /* حذف سایه */
         }
 
         .card-title{ font-size:1.25rem; font-weight:700; color:white; text-align:center; margin-bottom:14px; }
@@ -344,7 +343,7 @@
             .price-pills{ gap:10px; }
             .bottom-nav{ width: calc(100% - 22px); left:50%; transform:translateX(-50%); padding:10px; }
             .nav-item .nav-label{ display:block !important; font-size:.65rem; }
-            .card { margin: 18px 0; } /* فاصله در موبایل */
+            .card { margin: 30px 0; } /* فاصله در موبایل */
             .task-button, .buy-btn { 
                 padding: 8px 16px !important; 
                 font-size: 0.85rem; 
