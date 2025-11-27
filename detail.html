@@ -90,14 +90,14 @@
            ------------------------- */
         .container{
             width:100%;
-            max-width:560px; /* افزایش عرض */
+            max-width:560px;
             margin: 0 auto;
-            padding: 0 12px 140px; /* فضای بیشتر برای bottom nav */
+            padding: 0 12px 140px;
             position: relative;
             z-index: 1;
         }
 
-        /* Loading screen */
+        /* Loading screen - فقط اسپینر */
         .loading-screen{
             position:fixed; inset:0;
             display:flex; align-items:center; justify-content:center;
@@ -109,25 +109,33 @@
 
         .spinner{
             width:60px; height:60px; border-radius:50%;
-            border:4px solid rgba(255,255,255,0.08);
-            border-left:4px solid #fff; animation:spin 1s linear infinite; margin-bottom:18px;
+            border:8px solid rgba(255,255,255,0.08); /* ضخیم‌تر */
+            border-left:8px solid #fff; /* ضخیم‌تر */
+            animation:spin 1.8s linear infinite; /* سرعت کمتر */
+            margin-bottom:0; /* حذف margin */
         }
         @keyframes spin{ to { transform: rotate(360deg); } }
 
         /* -------------------------
            Token display + price pills
            ------------------------- */
-        .token-display{ display:flex; align-items:center; justify-content:center; margin:20px 0; gap:12px; }
+        .token-display{ 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            margin:30px 0; /* افزایش فاصله */
+            gap:12px; 
+        }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
         .token-logo{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,0.4); overflow:hidden; background:linear-gradient(#0b3866,#07233f);}
         .token-logo img{ width:100%; height:100%; object-fit:contain; }
 
-        /* جایگزینی price circles با price pills */
+        /* Price Pills */
         .price-pills{
             display:flex;
             justify-content:center;
             gap:12px;
-            margin:18px 0 26px;
+            margin:25px 0 35px; /* افزایش فاصله */
             animation:fadeInUp .6s ease;
         }
 
@@ -173,7 +181,7 @@
            ------------------------- */
         .card{
             width:100%;
-            margin: 10px 0;
+            margin: 20px 0; /* افزایش فاصله بین کارت‌ها */
             border-radius:18px;
             padding:20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.35);
@@ -181,11 +189,11 @@
             animation:fadeInUp .6s ease;
         }
 
-        /* MINI cards - شفاف و بدون حاشیه (تلق) */
+        /* MINI cards - شفاف با ته رنگ خاکستری */
         .card.mini{
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            background: rgba(25, 25, 35, 0.85); /* خاکستری تیره شفاف */
             border: none;
-            backdrop-filter: blur(2px) saturate(1.02);
+            backdrop-filter: blur(12px) saturate(1.1);
             box-shadow: 0 6px 18px rgba(0,0,0,0.45);
         }
 
@@ -201,19 +209,46 @@
         .task-data{ display:flex; align-items:center; gap:8px; }
         .task-data h5{ color:white; font-weight:700; font-size:.95rem; }
 
+        /* دکمه‌های کپسولی */
         .task-button{
-            padding:10px 16px; border-radius:12px; background:#fff; color:#000; border:none; font-weight:600; cursor:pointer;
+            padding:10px 20px; 
+            border-radius:25px; /* گوشه‌های کاملاً گرد */
+            background:#fff; 
+            color:#000; 
+            border:none; 
+            font-weight:600; 
+            cursor:pointer;
+            font-size: 0.9rem;
+            min-width: 80px;
         }
 
         /* Invite / purchase buttons */
-        .invite-button, .buy-btn{ width:100%; padding:14px; border-radius:12px; background:#fff; color:#000; border:none; font-weight:700; cursor:pointer; }
+        .invite-button, .buy-btn{ 
+            width:100%; 
+            padding:14px; 
+            border-radius:25px; /* گوشه‌های کاملاً گرد */
+            background:#fff; 
+            color:#000; 
+            border:none; 
+            font-weight:700; 
+            cursor:pointer; 
+            font-size: 1rem;
+        }
+
+        /* دکمه‌های USDT کوچک‌تر */
+        .buy-btn {
+            padding: 10px 16px !important;
+            min-width: 80px;
+            font-size: 0.9rem;
+        }
+
         .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
 
         /* Wallet small card */
         .wallet-card{ margin-bottom:28px; }
 
         /* -------------------------
-           Bottom Navigation (fixed) - شیشه مات دودی
+           Bottom Navigation (fixed)
            ------------------------- */
         .bottom-nav{
             position:fixed;
@@ -223,7 +258,7 @@
             width: min(520px, calc(100% - 28px));
             max-width:520px;
             padding:12px;
-            border-radius:28px; /* افزایش radius */
+            border-radius:28px;
             display:flex;
             justify-content:space-between;
             gap:8px;
@@ -238,15 +273,39 @@
 
         /* nav items */
         .nav-item{
-            display:flex; flex-direction:column; align-items:center; justify-content:center;
-            gap:6px; flex:1 1 0; min-width:56px;
-            padding:8px 6px; border-radius:12px; cursor:pointer;
-            transition: background .18s ease, transform .18s ease;
+            display:flex; 
+            flex-direction:column; 
+            align-items:center; 
+            justify-content:center;
+            gap:6px; 
+            flex:1 1 0; 
+            min-width:56px;
+            padding:8px 6px; 
+            border-radius:12px; 
+            cursor:pointer;
+            transition: all .18s ease;
+            opacity: 0.6; /* حالت کم‌نور پیش‌فرض */
         }
-        .nav-item .nav-icon{ font-size:1.25rem; color:white; }
-        .nav-item .nav-label{ font-size:.72rem; color:#cfd8e3; }
+        .nav-item .nav-icon{ font-size:1.25rem; color:white; transition: all .18s ease; }
+        .nav-item .nav-label{ 
+            font-size:.72rem; 
+            color:#cfd8e3; 
+            transition: all .18s ease;
+            display: block !important; /* همیشه نمایش داده شود */
+        }
 
-        .nav-item.active{ background: rgba(255,255,255,0.06); }
+        .nav-item.active{ 
+            background: rgba(255,255,255,0.12); 
+            opacity: 1; /* حالت پرنور برای بخش فعال */
+        }
+        .nav-item.active .nav-icon{ 
+            color: #fff; 
+            transform: scale(1.05);
+        }
+        .nav-item.active .nav-label{ 
+            color: #fff; 
+            font-weight: 600;
+        }
 
         /* حالت overlay هنگام اسکرول */
         .bottom-nav.overlay{
@@ -276,14 +335,16 @@
             .price-pill{ min-width: 80px; padding: 6px 12px; }
             .price-pills{ gap:10px; }
             .bottom-nav{ width: calc(100% - 22px); left:50%; transform:translateX(-50%); padding:10px; }
-            .nav-item .nav-label{ display:block; font-size:.65rem; }
+            .nav-item .nav-label{ display:block !important; font-size:.65rem; }
+            .card { margin: 18px 0; } /* فاصله در موبایل */
         }
 
         @media (max-width:380px){
             .container{ padding:0 8px 110px; }
-            .nav-item .nav-label{ display:none; }
+            .nav-item .nav-label{ display:block !important; font-size:.65rem; } /* همیشه نمایش */
             .nav-item .nav-icon{ font-size:1.1rem; }
             .price-pill{ min-width: 70px; padding: 5px 10px; font-size: 0.72rem; }
+            .task-button, .buy-btn { padding: 8px 14px; font-size: 0.85rem; }
         }
 
         /* animations */
@@ -298,10 +359,9 @@
     <!-- الماس‌های متحرک به عنوان پس‌زمینه -->
     <div class="diamonds" id="diamonds"></div>
 
-    <!-- Loading screen -->
+    <!-- Loading screen - فقط اسپینر -->
     <div class="loading-screen" id="loadingScreen">
         <div class="spinner"></div>
-        <div class="loading-text">Welcome to Daimonium</div>
     </div>
 
     <div class="container">
@@ -313,7 +373,7 @@
             </div>
         </div>
 
-        <!-- Price Pills (جایگزین دایره‌ها) -->
+        <!-- Price Pills -->
         <div class="price-pills" aria-hidden="false">
             <div class="price-pill min">
                 <div class="price-label">MIN</div>
@@ -474,7 +534,7 @@
 
     </div><!-- /container -->
 
-    <!-- Bottom Navigation (شیشه مات دودی) -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
         <div class="nav-item active" onclick="scrollToSection('headerSection')">
             <i class="fas fa-home nav-icon"></i>
@@ -560,12 +620,16 @@
                 showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
             });
 
-            // nav active state
+            // nav active state - حالت جدید با نوردهی
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item=>{
                 item.addEventListener('click', function(){
-                    navItems.forEach(i=>i.classList.remove('active'));
+                    navItems.forEach(i=>{
+                        i.classList.remove('active');
+                        i.style.opacity = '0.6'; // بقیه کم‌نور
+                    });
                     this.classList.add('active');
+                    this.style.opacity = '1'; // بخش فعال پرنور
                 });
             });
 
