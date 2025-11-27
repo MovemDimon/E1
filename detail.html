@@ -123,7 +123,7 @@
             display:flex; 
             align-items:center; 
             justify-content:center; 
-            margin:30px 0; /* افزایش فاصله */
+            margin:60px 0; /* افزایش فاصله */
             gap:12px; 
         }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
@@ -181,7 +181,7 @@
            ------------------------- */
         .card{
             width:100%;
-            margin: 20px 0; /* افزایش فاصله بین کارت‌ها */
+            margin: 40px 0; /* افزایش فاصله بین کارت‌ها */
             border-radius:18px;
             padding:20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.35);
@@ -189,11 +189,11 @@
             animation:fadeInUp .6s ease;
         }
 
-        /* MINI cards - شفاف با ته رنگ خاکستری */
+        /* MINI cards - کاملاً شفاف با مشکی روشن */
         .card.mini{
-            background: rgba(25, 25, 35, 0.85); /* خاکستری تیره شفاف */
-            border: none;
-            backdrop-filter: blur(12px) saturate(1.1);
+            background: rgba(15, 15, 20, 0.75); /* مشکی روشن و بسیار شفاف */
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(5px); /* کاهش blur برای شفافیت بیشتر */
             box-shadow: 0 6px 18px rgba(0,0,0,0.45);
         }
 
@@ -220,10 +220,11 @@
             cursor:pointer;
             font-size: 0.9rem;
             min-width: 80px;
+            white-space: nowrap;
         }
 
         /* Invite / purchase buttons */
-        .invite-button, .buy-btn{ 
+        .invite-button{ 
             width:100%; 
             padding:14px; 
             border-radius:25px; /* گوشه‌های کاملاً گرد */
@@ -235,11 +236,18 @@
             font-size: 1rem;
         }
 
-        /* دکمه‌های USDT کوچک‌تر */
+        /* دکمه‌های USDT هم اندازه دکمه‌های claim */
         .buy-btn {
-            padding: 10px 16px !important;
-            min-width: 80px;
+            padding: 10px 20px !important;
+            border-radius: 25px !important;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
             font-size: 0.9rem;
+            white-space: nowrap;
+            min-width: auto; /* ریسپانسیو نسبت به متن */
         }
 
         .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
@@ -337,6 +345,10 @@
             .bottom-nav{ width: calc(100% - 22px); left:50%; transform:translateX(-50%); padding:10px; }
             .nav-item .nav-label{ display:block !important; font-size:.65rem; }
             .card { margin: 18px 0; } /* فاصله در موبایل */
+            .task-button, .buy-btn { 
+                padding: 8px 16px !important; 
+                font-size: 0.85rem; 
+            }
         }
 
         @media (max-width:380px){
@@ -344,7 +356,10 @@
             .nav-item .nav-label{ display:block !important; font-size:.65rem; } /* همیشه نمایش */
             .nav-item .nav-icon{ font-size:1.1rem; }
             .price-pill{ min-width: 70px; padding: 5px 10px; font-size: 0.72rem; }
-            .task-button, .buy-btn { padding: 8px 14px; font-size: 0.85rem; }
+            .task-button, .buy-btn { 
+                padding: 8px 14px !important; 
+                font-size: 0.8rem; 
+            }
         }
 
         /* animations */
@@ -626,7 +641,7 @@
                 item.addEventListener('click', function(){
                     navItems.forEach(i=>{
                         i.classList.remove('active');
-                        i.style.opacity = '0.6'; // بقیه کم‌نور
+                        i.style.opacity = '0.4'; // بقیه کم‌نور
                     });
                     this.classList.add('active');
                     this.style.opacity = '1'; // بخش فعال پرنور
