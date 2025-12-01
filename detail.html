@@ -127,7 +127,13 @@
             gap:12px; 
         }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
-        .token-logo{ width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,0.4); overflow:hidden; background:linear-gradient(#0b3866,#07233f);}
+        .token-logo{ 
+            width:64px; height:64px; border-radius:50%; 
+            display:flex; align-items:center; justify-content:center; 
+            overflow:hidden; 
+            background: none; /* حذف دایره آبی */
+            box-shadow: none; /* حذف سایه */
+        }
         .token-logo img{ width:100%; height:100%; object-fit:contain; }
 
         /* Price Pills */
@@ -228,6 +234,9 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .task-button.loading {
@@ -238,13 +247,9 @@
         .task-button.loading::after {
             content: '';
             position: absolute;
-            width: 16px;
-            height: 16px;
-            top: 50%;
-            left: 50%;
-            margin-left: -8px;
-            margin-top: -8px;
-            border: 2px solid #000;
+            width: 20px;
+            height: 20px;
+            border: 4px solid #000; /* ضخیم‌تر */
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
@@ -268,6 +273,9 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .invite-button.loading {
@@ -278,13 +286,9 @@
         .invite-button.loading::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            border: 2px solid #000;
+            width: 24px;
+            height: 24px;
+            border: 4px solid #000; /* ضخیم‌تر */
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
@@ -305,6 +309,9 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .buy-btn.loading {
@@ -315,13 +322,9 @@
         .buy-btn.loading::after {
             content: '';
             position: absolute;
-            width: 16px;
-            height: 16px;
-            top: 50%;
-            left: 50%;
-            margin-left: -8px;
-            margin-top: -8px;
-            border: 2px solid #000;
+            width: 20px;
+            height: 20px;
+            border: 4px solid #000; /* ضخیم‌تر */
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
@@ -333,17 +336,17 @@
         .wallet-card{ margin-bottom:28px; }
 
         /* -------------------------
-           Announcements Card
+           Announcements Card - مشکی
            ------------------------- */
         .announcements-card {
-            background: rgba(255, 107, 53, 0.1) !important;
-            border: 1px solid rgba(255, 107, 53, 0.2) !important;
+            background: rgba(5, 5, 8, 0.9) !important; /* مشکی مثل بقیه کارت‌ها */
+            border: none !important;
             margin-top: 40px !important;
             margin-bottom: 40px !important;
         }
 
         .announcements-card .card-title {
-            color: #FF6B35 !important;
+            color: #FF6B35 !important; /* رنگ عنوان ثابت */
         }
 
         .announcements-content {
@@ -372,8 +375,8 @@
             transform:translateX(-50%);
             width: min(520px, calc(100% - 28px));
             max-width:520px;
-            padding:8px 12px; /* کاهش padding برای باریک‌تر شدن */
-            border-radius:28px;
+            padding:8px 12px;
+            border-radius:28px; /* کپسولی شکل */
             display:flex;
             justify-content:space-between;
             gap:6px;
@@ -395,27 +398,27 @@
             flex-direction:column; 
             align-items:center; 
             justify-content:center;
-            gap:4px; /* کاهش gap برای باریک‌تر شدن */
+            gap:4px;
             flex:1 1 0; 
             min-width:56px;
-            padding:6px 8px; /* کاهش padding */
-            border-radius:20px; /* افزایش radius برای کپسولی شدن */
+            padding:6px 8px;
+            border-radius:20px; /* کپسولی شکل */
             cursor:pointer;
             transition: all .18s ease;
             opacity: 0.6; /* حالت کم‌نور پیش‌فرض */
             position: relative;
         }
         .nav-item .nav-icon{ 
-            font-size:1.1rem; /* کمی کوچک‌تر */
+            font-size:1.1rem;
             color:rgba(255,255,255,0.7); 
             transition: all .18s ease; 
             z-index: 2;
         }
         .nav-item .nav-label{ 
-            font-size:.65rem; /* کمی کوچک‌تر */
+            font-size:.65rem;
             color:rgba(207, 216, 227, 0.7); 
             transition: all .18s ease;
-            display: block !important; /* همیشه نمایش داده شود */
+            display: block !important;
             z-index: 2;
         }
 
@@ -428,7 +431,7 @@
             right: 0;
             bottom: 0;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
+            border-radius: 20px; /* کپسولی شکل */
             z-index: 1;
             animation: activePulse 2s infinite;
         }
@@ -439,7 +442,7 @@
         }
 
         .nav-item.active{ 
-            opacity: 1; /* حالت پرنور برای بخش فعال */
+            opacity: 1;
         }
         .nav-item.active .nav-icon{ 
             color: #fff; 
@@ -468,7 +471,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.3); /* شفاف‌تر */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -476,7 +479,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(2px);
         }
 
         .modal-overlay.active {
@@ -506,9 +509,9 @@
         }
 
         .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+            position: sticky;
+            top: 10px;
+            float: right;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -522,6 +525,8 @@
             justify-content: center;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
+            margin-bottom: 10px;
+            z-index: 10001;
         }
 
         .modal-close:hover {
@@ -532,10 +537,12 @@
         .modal-content {
             color: white;
             line-height: 1.6;
+            clear: both;
+            padding-top: 10px;
         }
 
         .modal-content h2 {
-            color: #00ffcc;
+            color: #2196F3; /* آبی پررنگ */
             margin-bottom: 20px;
             font-size: 1.8rem;
             text-align: center;
@@ -547,7 +554,7 @@
         }
 
         .modal-content strong {
-            color: #69f0ae;
+            color: #2196F3; /* آبی پررنگ */
         }
 
         .modal-content span[style*="color: #ff5050"] {
@@ -555,7 +562,7 @@
         }
 
         .modal-content span[style*="color: #00ff99"] {
-            color: #69f0ae !important;
+            color: #2196F3 !important; /* آبی پررنگ */
         }
 
         /* -------------------------
@@ -602,7 +609,7 @@
                 border-radius: 24px;
             }
             .nav-item .nav-label{ display:block !important; font-size:.6rem; }
-            .card { margin: 30px 0; } /* فاصله در موبایل */
+            .card { margin: 30px 0; }
             .task-button, .buy-btn { 
                 padding: 8px 16px !important; 
                 font-size: 0.85rem; 
@@ -614,11 +621,22 @@
             .modal-content h2 {
                 font-size: 1.5rem;
             }
+            .task-button.loading::after,
+            .buy-btn.loading::after {
+                width: 16px;
+                height: 16px;
+                border-width: 3px;
+            }
+            .invite-button.loading::after {
+                width: 20px;
+                height: 20px;
+                border-width: 3px;
+            }
         }
 
         @media (max-width:380px){
             .container{ padding:0 8px 110px; }
-            .nav-item .nav-label{ display:block !important; font-size:.55rem; } /* همیشه نمایش */
+            .nav-item .nav-label{ display:block !important; font-size:.55rem; }
             .nav-item .nav-icon{ font-size:1rem; }
             .price-pill{ min-width: 70px; padding: 5px 10px; font-size: 0.72rem; }
             .task-button, .buy-btn { 
@@ -930,7 +948,7 @@
         }
 
         function setupEventListeners(){
-            // Invite button copy با اسپینر
+            // Invite button copy با اسپینر (1 ثانیه)
             document.getElementById('inviteButton').addEventListener('click', function(){
                 const button = this;
                 button.classList.add('loading');
@@ -951,10 +969,10 @@
                     setTimeout(() => {
                         button.classList.remove('loading');
                     }, 300);
-                }, 2000);
+                }, 1000); // کاهش به 1 ثانیه
             });
 
-            // Wallet connect با اسپینر
+            // Wallet connect با اسپینر (1 ثانیه)
             document.getElementById('connectBtn').addEventListener('click', function(e){
                 e.preventDefault();
                 const button = this;
@@ -963,23 +981,26 @@
                 setTimeout(() => {
                     button.classList.remove('loading');
                     showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
-                }, 2000);
+                }, 1000); // کاهش به 1 ثانیه
             });
 
             // Modal info button
             document.getElementById('infoButton').addEventListener('click', function(){
                 document.getElementById('infoModal').classList.add('active');
+                document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول صفحه اصلی
             });
 
             // Modal close button
             document.getElementById('closeModal').addEventListener('click', function(){
                 document.getElementById('infoModal').classList.remove('active');
+                document.body.style.overflow = 'auto'; // بازگشت اسکرول صفحه اصلی
             });
 
             // بستن modal با کلیک روی overlay
             document.getElementById('infoModal').addEventListener('click', function(e){
                 if(e.target === this) {
                     this.classList.remove('active');
+                    document.body.style.overflow = 'auto'; // بازگشت اسکرول صفحه اصلی
                 }
             });
 
@@ -989,6 +1010,14 @@
                 item.addEventListener('click', function(){
                     const targetId = this.getAttribute('data-target');
                     scrollToSection(targetId);
+                    
+                    // به روزرسانی active state
+                    navItems.forEach(i=>{
+                        i.classList.remove('active');
+                        i.style.opacity = '0.6';
+                    });
+                    this.classList.add('active');
+                    this.style.opacity = '1';
                 });
             });
 
@@ -999,15 +1028,35 @@
 
         // Intersection Observer برای تغییر اتوماتیک active nav
         function setupScrollObserver() {
-            const sections = document.querySelectorAll('.card.mini, #headerSection');
+            const sections = [
+                {id: 'headerSection', navIndex: 0},
+                {id: 'tasksSection', navIndex: 0},
+                {id: 'inviteSection', navIndex: 1},
+                {id: 'purchaseSection', navIndex: 2},
+                {id: 'walletSection', navIndex: 3},
+                {id: 'announcementsSection', navIndex: 3}
+            ];
+            
             const navItems = document.querySelectorAll('.nav-item');
             
             const observer = new IntersectionObserver((entries) => {
+                let maxVisibleSection = null;
+                let maxIntersectionRatio = 0;
+                
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        navItems.forEach(item => {
-                            if (item.getAttribute('data-target') === id) {
+                        if (entry.intersectionRatio > maxIntersectionRatio) {
+                            maxIntersectionRatio = entry.intersectionRatio;
+                            maxVisibleSection = entry.target.id;
+                        }
+                    }
+                });
+                
+                if (maxVisibleSection) {
+                    const section = sections.find(s => s.id === maxVisibleSection);
+                    if (section) {
+                        navItems.forEach((item, index) => {
+                            if (index === section.navIndex) {
                                 item.classList.add('active');
                                 item.style.opacity = '1';
                             } else {
@@ -1016,14 +1065,15 @@
                             }
                         });
                     }
-                });
+                }
             }, { 
-                threshold: 0.5,
-                rootMargin: '-50% 0px -50% 0px'
+                threshold: [0.1, 0.3, 0.5, 0.7, 0.9],
+                rootMargin: '-20% 0px -20% 0px'
             });
             
             sections.forEach(section => {
-                observer.observe(section);
+                const element = document.getElementById(section.id);
+                if (element) observer.observe(element);
             });
         }
 
@@ -1043,7 +1093,7 @@
             if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
         }
 
-        /* Task completion functions با اسپینر */
+        /* Task completion functions با اسپینر (1 ثانیه) */
         function completeTaskUrlWithSpinner(taskId,reward,url,storageKey, button){
             if(!localStorage.getItem(storageKey)){
                 button.classList.add('loading');
@@ -1059,7 +1109,7 @@
                         button.classList.remove('loading');
                         setTimeout(()=>{ window.location.href = url; }, 300);
                     }, 300);
-                }, 2000);
+                }, 1000); // کاهش به 1 ثانیه
             } else {
                 showNotification("⚠️ You've already completed this task.");
             }
@@ -1082,13 +1132,13 @@
                     setTimeout(() => {
                         button.classList.remove('loading');
                     }, 300);
-                }, 2000);
+                }, 1000); // کاهش به 1 ثانیه
             } else {
                 showNotification("⚠️ You've already completed this task.");
             }
         }
 
-        /* Payment redirection با اسپینر */
+        /* Payment redirection با اسپینر (1 ثانیه) */
         function handlePaymentWithSpinner(tokens, usdt, button){
             button.classList.add('loading');
             
@@ -1100,7 +1150,7 @@
                     button.classList.remove('loading');
                     window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
                 }, 300);
-            }, 2000);
+            }, 1000); // کاهش به 1 ثانیه
         }
 
         /* -------------------------
@@ -1133,4 +1183,5 @@
         }
 
     </script>
-</body>                                                   </html>
+</body>
+    </html>
