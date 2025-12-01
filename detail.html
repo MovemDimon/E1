@@ -52,7 +52,7 @@
             position: absolute;
             width: 16px;
             height: 16px;
-            background: rgba(0, 400, 255, 0.45);
+            background: rgba(0, 300, 255, 0.35);
             clip-path: polygon(
                 80% 20%,   /* گوشه راست بالا */
                 100% 40%,  /* گوشه راست */
@@ -123,7 +123,7 @@
             display:flex; 
             align-items:center; 
             justify-content:center; 
-            margin:40px 0; /* افزایش فاصله */
+            margin:30px 0; /* افزایش فاصله */
             gap:12px; 
         }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
@@ -135,7 +135,7 @@
             display:flex;
             justify-content:center;
             gap:12px;
-            margin:45px 0 35px; /* افزایش فاصله */
+            margin:25px 0 35px; /* افزایش فاصله */
             animation:fadeInUp .6s ease;
         }
 
@@ -171,6 +171,11 @@
             background: rgba(255,255,255,0.05);
             color: white;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .price-pill.center:hover {
+            transform: scale(1.05);
         }
 
         .price-label{ font-size:.78rem; margin-bottom:0; font-weight:500; }
@@ -181,7 +186,7 @@
            ------------------------- */
         .card{
             width:100%;
-            margin: 100px 0; /* فاصله 2 برابر شده */
+            margin: 40px 0; /* فاصله 2 برابر شده */
             border-radius:18px;
             padding:20px;
             transition:all .35s ease;
@@ -190,7 +195,7 @@
 
         /* MINI cards - 100% شفاف، بدون حاشیه، مشکی نیمه شفاف */
         .card.mini{
-            background: rgba(5, 5, 8, 0.8); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
+            background: rgba(5, 5, 8, 0.9); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
             border: none; /* حذف کامل حاشیه */
             backdrop-filter: blur(3px); /* کاهش blur برای شفافیت بیشتر */
             box-shadow: none; /* حذف سایه */
@@ -208,7 +213,7 @@
         .task-data{ display:flex; align-items:center; gap:8px; }
         .task-data h5{ color:white; font-weight:700; font-size:.95rem; }
 
-        /* دکمه‌های کپسولی */
+        /* دکمه‌های کپسولی با اسپینر داخلی */
         .task-button{
             padding:10px 20px; 
             border-radius:25px; /* گوشه‌های کاملاً گرد */
@@ -220,6 +225,33 @@
             font-size: 0.9rem;
             min-width: 80px;
             white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .task-button.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .task-button.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
+        }
+
+        @keyframes button-spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Invite / purchase buttons */
@@ -233,6 +265,29 @@
             font-weight:700; 
             cursor:pointer; 
             font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .invite-button.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .invite-button.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
         }
 
         /* دکمه‌های USDT هم اندازه دکمه‌های claim */
@@ -247,12 +302,65 @@
             font-size: 0.9rem;
             white-space: nowrap;
             min-width: auto; /* ریسپانسیو نسبت به متن */
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .buy-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
         }
 
         .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
 
         /* Wallet small card */
         .wallet-card{ margin-bottom:28px; }
+
+        /* -------------------------
+           Announcements Card
+           ------------------------- */
+        .announcements-card {
+            background: rgba(255, 107, 53, 0.1) !important;
+            border: 1px solid rgba(255, 107, 53, 0.2) !important;
+            margin-top: 40px !important;
+            margin-bottom: 40px !important;
+        }
+
+        .announcements-card .card-title {
+            color: #FF6B35 !important;
+        }
+
+        .announcements-content {
+            color: #FF6B35;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .announcements-content strong {
+            color: #FF8C5A;
+        }
+
+        .announcements-content em {
+            font-style: italic;
+            color: #FFA07A;
+        }
 
         /* -------------------------
            Bottom Navigation (fixed)
@@ -264,16 +372,19 @@
             transform:translateX(-50%);
             width: min(520px, calc(100% - 28px));
             max-width:520px;
-            padding:12px;
+            padding:8px 12px; /* کاهش padding برای باریک‌تر شدن */
             border-radius:28px;
             display:flex;
             justify-content:space-between;
-            gap:8px;
+            gap:6px;
             align-items:center;
             z-index:120;
             transition: all .25s ease, background .25s ease, box-shadow .25s ease;
             box-shadow: var(--shadow-strong);
-            background: var(--nav-bg-opaque);
+            background: linear-gradient(90deg, 
+                rgba(80, 80, 80, 0.2) 0%, 
+                rgba(0, 0, 0, 0.62) 40%,
+                rgba(0, 0, 0, 0.62) 100%); /* گرادیان خاکستری از چپ */
             border: 1px solid var(--nav-border-white);
             backdrop-filter: blur(10px);
         }
@@ -284,25 +395,50 @@
             flex-direction:column; 
             align-items:center; 
             justify-content:center;
-            gap:6px; 
+            gap:4px; /* کاهش gap برای باریک‌تر شدن */
             flex:1 1 0; 
             min-width:56px;
-            padding:8px 6px; 
-            border-radius:12px; 
+            padding:6px 8px; /* کاهش padding */
+            border-radius:20px; /* افزایش radius برای کپسولی شدن */
             cursor:pointer;
             transition: all .18s ease;
-            opacity: 0.4; /* حالت کم‌نور پیش‌فرض */
+            opacity: 0.6; /* حالت کم‌نور پیش‌فرض */
+            position: relative;
         }
-        .nav-item .nav-icon{ font-size:1.25rem; color:white; transition: all .18s ease; }
+        .nav-item .nav-icon{ 
+            font-size:1.1rem; /* کمی کوچک‌تر */
+            color:rgba(255,255,255,0.7); 
+            transition: all .18s ease; 
+            z-index: 2;
+        }
         .nav-item .nav-label{ 
-            font-size:.72rem; 
-            color:#cfd8e3; 
+            font-size:.65rem; /* کمی کوچک‌تر */
+            color:rgba(207, 216, 227, 0.7); 
             transition: all .18s ease;
             display: block !important; /* همیشه نمایش داده شود */
+            z-index: 2;
+        }
+
+        /* پس‌زمینه کپسولی برای بخش فعال */
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            z-index: 1;
+            animation: activePulse 2s infinite;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .nav-item.active{ 
-            background: rgba(255,255,255,0.12); 
             opacity: 1; /* حالت پرنور برای بخش فعال */
         }
         .nav-item.active .nav-icon{ 
@@ -316,8 +452,127 @@
 
         /* حالت overlay هنگام اسکرول */
         .bottom-nav.overlay{
-            background: var(--nav-bg-translucent);
+            background: linear-gradient(90deg, 
+                rgba(80, 80, 80, 0.15) 0%, 
+                rgba(0, 0, 0, 0.46) 40%,
+                rgba(0, 0, 0, 0.46) 100%);
             backdrop-filter: blur(18px);
+        }
+
+        /* -------------------------
+           Modal Floating Card
+           ------------------------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: rgba(10, 10, 15, 0.95);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            color: white;
+            line-height: 1.6;
+        }
+
+        .modal-content h2 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .modal-content strong {
+            color: #69f0ae;
+        }
+
+        .modal-content span[style*="color: #ff5050"] {
+            color: #ff5252 !important;
+        }
+
+        .modal-content span[style*="color: #00ff99"] {
+            color: #69f0ae !important;
+        }
+
+        /* -------------------------
+           Bottom Gradient Overlay
+           ------------------------- */
+        .bottom-gradient {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(0, 0, 0, 0.6) 50%,
+                rgba(0, 0, 0, 0) 100%);
+            pointer-events: none;
+            z-index: 50;
         }
 
         /* -------------------------
@@ -341,23 +596,37 @@
             .token-amount{ font-size:2.5rem; }
             .price-pill{ min-width: 80px; padding: 6px 12px; }
             .price-pills{ gap:10px; }
-            .bottom-nav{ width: calc(100% - 22px); left:50%; transform:translateX(-50%); padding:10px; }
-            .nav-item .nav-label{ display:block !important; font-size:.65rem; }
+            .bottom-nav{ 
+                width: calc(100% - 22px); 
+                padding:6px 10px;
+                border-radius: 24px;
+            }
+            .nav-item .nav-label{ display:block !important; font-size:.6rem; }
             .card { margin: 30px 0; } /* فاصله در موبایل */
             .task-button, .buy-btn { 
                 padding: 8px 16px !important; 
                 font-size: 0.85rem; 
             }
+            .modal-card {
+                width: 95%;
+                padding: 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
         }
 
         @media (max-width:380px){
             .container{ padding:0 8px 110px; }
-            .nav-item .nav-label{ display:block !important; font-size:.65rem; } /* همیشه نمایش */
-            .nav-item .nav-icon{ font-size:1.1rem; }
+            .nav-item .nav-label{ display:block !important; font-size:.55rem; } /* همیشه نمایش */
+            .nav-item .nav-icon{ font-size:1rem; }
             .price-pill{ min-width: 70px; padding: 5px 10px; font-size: 0.72rem; }
             .task-button, .buy-btn { 
                 padding: 8px 14px !important; 
                 font-size: 0.8rem; 
+            }
+            .modal-card {
+                padding: 15px;
             }
         }
 
@@ -378,6 +647,39 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- گرادیان پایین صفحه -->
+    <div class="bottom-gradient"></div>
+
+    <!-- Modal Floating Card -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-card">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-content">
+                <h2>💎 Welcome to Daimonium</h2>
+
+                <p><strong>Daimonium</strong> is a next-generation Telegram airdrop project — similar in structure to Notcoin — where users earn tokens through simple tasks and later exchange them after listing.</p>
+
+                <p>However, Daimonium introduces something completely new: <strong>the ability to pre-purchase tokens before listing</strong> using small amounts of USDT. This means you can invest early and potentially gain much more when the token goes live on a real exchange.</p>
+
+                <p>Our token distribution system is uniquely designed: only around <strong>2–5% of users are expected to purchase token packages</strong>. This gives buyers a major advantage compared to the 95% who only use the free route. Free users still earn tokens through daily tasks and referrals, but in smaller amounts.</p>
+
+                <p>In your <strong>Home</strong> page, below your token balance, you'll see a <strong>USD estimation</strong> of your holdings. This is based on realistic projections and current distribution trends. The <span style="color: #ff5050;">red value</span> represents the lowest-case estimate, and the <span style="color: #00ff99;">green value</span> shows a normal/good projection.</p>
+
+                <p>When you click to buy a token package, you'll be redirected to the <strong>Daimonium Telegram bot chat</strong>. There, the full step-by-step purchase process and payment instructions will be provided. You'll send USDT and submit your transaction hash for verification.</p>
+
+                <p>🚫 No promises of guaranteed profit — all token values are speculative until listing.<br>
+                ✅ Full transparency and risk notice is provided during the process.</p>
+
+                <p>Join us early, be part of a growing community, and access a unique opportunity in the Telegram crypto ecosystem. Your participation is voluntary and secure.</p>
+
+                <p>📢 For updates and info, check our official Telegram channel.<br>
+                💬 For support, reach out to our team directly in the bot.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Header: token display -->
         <div class="token-display" id="headerSection">
@@ -394,7 +696,7 @@
                 <div class="price-value" id="minUsd">$0.0012</div>
             </div>
 
-            <div class="price-pill center" onclick="window.location.href='detail.html'">
+            <div class="price-pill center" id="infoButton">
                 <i class="fas fa-question" style="font-size:1.1rem;"></i>
             </div>
 
@@ -416,7 +718,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task1',100,'reword.html','task1_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrlWithSpinner('task1',100,'reword.html','task1_done', this)">claim</button>
             </div>
 
             <div class="task">
@@ -427,7 +729,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrl('task2',100,'verify.html','task2_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrlWithSpinner('task2',100,'verify.html','task2_done', this)">claim</button>
             </div>
         </div>
 
@@ -448,7 +750,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite3" onclick="completeTask('invite3')">claim</button>
+                <button class="task-button" onclick="completeTaskWithSpinner('invite3', this)">claim</button>
             </div>
 
             <div class="task">
@@ -459,7 +761,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite5" onclick="completeTask('invite5')">claim</button>
+                <button class="task-button" onclick="completeTaskWithSpinner('invite5', this)">claim</button>
             </div>
 
             <div class="task">
@@ -470,7 +772,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite10" onclick="completeTask('invite10')">claim</button>
+                <button class="task-button" onclick="completeTaskWithSpinner('invite10', this)">claim</button>
             </div>
 
             <div class="task">
@@ -481,7 +783,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" id="claimInvite20" onclick="completeTask('invite20')">claim</button>
+                <button class="task-button" onclick="completeTaskWithSpinner('invite20', this)">claim</button>
             </div>
         </div>
 
@@ -494,7 +796,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">10,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePayment(10000,1,this)">1 USDT</button>
+                <button class="buy-btn" onclick="handlePaymentWithSpinner(10000,1,this)">1 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -502,7 +804,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">80,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePayment(80000,5,this)">5 USDT</button>
+                <button class="buy-btn" onclick="handlePaymentWithSpinner(80000,5,this)">5 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -510,7 +812,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">200,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePayment(200000,10,this)">10 USDT</button>
+                <button class="buy-btn" onclick="handlePaymentWithSpinner(200000,10,this)">10 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -518,7 +820,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">1,000,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePayment(1000000,50,this)">50 USDT</button>
+                <button class="buy-btn" onclick="handlePaymentWithSpinner(1000000,50,this)">50 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -526,7 +828,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">3,000,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePayment(3000000,100,this)">100 USDT</button>
+                <button class="buy-btn" onclick="handlePaymentWithSpinner(3000000,100,this)">100 USDT</button>
             </div>
 
             <div class="payment-footer" style="margin-top:12px;color:#a0aec0">Payment with various digital currencies</div>
@@ -546,26 +848,40 @@
             </div>
         </div>
 
+        <!-- Announcements Card -->
+        <div class="card mini announcements-card" id="announcementsSection">
+            <div class="card-title">Announcements</div>
+            <div class="announcements-content">
+                <h4>Community Channels Coming Soon</h4>
+                <p style="font-size:14px; color:#FF6B35; margin-top:5px; line-height:1.4;">
+                    Daimonium has not yet opened its official community channels.<br>
+                    Our communication platforms will become available once our family grows beyond 
+                    <strong>5 million members</strong>, ensuring that no one misses out on our most important announcements.<br>
+                    <em>Stay tuned — something truly remarkable is on the way.</em>
+                </p>
+            </div>
+        </div>
+
     </div><!-- /container -->
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
-        <div class="nav-item active" onclick="scrollToSection('headerSection')">
+        <div class="nav-item active" data-target="headerSection">
             <i class="fas fa-home nav-icon"></i>
             <div class="nav-label">Home</div>
         </div>
 
-        <div class="nav-item" onclick="scrollToSection('inviteSection')">
+        <div class="nav-item" data-target="inviteSection">
             <i class="fas fa-user-friends nav-icon"></i>
             <div class="nav-label">Invite</div>
         </div>
 
-        <div class="nav-item" onclick="scrollToSection('purchaseSection')">
+        <div class="nav-item" data-target="purchaseSection">
             <i class="fas fa-shopping-cart nav-icon"></i>
             <div class="nav-label">Shop</div>
         </div>
 
-        <div class="nav-item" onclick="scrollToSection('walletSection')">
+        <div class="nav-item" data-target="walletSection">
             <i class="fas fa-wallet nav-icon"></i>
             <div class="nav-label">Wallet</div>
         </div>
@@ -604,6 +920,7 @@
                 initValues();
                 setupEventListeners();
                 handleNavOverlayOnLoad();
+                setupScrollObserver();
             }, 900);
         });
 
@@ -613,43 +930,101 @@
         }
 
         function setupEventListeners(){
-            // Invite button copy
+            // Invite button copy با اسپینر
             document.getElementById('inviteButton').addEventListener('click', function(){
-                const textArea = document.createElement('textarea');
-                textArea.value = "https://t.me/Daimonium_bot";
-                document.body.appendChild(textArea);
-                textArea.select();
-                try{
-                    document.execCommand('copy');
-                    showNotification('✅ Invite link copied to clipboard!');
-                }catch(e){
-                    showNotification('❌ Failed to copy link. Please try again.', true);
-                }
-                document.body.removeChild(textArea);
+                const button = this;
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = "https://t.me/Daimonium_bot";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try{
+                        document.execCommand('copy');
+                        showNotification('✅ Invite link copied to clipboard!');
+                    }catch(e){
+                        showNotification('❌ Failed to copy link. Please try again.', true);
+                    }
+                    document.body.removeChild(textArea);
+                    
+                    setTimeout(() => {
+                        button.classList.remove('loading');
+                    }, 300);
+                }, 2000);
             });
 
-            // Wallet connect
+            // Wallet connect با اسپینر
             document.getElementById('connectBtn').addEventListener('click', function(e){
                 e.preventDefault();
-                showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
+                const button = this;
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
+                }, 2000);
+            });
+
+            // Modal info button
+            document.getElementById('infoButton').addEventListener('click', function(){
+                document.getElementById('infoModal').classList.add('active');
+            });
+
+            // Modal close button
+            document.getElementById('closeModal').addEventListener('click', function(){
+                document.getElementById('infoModal').classList.remove('active');
+            });
+
+            // بستن modal با کلیک روی overlay
+            document.getElementById('infoModal').addEventListener('click', function(e){
+                if(e.target === this) {
+                    this.classList.remove('active');
+                }
             });
 
             // nav active state - حالت جدید با نوردهی
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item=>{
                 item.addEventListener('click', function(){
-                    navItems.forEach(i=>{
-                        i.classList.remove('active');
-                        i.style.opacity = '0.4'; // بقیه کم‌نور
-                    });
-                    this.classList.add('active');
-                    this.style.opacity = '1'; // بخش فعال پرنور
+                    const targetId = this.getAttribute('data-target');
+                    scrollToSection(targetId);
                 });
             });
 
             // bottom nav overlay effect on scroll
             window.addEventListener('scroll', throttle(handleNavOverlayOnScroll, 120), {passive:true});
             window.addEventListener('resize', throttle(handleNavOverlayOnScroll, 200));
+        }
+
+        // Intersection Observer برای تغییر اتوماتیک active nav
+        function setupScrollObserver() {
+            const sections = document.querySelectorAll('.card.mini, #headerSection');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        navItems.forEach(item => {
+                            if (item.getAttribute('data-target') === id) {
+                                item.classList.add('active');
+                                item.style.opacity = '1';
+                            } else {
+                                item.classList.remove('active');
+                                item.style.opacity = '0.6';
+                            }
+                        });
+                    }
+                });
+            }, { 
+                threshold: 0.5,
+                rootMargin: '-50% 0px -50% 0px'
+            });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
         }
 
         /* Show notification */
@@ -668,39 +1043,64 @@
             if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
         }
 
-        /* Task completion functions */
-        function completeTaskUrl(taskId,reward,url,storageKey){
+        /* Task completion functions با اسپینر */
+        function completeTaskUrlWithSpinner(taskId,reward,url,storageKey, button){
             if(!localStorage.getItem(storageKey)){
-                const curr = parseInt(localStorage.getItem("coins")||"0",10);
-                localStorage.setItem("coins", curr + reward);
-                document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
-                localStorage.setItem(storageKey,"completed");
-                showNotification(`✅ Task completed! You earned ${reward} tokens.`);
-                setTimeout(()=>{ window.location.href = url; }, 900);
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    const curr = parseInt(localStorage.getItem("coins")||"0",10);
+                    localStorage.setItem("coins", curr + reward);
+                    document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
+                    localStorage.setItem(storageKey,"completed");
+                    showNotification(`✅ Task completed! You earned ${reward} tokens.`);
+                    
+                    setTimeout(() => {
+                        button.classList.remove('loading');
+                        setTimeout(()=>{ window.location.href = url; }, 300);
+                    }, 300);
+                }, 2000);
             } else {
                 showNotification("⚠️ You've already completed this task.");
             }
         }
-        function completeTask(taskId){
+        
+        function completeTaskWithSpinner(taskId, button){
             const map = { 'invite3':5000,'invite5':10000,'invite10':30000,'invite20':100000 };
             const reward = map[taskId];
             const key = `${taskId}_done`;
             if(!localStorage.getItem(key)){
-                const curr = parseInt(localStorage.getItem("coins")||"0",10);
-                localStorage.setItem("coins", curr + reward);
-                document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
-                localStorage.setItem(key,"completed");
-                showNotification(`✅ Task completed! You earned ${reward} tokens.`);
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    const curr = parseInt(localStorage.getItem("coins")||"0",10);
+                    localStorage.setItem("coins", curr + reward);
+                    document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
+                    localStorage.setItem(key,"completed");
+                    showNotification(`✅ Task completed! You earned ${reward} tokens.`);
+                    
+                    setTimeout(() => {
+                        button.classList.remove('loading');
+                    }, 300);
+                }, 2000);
             } else {
                 showNotification("⚠️ You've already completed this task.");
             }
         }
 
-        /* Payment redirection */
-        function handlePayment(tokens, usdt, button){
-            localStorage.setItem("purchase_tokens", tokens);
-            localStorage.setItem("purchase_usdt", usdt);
-            window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
+        /* Payment redirection با اسپینر */
+        function handlePaymentWithSpinner(tokens, usdt, button){
+            button.classList.add('loading');
+            
+            setTimeout(() => {
+                localStorage.setItem("purchase_tokens", tokens);
+                localStorage.setItem("purchase_usdt", usdt);
+                
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
+                }, 300);
+            }, 2000);
         }
 
         /* -------------------------
@@ -733,6 +1133,4 @@
         }
 
     </script>
-</body>
-</html>
-
+</body>                                                   </html>
