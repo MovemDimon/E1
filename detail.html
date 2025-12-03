@@ -23,6 +23,7 @@
             --shadow-strong: 0 12px 36px rgba(0,0,0,0.6);
             --green-pill: rgba(105,240,174,0.12);
             --red-pill: rgba(255,82,82,0.12);
+            --blue-pill: rgba(33, 150, 243, 0.15);
         }
 
         /* -------------------------
@@ -207,7 +208,17 @@
             box-shadow: none; /* حذف سایه */
         }
 
-        .card-title{ font-size:1.25rem; font-weight:700; color:white; text-align:center; margin-bottom:14px; }
+        .card-title{ 
+            font-size:1.25rem; 
+            font-weight:700; 
+            color:white; 
+            text-align:center; 
+            margin-bottom:14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
 
         /* task rows */
         .task{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
@@ -276,6 +287,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 15px; /* فاصله با کپسول بالایی */
         }
 
         .invite-button.loading {
@@ -292,6 +304,30 @@
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
+        }
+
+        /* Invite Stats Pill - کپسول آبی */
+        .invite-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            line-height: 1;
+            min-height: 36px;
+            box-sizing: border-box;
+            backdrop-filter: blur(8px) saturate(1.1);
+            -webkit-backdrop-filter: blur(8px) saturate(1.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            background: var(--blue-pill);
+            color: #4FC3F7;
+            font-weight: 700;
+        }
+
+        .invite-pill i {
+            font-size: 0.9rem;
         }
 
         /* دکمه‌های USDT هم اندازه دکمه‌های claim */
@@ -376,7 +412,7 @@
             width: min(520px, calc(100% - 28px));
             max-width:520px;
             padding:8px 12px;
-            border-radius:28px; /* کپسولی شکل */
+            border-radius:32px; /* کپسولی کامل - افزایش radius */
             display:flex;
             justify-content:space-between;
             gap:6px;
@@ -535,14 +571,14 @@
         }
 
         .modal-content {
-            color: white;
+            color: white; /* متن سفید */
             line-height: 1.6;
             clear: both;
             padding-top: 10px;
         }
 
         .modal-content h2 {
-            color: #2196F3; /* آبی پررنگ */
+            color: white; /* عنوان سفید */
             margin-bottom: 20px;
             font-size: 1.8rem;
             text-align: center;
@@ -551,18 +587,21 @@
         .modal-content p {
             margin-bottom: 15px;
             font-size: 0.95rem;
+            color: white; /* متن سفید */
         }
 
         .modal-content strong {
-            color: #2196F3; /* آبی پررنگ */
+            color: white; /* strong سفید */
         }
 
-        .modal-content span[style*="color: #ff5050"] {
+        .modal-content .red-value {
             color: #ff5252 !important;
+            font-weight: 700;
         }
 
-        .modal-content span[style*="color: #00ff99"] {
-            color: #2196F3 !important; /* آبی پررنگ */
+        .modal-content .green-value {
+            color: #69f0ae !important;
+            font-weight: 700;
         }
 
         /* -------------------------
@@ -606,7 +645,7 @@
             .bottom-nav{ 
                 width: calc(100% - 22px); 
                 padding:6px 10px;
-                border-radius: 24px;
+                border-radius: 28px;
             }
             .nav-item .nav-label{ display:block !important; font-size:.6rem; }
             .card { margin: 30px 0; }
@@ -632,6 +671,10 @@
                 height: 20px;
                 border-width: 3px;
             }
+            .invite-pill {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
         }
 
         @media (max-width:380px){
@@ -645,6 +688,10 @@
             }
             .modal-card {
                 padding: 15px;
+            }
+            .card-title {
+                flex-direction: column;
+                gap: 8px;
             }
         }
 
@@ -683,7 +730,7 @@
 
                 <p>Our token distribution system is uniquely designed: only around <strong>2–5% of users are expected to purchase token packages</strong>. This gives buyers a major advantage compared to the 95% who only use the free route. Free users still earn tokens through daily tasks and referrals, but in smaller amounts.</p>
 
-                <p>In your <strong>Home</strong> page, below your token balance, you'll see a <strong>USD estimation</strong> of your holdings. This is based on realistic projections and current distribution trends. The <span style="color: #ff5050;">red value</span> represents the lowest-case estimate, and the <span style="color: #00ff99;">green value</span> shows a normal/good projection.</p>
+                <p>In your <strong>Home</strong> page, below your token balance, you'll see a <strong>USD estimation</strong> of your holdings. This is based on realistic projections and current distribution trends. The <span class="red-value">red value</span> represents the lowest-case estimate, and the <span class="green-value">green value</span> shows a normal/good projection.</p>
 
                 <p>When you click to buy a token package, you'll be redirected to the <strong>Daimonium Telegram bot chat</strong>. There, the full step-by-step purchase process and payment instructions will be provided. You'll send USDT and submit your transaction hash for verification.</p>
 
@@ -753,12 +800,17 @@
 
         <!-- Invite Friends -->
         <div class="card mini" id="inviteSection">
-            <div class="card-title">Invite Friends</div>
-            <div class="invite-stats">
-                Invited Friends: <span id="invitedCount">0</span>
+            <div class="card-title">
+                <span>Invite Friends</span>
+                <div class="invite-pill" id="invitePill">
+                    <i class="fas fa-user-friends"></i>
+                    <span id="invitedCount">0</span>
+                </div>
             </div>
 
             <button class="invite-button" id="inviteButton"><i class="fas fa-user-friends"></i> Invite Friends</button>
+
+            <div style="margin-top: 20px; margin-bottom: 10px;"></div> <!-- فاصله بین دکمه و تسک‌ها -->
 
             <div class="task">
                 <div class="task-detail">
@@ -1026,7 +1078,7 @@
             window.addEventListener('resize', throttle(handleNavOverlayOnScroll, 200));
         }
 
-        // Intersection Observer برای تغییر اتوماتیک active nav
+        // Intersection Observer بهبود یافته برای تغییر اتوماتیک active nav
         function setupScrollObserver() {
             const sections = [
                 {id: 'headerSection', navIndex: 0},
@@ -1038,25 +1090,34 @@
             ];
             
             const navItems = document.querySelectorAll('.nav-item');
+            let currentActiveIndex = 0;
+            let observerTimeout = null;
             
             const observer = new IntersectionObserver((entries) => {
-                let maxVisibleSection = null;
-                let maxIntersectionRatio = 0;
+                if (observerTimeout) clearTimeout(observerTimeout);
                 
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        if (entry.intersectionRatio > maxIntersectionRatio) {
-                            maxIntersectionRatio = entry.intersectionRatio;
-                            maxVisibleSection = entry.target.id;
+                observerTimeout = setTimeout(() => {
+                    let activeIndex = currentActiveIndex;
+                    let maxVisibleRatio = 0;
+                    
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const visibleRatio = entry.intersectionRatio;
+                            if (visibleRatio > maxVisibleRatio) {
+                                maxVisibleRatio = visibleRatio;
+                                const section = sections.find(s => s.id === entry.target.id);
+                                if (section) {
+                                    activeIndex = section.navIndex;
+                                }
+                            }
                         }
-                    }
-                });
-                
-                if (maxVisibleSection) {
-                    const section = sections.find(s => s.id === maxVisibleSection);
-                    if (section) {
+                    });
+                    
+                    // فقط اگر تغییر قابل توجهی داشت، آپدیت کن
+                    if (activeIndex !== currentActiveIndex && maxVisibleRatio > 0.3) {
+                        currentActiveIndex = activeIndex;
                         navItems.forEach((item, index) => {
-                            if (index === section.navIndex) {
+                            if (index === activeIndex) {
                                 item.classList.add('active');
                                 item.style.opacity = '1';
                             } else {
@@ -1065,10 +1126,10 @@
                             }
                         });
                     }
-                }
+                }, 100); // تاخیر 100ms برای جلوگیری از پرپر زدن
             }, { 
-                threshold: [0.1, 0.3, 0.5, 0.7, 0.9],
-                rootMargin: '-20% 0px -20% 0px'
+                threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                rootMargin: '-30% 0px -30% 0px' // فقط وقتی عمده کارت در viewport هست
             });
             
             sections.forEach(section => {
@@ -1087,10 +1148,18 @@
             setTimeout(()=>{ n.classList.remove('show'); }, 3000);
         }
 
-        /* Scroll to section */
+        /* Scroll to section - بهبود یافته برای وسط صفحه */
         function scrollToSection(id){
             const el = document.getElementById(id);
-            if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+            if(el) {
+                const elementRect = el.getBoundingClientRect();
+                const absoluteElementTop = elementRect.top + window.pageYOffset;
+                const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+                window.scrollTo({
+                    top: middle,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         /* Task completion functions با اسپینر (1 ثانیه) */
@@ -1183,5 +1252,4 @@
         }
 
     </script>
-</body>
-    </html>
+</body>                                                </html>
