@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Daimonium Token Airdrop — Updated UI</title>
+    <title>Daimonium Token Airdrop — Final UI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -212,17 +212,11 @@
             font-size:1.25rem; 
             font-weight:700; 
             color:white; 
-            text-align:center;
+            text-align:center; 
             margin-bottom:14px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .card-title-text {
-            flex: 1;
-            text-align: right;
+            justify-content: space-between; /* تغییر به space-between */
         }
 
         /* task rows */
@@ -292,7 +286,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 15px; /* فاصله با کپسول بالایی */
+            margin-top: 20px; /* فاصله با کپسول بالایی */
         }
 
         .invite-button.loading {
@@ -329,7 +323,6 @@
             background: var(--blue-pill);
             color: #4FC3F7;
             font-weight: 700;
-            margin-left: auto;
         }
 
         .invite-pill i {
@@ -389,7 +382,6 @@
 
         .announcements-card .card-title {
             color: #FF6B35 !important; /* رنگ عنوان ثابت */
-            justify-content: center;
         }
 
         .announcements-content {
@@ -612,57 +604,6 @@
         }
 
         /* -------------------------
-           Notif Box - جدید
-           ------------------------- */
-        .notif-box {
-            position: fixed;
-            inset: 20px auto auto 50%;
-            transform: translateX(-50%);
-            background: #161b22;
-            color: #ffffff;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 15px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-            max-width: 90%;
-            text-align: center;
-            line-height: 1.6;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-            border-left: 6px solid #4caf50;
-            animation-duration: .45s;
-            animation-timing-function: cubic-bezier(.25,.8,.25,1);
-        }
-
-        /* حالت‌ها */
-        .notif-box.success  { border-left-color: #4caf50; }
-        .notif-box.warning  { border-left-color: #ffb300; }
-        .notif-box.error    { border-left-color: #e53935; }
-        .notif-box.info     { border-left-color: #42a5f5; }
-
-        /* نمایش / مخفی شدن */
-        .notif-box.show { 
-            animation-name: fadeInDrop; 
-            pointer-events: auto;
-            opacity: 1;
-        }
-
-        .notif-box.hide { 
-            animation-name: fadeOutDrop;
-        }
-
-        @keyframes fadeInDrop {
-            from { opacity: 0; transform: translate(-50%, -20px); }
-            to   { opacity: 1; transform: translate(-50%, 0); }
-        }
-
-        @keyframes fadeOutDrop {
-            from { opacity: 1; transform: translate(-50%, 0); }
-            to   { opacity: 0; transform: translate(-50%, -20px); }
-        }
-
-        /* -------------------------
            Bottom Gradient Overlay
            ------------------------- */
         .bottom-gradient {
@@ -677,6 +618,53 @@
                 rgba(0, 0, 0, 0) 100%);
             pointer-events: none;
             z-index: 50;
+        }
+
+        /* -------------------------
+           Notification Box - جدید
+           ------------------------- */
+        .notif-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0d1117;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.5);
+            max-width: 90%;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            border-left: 6px solid #4caf50;
+        }
+
+        .notif-box.warning { border-left-color: #ff9800; }
+        .notif-box.error   { border-left-color: #f44336; }
+
+        .notif-box.show {
+            opacity: 1;
+            pointer-events: auto;
+            animation: fadeInTop 0.6s ease forwards;
+        }
+
+        .notif-box.hide {
+            animation: fadeOutTop 0.5s ease forwards;
+        }
+
+        @keyframes fadeInTop {
+            from { opacity: 0; transform: translate(-50%, -30px); }
+            to   { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeOutTop { 
+            from { opacity: 1; transform: translate(-50%, 0); }
+            to   { opacity: 0; transform: translate(-50%, -30px); }
         }
 
         /* -------------------------
@@ -721,16 +709,9 @@
                 padding: 6px 12px;
             }
             .card-title {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .card-title-text {
-                text-align: center;
-                width: 100%;
-            }
-            .invite-pill {
-                margin-left: 0;
-                margin-top: 5px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
         }
 
@@ -826,9 +807,7 @@
 
         <!-- Daily Tasks -->
         <div class="card mini" id="tasksSection">
-            <div class="card-title">
-                <div class="card-title-text">Daily Tasks</div>
-            </div>
+            <div class="card-title">Daily Tasks</div>
 
             <div class="task">
                 <div class="task-detail">
@@ -838,7 +817,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="task1" data-reward="100" data-url="reword.html" data-key="task1_done">claim</button>
+                <button class="task-button" onclick="completeTask('task1', 100, 'reword.html', 'task1_done')">claim</button>
             </div>
 
             <div class="task">
@@ -849,14 +828,14 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="task2" data-reward="100" data-url="verify.html" data-key="task2_done">claim</button>
+                <button class="task-button" onclick="completeTask('task2', 100, 'verify.html', 'task2_done')">claim</button>
             </div>
         </div>
 
         <!-- Invite Friends -->
         <div class="card mini" id="inviteSection">
             <div class="card-title">
-                <div class="card-title-text">Invite Friends</div>
+                <span>Invite Friends</span>
                 <div class="invite-pill" id="invitePill">
                     <i class="fas fa-user-friends"></i>
                     <span id="invitedCount">0</span>
@@ -875,7 +854,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="invite3" data-reward="5000">claim</button>
+                <button class="task-button" id="claimInvite3" onclick="completeInviteTask('invite3')">claim</button>
             </div>
 
             <div class="task">
@@ -886,7 +865,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="invite5" data-reward="10000">claim</button>
+                <button class="task-button" id="claimInvite5" onclick="completeInviteTask('invite5')">claim</button>
             </div>
 
             <div class="task">
@@ -897,7 +876,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="invite10" data-reward="30000">claim</button>
+                <button class="task-button" id="claimInvite10" onclick="completeInviteTask('invite10')">claim</button>
             </div>
 
             <div class="task">
@@ -908,22 +887,20 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button claim-task-btn" data-task="invite20" data-reward="100000">claim</button>
+                <button class="task-button" id="claimInvite20" onclick="completeInviteTask('invite20')">claim</button>
             </div>
         </div>
 
         <!-- Shopping / Purchase -->
         <div class="card mini" id="purchaseSection">
-            <div class="card-title">
-                <div class="card-title-text">Shopping Packages</div>
-            </div>
+            <div class="card-title">Shopping Packages</div>
 
             <div class="package-row task" style="border-bottom:1px solid rgba(255,255,255,0.03);">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">10,000</span>
                 </div>
-                <button class="buy-btn purchase-btn" data-tokens="10000" data-usdt="1">1 USDT</button>
+                <button class="buy-btn" onclick="handlePayment(10000, 1, this)">1 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -931,7 +908,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">80,000</span>
                 </div>
-                <button class="buy-btn purchase-btn" data-tokens="80000" data-usdt="5">5 USDT</button>
+                <button class="buy-btn" onclick="handlePayment(80000, 5, this)">5 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -939,7 +916,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">200,000</span>
                 </div>
-                <button class="buy-btn purchase-btn" data-tokens="200000" data-usdt="10">10 USDT</button>
+                <button class="buy-btn" onclick="handlePayment(200000, 10, this)">10 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -947,7 +924,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">1,000,000</span>
                 </div>
-                <button class="buy-btn purchase-btn" data-tokens="1000000" data-usdt="50">50 USDT</button>
+                <button class="buy-btn" onclick="handlePayment(1000000, 50, this)">50 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -955,7 +932,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">3,000,000</span>
                 </div>
-                <button class="buy-btn purchase-btn" data-tokens="3000000" data-usdt="100">100 USDT</button>
+                <button class="buy-btn" onclick="handlePayment(3000000, 100, this)">100 USDT</button>
             </div>
 
             <div class="payment-footer" style="margin-top:12px;color:#a0aec0">Payment with various digital currencies</div>
@@ -971,7 +948,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>Daimonium</h5></div>
                     </div>
                 </div>
-                <button id="connectBtn" class="task-button wallet-connect-btn">CONNECT</button>
+                <button id="connectBtn" class="task-button">CONNECT</button>
             </div>
         </div>
 
@@ -1014,12 +991,286 @@
         </div>
     </div>
 
-    <div class="notif-box" id="notification">Copied to clipboard!</div>
-
     <script>
-        /* -------------------------
-           Initialization & helpers
-           ------------------------- */
+        // ==============================
+        // INITIALIZATION & CORE FUNCTIONS
+        // ==============================
+
+        // Function to update the coin display
+        function updateCoinDisplay() {
+            const coins = parseInt(localStorage.getItem('coins')) || 0;
+            const coinDisplay = document.getElementById('coinCount');
+            if (coinDisplay) coinDisplay.textContent = coins.toLocaleString('en-US');
+        }
+
+        // Update when coin value changes from other tabs
+        window.addEventListener('storage', ({ key }) => {
+            if (key === 'coins') updateCoinDisplay();
+        });
+
+        // Initial load
+        updateCoinDisplay();
+
+        // Task completion with fake loading
+        function completeTask(taskId, reward, dummyUrl, taskStorageKey) {
+            const today = new Date().toISOString().split('T')[0];
+
+            if (localStorage.getItem(taskStorageKey) === today) {
+                return showNotification('⏳ This task has already been completed today.', 'warning');
+            }
+
+            // Show loading on button
+            const button = event.target;
+            button.classList.add('loading');
+
+            // Wait for 1s, then give reward
+            setTimeout(() => {
+                button.classList.remove('loading');
+
+                // Save as done
+                localStorage.setItem(taskStorageKey, today);
+
+                // Add coins
+                let coins = parseInt(localStorage.getItem('coins')) || 0;
+                coins += reward;
+                localStorage.setItem('coins', coins);
+                updateCoinDisplay();
+                updatePriceRangeDisplay();
+
+                // Notify
+                showNotification(`🎉 Congratulations! You earned ${reward.toLocaleString('en-US')} coins.`);
+            }, 1000);
+        }
+
+        // ==============================
+        // INVITE SYSTEM
+        // ==============================
+
+        const TASK_CONFIG = {
+            thresholds: {
+                invite3: 3,
+                invite5: 5,
+                invite10: 10,
+                invite20: 20,
+            },
+            rewards: {
+                invite3: 5000,
+                invite5: 10000,
+                invite10: 30000,
+                invite20: 100000,
+            },
+        };
+
+        // Complete Invite Task
+        async function completeInviteTask(taskName) {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                showNotification('⚠️ Please log in first', 'warning');
+                return;
+            }
+
+            if (localStorage.getItem(taskName) === 'true') {
+                showNotification('⚠️ You have already claimed this reward', 'warning');
+                return;
+            }
+
+            const required = TASK_CONFIG.thresholds[taskName];
+            const reward = TASK_CONFIG.rewards[taskName];
+            const invitedFriends = parseInt(localStorage.getItem('invitedFriends')) || 0;
+
+            if (invitedFriends < required) {
+                const remaining = required - invitedFriends;
+                showNotification(`⚠️ Invite ${remaining} more friend${remaining === 1 ? '' : 's'} to claim this reward`, 'warning');
+                return;
+            }
+
+            // Show loading on button
+            const button = event.target;
+            button.classList.add('loading');
+
+            setTimeout(() => {
+                button.classList.remove('loading');
+                
+                // Grant reward
+                let coins = parseInt(localStorage.getItem('coins')) || 0;
+                coins += reward;
+                localStorage.setItem('coins', coins);
+                localStorage.setItem(taskName, 'true');
+
+                updateCoinDisplay();
+                updatePriceRangeDisplay();
+                updateInviteTaskStatus();
+                showNotification(`🎉 Congratulations! You received ${reward.toLocaleString()} coins`);
+            }, 1000);
+        }
+
+        // Disable Buttons Only If Reward Claimed
+        function updateInviteTaskStatus() {
+            ['invite3', 'invite5', 'invite10', 'invite20'].forEach(key => {
+                const btnId = `claim${key.charAt(0).toUpperCase() + key.slice(1)}`;
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    const completed = localStorage.getItem(key) === 'true';
+                    btn.disabled = completed;
+                    if (completed) {
+                        btn.textContent = 'Claimed';
+                        btn.style.opacity = '0.7';
+                    }
+                }
+            });
+
+            // Update invited count display
+            const invitedCount = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            document.getElementById('invitedCount').textContent = invitedCount;
+        }
+
+        // ==============================
+        // PAYMENT SYSTEM
+        // ==============================
+
+        async function handlePayment(coins, usdPrice, btn) {
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            function resetBtn() {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = originalText;
+            }
+
+            try {
+                let userId = localStorage.getItem('userId') || 'test-user';
+                const paymentUrl = `payment.html?coins=${encodeURIComponent(coins)}&usdPrice=${encodeURIComponent(usdPrice)}`;
+                
+                // Store payment data
+                localStorage.setItem("purchase_tokens", coins);
+                localStorage.setItem("purchase_usdt", usdPrice);
+                
+                // Wait 1 second before redirecting
+                setTimeout(() => {
+                    window.location.href = paymentUrl;
+                }, 1000);
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showNotification('❌ Unexpected error during payment process.', 'error');
+                resetBtn();
+            }
+        }
+
+        // ==============================
+        // NOTIFICATION SYSTEM
+        // ==============================
+
+        (function () {
+            let notifTimer;
+
+            function setupNotification() {
+                window.showNotification = function (message, type = 'success') {
+                    let box = document.querySelector('.notif-box');
+
+                    if (!box) {
+                        box = document.createElement('div');
+                        box.className = 'notif-box';
+                        document.body.appendChild(box);
+                    }
+
+                    box.textContent = message;
+                    box.className = `notif-box ${type} show`;
+
+                    clearTimeout(notifTimer);
+                    notifTimer = setTimeout(() => {
+                        box.classList.remove('show');
+                        box.classList.add('hide');
+                        setTimeout(() => {
+                            box.remove();
+                        }, 500);
+                    }, 3000);
+                };
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupNotification);
+            } else {
+                setupNotification();
+            }
+        })();
+
+        // ==============================
+        // PRICE RANGE DISPLAY
+        // ==============================
+
+        function updatePriceRangeDisplay() {
+            const coins = parseInt(localStorage.getItem('coins')) || 0;
+            const minUsd = (coins * 0.0003).toFixed(2);
+            const maxUsd = (coins * 0.0007).toFixed(2);
+
+            const minEl = document.getElementById('minUsd');
+            const maxEl = document.getElementById('maxUsd');
+
+            if (minEl) minEl.textContent = `$${minUsd}`;
+            if (maxEl) maxEl.textContent = `$${maxUsd}`;
+        }
+
+        // به‌روزرسانی اولیه
+        updatePriceRangeDisplay();
+
+        // اگر مقدار سکه‌ها تغییر کرد، بازه دلاری هم به‌روز شود
+        window.addEventListener('storage', ({ key }) => {
+            if (key === 'coins') updatePriceRangeDisplay();
+        });
+
+        // ==============================
+        // WEB APP FALLBACK & INIT
+        // ==============================
+
+        // Fallback برای تست بدون وب‌اپ
+        function applyWebAppFallback() {
+            const isTelegramWebApp = typeof Telegram !== 'undefined' && Telegram.WebApp?.initDataUnsafe;
+            if (!isTelegramWebApp) {
+                console.warn('⚠️ WebApp context not detected. Applying fallback...');
+                if (!localStorage.getItem('userId')) {
+                    const fakeUserId = 'testuser_' + Math.floor(Math.random() * 100000);
+                    localStorage.setItem('userId', fakeUserId);
+                    localStorage.setItem('authToken', 'test-token');
+                }
+            }
+        }
+
+        // Invite Tracking Helpers
+        function incrementInviteCount(inviterId) {
+            const selfId = localStorage.getItem('userId');
+            if (inviterId === selfId) return;
+            let invited = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            invited++;
+            localStorage.setItem('invitedFriends', invited);
+            updateInviteTaskStatus();
+        }
+
+        function registerReferral() {
+            try {
+                const referrerId = Telegram.WebApp?.initDataUnsafe?.start_param;
+                if (referrerId && !localStorage.getItem('invitedBy')) {
+                    localStorage.setItem('invitedBy', referrerId);
+                    incrementInviteCount(referrerId);
+                }
+            } catch (e) {
+                console.warn('Referral registration skipped:', e);
+            }
+        }
+
+        function initLocalStorageDefaults() {
+            if (localStorage.getItem('coins') == null) localStorage.setItem('coins', '0');
+            if (localStorage.getItem('invitedFriends') == null) localStorage.setItem('invitedFriends', '0');
+            updateCoinDisplay();
+            updateInviteTaskStatus();
+        }
+
+        // ==============================
+        // EVENT LISTENERS & SETUP
+        // ==============================
+
         document.addEventListener('DOMContentLoaded', function(){
             // ایجاد الماس‌های متحرک
             const container = document.getElementById("diamonds");
@@ -1052,12 +1303,16 @@
         });
 
         function initValues(){
-            document.getElementById("coinCount").textContent = (parseInt(localStorage.getItem("coins")||"0",10)).toLocaleString('en-US');
-            document.getElementById("invitedCount").textContent = localStorage.getItem("invitedCount") || "0";
+            updateCoinDisplay();
+            updatePriceRangeDisplay();
+            updateInviteTaskStatus();
+            applyWebAppFallback();
+            initLocalStorageDefaults();
+            registerReferral();
         }
 
         function setupEventListeners(){
-            // Invite button copy با اسپینر (1 ثانیه)
+            // Invite button copy
             document.getElementById('inviteButton').addEventListener('click', function(){
                 const button = this;
                 button.classList.add('loading');
@@ -1069,7 +1324,7 @@
                     textArea.select();
                     try{
                         document.execCommand('copy');
-                        showNotification('✅ Invite link copied to clipboard!', 'success');
+                        showNotification('✅ Invite link copied to clipboard!');
                     }catch(e){
                         showNotification('❌ Failed to copy link. Please try again.', 'error');
                     }
@@ -1078,37 +1333,48 @@
                     setTimeout(() => {
                         button.classList.remove('loading');
                     }, 300);
-                }, 1000); // کاهش به 1 ثانیه
+                }, 1000);
+            });
+
+            // Wallet connect
+            document.getElementById('connectBtn').addEventListener('click', function(e){
+                e.preventDefault();
+                const button = this;
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    showNotification("🔒 Wallet connection will be available starting 2026/03/03, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏", 'warning');
+                }, 1000);
             });
 
             // Modal info button
             document.getElementById('infoButton').addEventListener('click', function(){
                 document.getElementById('infoModal').classList.add('active');
-                document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول صفحه اصلی
+                document.body.style.overflow = 'hidden';
             });
 
             // Modal close button
             document.getElementById('closeModal').addEventListener('click', function(){
                 document.getElementById('infoModal').classList.remove('active');
-                document.body.style.overflow = 'auto'; // بازگشت اسکرول صفحه اصلی
+                document.body.style.overflow = 'auto';
             });
 
             // بستن modal با کلیک روی overlay
             document.getElementById('infoModal').addEventListener('click', function(e){
                 if(e.target === this) {
                     this.classList.remove('active');
-                    document.body.style.overflow = 'auto'; // بازگشت اسکرول صفحه اصلی
+                    document.body.style.overflow = 'auto';
                 }
             });
 
-            // nav active state - حالت جدید با نوردهی
+            // nav active state
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item=>{
                 item.addEventListener('click', function(){
                     const targetId = this.getAttribute('data-target');
                     scrollToSection(targetId);
                     
-                    // به روزرسانی active state
                     navItems.forEach(i=>{
                         i.classList.remove('active');
                         i.style.opacity = '0.6';
@@ -1123,7 +1389,11 @@
             window.addEventListener('resize', throttle(handleNavOverlayOnScroll, 200));
         }
 
-        // Intersection Observer بهبود یافته برای تغییر اتوماتیک active nav
+        // ==============================
+        // SCROLL OBSERVER & NAVIGATION
+        // ==============================
+
+        // Intersection Observer برای تغییر اتوماتیک active nav
         function setupScrollObserver() {
             const sections = [
                 {id: 'headerSection', navIndex: 0},
@@ -1158,7 +1428,6 @@
                         }
                     });
                     
-                    // فقط اگر تغییر قابل توجهی داشت، آپدیت کن
                     if (activeIndex !== currentActiveIndex && maxVisibleRatio > 0.3) {
                         currentActiveIndex = activeIndex;
                         navItems.forEach((item, index) => {
@@ -1171,35 +1440,16 @@
                             }
                         });
                     }
-                }, 100); // تاخیر 100ms برای جلوگیری از پرپر زدن
+                }, 100);
             }, { 
                 threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                rootMargin: '-30% 0px -30% 0px' // فقط وقتی عمده کارت در viewport هست
+                rootMargin: '-30% 0px -30% 0px'
             });
             
             sections.forEach(section => {
                 const element = document.getElementById(section.id);
                 if (element) observer.observe(element);
             });
-        }
-
-        /* Show notification جدید با notif-box */
-        function showNotification(message, type = 'info'){
-            const n = document.getElementById('notification');
-            n.textContent = message;
-            n.className = 'notif-box';
-            n.classList.add(type);
-            n.classList.remove('hide');
-            n.classList.add('show');
-            
-            setTimeout(()=>{ 
-                n.classList.remove('show');
-                n.classList.add('hide');
-                setTimeout(() => {
-                    n.classList.remove('hide');
-                    n.classList.remove(type);
-                }, 450);
-            }, 3000);
         }
 
         /* Scroll to section - بهبود یافته برای وسط صفحه */
@@ -1244,16 +1494,6 @@
                 }
             };
         }
-
     </script>
-
-    <!-- اضافه کردن اسکریپت‌های خارجی -->
-    <script src="/material/js/toast.js" defer></script>               
-    <script src="/material/js/interactions.js" defer></script>                                
-    <script src="/material/js/js.js" defer></script>
-    <script src="/material/js/main.js" defer></script>
-    <script src="/material/js/Task.js" defer></script>
-    <script src="/material/js/subscribe.js" defer></script>                
-    <script src="/material/js/payment.js" defer></script>
 </body>
 </html>
