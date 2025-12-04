@@ -212,12 +212,17 @@
             font-size:1.25rem; 
             font-weight:700; 
             color:white; 
-            text-align:center; 
+            text-align:center;
             margin-bottom:14px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .card-title-text {
+            flex: 1;
+            text-align: right;
         }
 
         /* task rows */
@@ -324,6 +329,7 @@
             background: var(--blue-pill);
             color: #4FC3F7;
             font-weight: 700;
+            margin-left: auto;
         }
 
         .invite-pill i {
@@ -383,6 +389,7 @@
 
         .announcements-card .card-title {
             color: #FF6B35 !important; /* رنگ عنوان ثابت */
+            justify-content: center;
         }
 
         .announcements-content {
@@ -605,6 +612,57 @@
         }
 
         /* -------------------------
+           Notif Box - جدید
+           ------------------------- */
+        .notif-box {
+            position: fixed;
+            inset: 20px auto auto 50%;
+            transform: translateX(-50%);
+            background: #161b22;
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+            max-width: 90%;
+            text-align: center;
+            line-height: 1.6;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            border-left: 6px solid #4caf50;
+            animation-duration: .45s;
+            animation-timing-function: cubic-bezier(.25,.8,.25,1);
+        }
+
+        /* حالت‌ها */
+        .notif-box.success  { border-left-color: #4caf50; }
+        .notif-box.warning  { border-left-color: #ffb300; }
+        .notif-box.error    { border-left-color: #e53935; }
+        .notif-box.info     { border-left-color: #42a5f5; }
+
+        /* نمایش / مخفی شدن */
+        .notif-box.show { 
+            animation-name: fadeInDrop; 
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .notif-box.hide { 
+            animation-name: fadeOutDrop;
+        }
+
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to   { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeOutDrop {
+            from { opacity: 1; transform: translate(-50%, 0); }
+            to   { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        /* -------------------------
            Bottom Gradient Overlay
            ------------------------- */
         .bottom-gradient {
@@ -620,19 +678,6 @@
             pointer-events: none;
             z-index: 50;
         }
-
-        /* -------------------------
-           Notification
-           ------------------------- */
-        .notification{
-            position:fixed; top:18px; right:18px;
-            padding:12px 18px; border-radius:8px; background:rgba(0,200,83,0.93);
-            color:#fff; font-weight:600; box-shadow:0 6px 18px rgba(0,0,0,0.3);
-            transform:translateX(120%); transition:transform .28s ease; z-index:1000;
-            max-width:360px;
-        }
-        .notification.show{ transform:translateX(0); }
-        .notification.error{ background:rgba(255,23,68,0.92); }
 
         /* -------------------------
            Utility / Responsive
@@ -675,6 +720,18 @@
                 font-size: 0.75rem;
                 padding: 6px 12px;
             }
+            .card-title {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .card-title-text {
+                text-align: center;
+                width: 100%;
+            }
+            .invite-pill {
+                margin-left: 0;
+                margin-top: 5px;
+            }
         }
 
         @media (max-width:380px){
@@ -688,10 +745,6 @@
             }
             .modal-card {
                 padding: 15px;
-            }
-            .card-title {
-                flex-direction: column;
-                gap: 8px;
             }
         }
 
@@ -773,7 +826,9 @@
 
         <!-- Daily Tasks -->
         <div class="card mini" id="tasksSection">
-            <div class="card-title">Daily Tasks</div>
+            <div class="card-title">
+                <div class="card-title-text">Daily Tasks</div>
+            </div>
 
             <div class="task">
                 <div class="task-detail">
@@ -783,7 +838,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrlWithSpinner('task1',100,'reword.html','task1_done', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="task1" data-reward="100" data-url="reword.html" data-key="task1_done">claim</button>
             </div>
 
             <div class="task">
@@ -794,14 +849,14 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskUrlWithSpinner('task2',100,'verify.html','task2_done', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="task2" data-reward="100" data-url="verify.html" data-key="task2_done">claim</button>
             </div>
         </div>
 
         <!-- Invite Friends -->
         <div class="card mini" id="inviteSection">
             <div class="card-title">
-                <span>Invite Friends</span>
+                <div class="card-title-text">Invite Friends</div>
                 <div class="invite-pill" id="invitePill">
                     <i class="fas fa-user-friends"></i>
                     <span id="invitedCount">0</span>
@@ -820,7 +875,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskWithSpinner('invite3', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="invite3" data-reward="5000">claim</button>
             </div>
 
             <div class="task">
@@ -831,7 +886,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskWithSpinner('invite5', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="invite5" data-reward="10000">claim</button>
             </div>
 
             <div class="task">
@@ -842,7 +897,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskWithSpinner('invite10', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="invite10" data-reward="30000">claim</button>
             </div>
 
             <div class="task">
@@ -853,20 +908,22 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTaskWithSpinner('invite20', this)">claim</button>
+                <button class="task-button claim-task-btn" data-task="invite20" data-reward="100000">claim</button>
             </div>
         </div>
 
         <!-- Shopping / Purchase -->
         <div class="card mini" id="purchaseSection">
-            <div class="card-title">Shopping Packages</div>
+            <div class="card-title">
+                <div class="card-title-text">Shopping Packages</div>
+            </div>
 
             <div class="package-row task" style="border-bottom:1px solid rgba(255,255,255,0.03);">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">10,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePaymentWithSpinner(10000,1,this)">1 USDT</button>
+                <button class="buy-btn purchase-btn" data-tokens="10000" data-usdt="1">1 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -874,7 +931,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">80,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePaymentWithSpinner(80000,5,this)">5 USDT</button>
+                <button class="buy-btn purchase-btn" data-tokens="80000" data-usdt="5">5 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -882,7 +939,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">200,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePaymentWithSpinner(200000,10,this)">10 USDT</button>
+                <button class="buy-btn purchase-btn" data-tokens="200000" data-usdt="10">10 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -890,7 +947,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">1,000,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePaymentWithSpinner(1000000,50,this)">50 USDT</button>
+                <button class="buy-btn purchase-btn" data-tokens="1000000" data-usdt="50">50 USDT</button>
             </div>
 
             <div class="package-row task">
@@ -898,7 +955,7 @@
                     <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">3,000,000</span>
                 </div>
-                <button class="buy-btn" onclick="handlePaymentWithSpinner(3000000,100,this)">100 USDT</button>
+                <button class="buy-btn purchase-btn" data-tokens="3000000" data-usdt="100">100 USDT</button>
             </div>
 
             <div class="payment-footer" style="margin-top:12px;color:#a0aec0">Payment with various digital currencies</div>
@@ -914,7 +971,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>Daimonium</h5></div>
                     </div>
                 </div>
-                <button id="connectBtn" class="task-button">CONNECT</button>
+                <button id="connectBtn" class="task-button wallet-connect-btn">CONNECT</button>
             </div>
         </div>
 
@@ -957,7 +1014,7 @@
         </div>
     </div>
 
-    <div class="notification" id="notification">Copied to clipboard!</div>
+    <div class="notif-box" id="notification">Copied to clipboard!</div>
 
     <script>
         /* -------------------------
@@ -1012,27 +1069,15 @@
                     textArea.select();
                     try{
                         document.execCommand('copy');
-                        showNotification('✅ Invite link copied to clipboard!');
+                        showNotification('✅ Invite link copied to clipboard!', 'success');
                     }catch(e){
-                        showNotification('❌ Failed to copy link. Please try again.', true);
+                        showNotification('❌ Failed to copy link. Please try again.', 'error');
                     }
                     document.body.removeChild(textArea);
                     
                     setTimeout(() => {
                         button.classList.remove('loading');
                     }, 300);
-                }, 1000); // کاهش به 1 ثانیه
-            });
-
-            // Wallet connect با اسپینر (1 ثانیه)
-            document.getElementById('connectBtn').addEventListener('click', function(e){
-                e.preventDefault();
-                const button = this;
-                button.classList.add('loading');
-                
-                setTimeout(() => {
-                    button.classList.remove('loading');
-                    showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏");
                 }, 1000); // کاهش به 1 ثانیه
             });
 
@@ -1138,14 +1183,23 @@
             });
         }
 
-        /* Show notification */
-        function showNotification(message, isError){
+        /* Show notification جدید با notif-box */
+        function showNotification(message, type = 'info'){
             const n = document.getElementById('notification');
             n.textContent = message;
-            n.className = 'notification';
-            if(isError) n.classList.add('error');
+            n.className = 'notif-box';
+            n.classList.add(type);
+            n.classList.remove('hide');
             n.classList.add('show');
-            setTimeout(()=>{ n.classList.remove('show'); }, 3000);
+            
+            setTimeout(()=>{ 
+                n.classList.remove('show');
+                n.classList.add('hide');
+                setTimeout(() => {
+                    n.classList.remove('hide');
+                    n.classList.remove(type);
+                }, 450);
+            }, 3000);
         }
 
         /* Scroll to section - بهبود یافته برای وسط صفحه */
@@ -1160,66 +1214,6 @@
                     behavior: 'smooth'
                 });
             }
-        }
-
-        /* Task completion functions با اسپینر (1 ثانیه) */
-        function completeTaskUrlWithSpinner(taskId,reward,url,storageKey, button){
-            if(!localStorage.getItem(storageKey)){
-                button.classList.add('loading');
-                
-                setTimeout(() => {
-                    const curr = parseInt(localStorage.getItem("coins")||"0",10);
-                    localStorage.setItem("coins", curr + reward);
-                    document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
-                    localStorage.setItem(storageKey,"completed");
-                    showNotification(`✅ Task completed! You earned ${reward} tokens.`);
-                    
-                    setTimeout(() => {
-                        button.classList.remove('loading');
-                        setTimeout(()=>{ window.location.href = url; }, 300);
-                    }, 300);
-                }, 1000); // کاهش به 1 ثانیه
-            } else {
-                showNotification("⚠️ You've already completed this task.");
-            }
-        }
-        
-        function completeTaskWithSpinner(taskId, button){
-            const map = { 'invite3':5000,'invite5':10000,'invite10':30000,'invite20':100000 };
-            const reward = map[taskId];
-            const key = `${taskId}_done`;
-            if(!localStorage.getItem(key)){
-                button.classList.add('loading');
-                
-                setTimeout(() => {
-                    const curr = parseInt(localStorage.getItem("coins")||"0",10);
-                    localStorage.setItem("coins", curr + reward);
-                    document.getElementById("coinCount").textContent = (curr + reward).toLocaleString('en-US');
-                    localStorage.setItem(key,"completed");
-                    showNotification(`✅ Task completed! You earned ${reward} tokens.`);
-                    
-                    setTimeout(() => {
-                        button.classList.remove('loading');
-                    }, 300);
-                }, 1000); // کاهش به 1 ثانیه
-            } else {
-                showNotification("⚠️ You've already completed this task.");
-            }
-        }
-
-        /* Payment redirection با اسپینر (1 ثانیه) */
-        function handlePaymentWithSpinner(tokens, usdt, button){
-            button.classList.add('loading');
-            
-            setTimeout(() => {
-                localStorage.setItem("purchase_tokens", tokens);
-                localStorage.setItem("purchase_usdt", usdt);
-                
-                setTimeout(() => {
-                    button.classList.remove('loading');
-                    window.location.href = `payment.html?coins=${tokens}&usdPrice=${usdt}`;
-                }, 300);
-            }, 1000); // کاهش به 1 ثانیه
         }
 
         /* -------------------------
@@ -1252,4 +1246,14 @@
         }
 
     </script>
-</body>                                                </html>
+
+    <!-- اضافه کردن اسکریپت‌های خارجی -->
+    <script src="/material/js/toast.js" defer></script>               
+    <script src="/material/js/interactions.js" defer></script>                                
+    <script src="/material/js/js.js" defer></script>
+    <script src="/material/js/main.js" defer></script>
+    <script src="/material/js/Task.js" defer></script>
+    <script src="/material/js/subscribe.js" defer></script>                
+    <script src="/material/js/payment.js" defer></script>
+</body>
+</html>
