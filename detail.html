@@ -243,10 +243,17 @@
             white-space: nowrap;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* انیمیشن کلیک برای دکمه‌های سفید */
+        .task-button:active,
+        .invite-button:active,
+        .buy-btn:active {
+            transform: scale(0.92);
         }
 
         .task-button.loading {
@@ -282,7 +289,7 @@
             font-size: 1rem;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -343,26 +350,21 @@
             min-width: auto; /* ریسپانسیو نسبت به متن */
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .buy-btn.loading {
-            color: transparent;
+            color: #000 !important; /* متن سیاه باقی بماند */
             pointer-events: none;
+            background-color: #e0e0e0; /* رنگ کمی خاکستری برای حالت لودینگ */
         }
 
+        /* حذف اسپینر برای دکمه‌های خرید */
         .buy-btn.loading::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 4px solid #000; /* ضخیم‌تر */
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: button-spin 0.8s linear infinite;
+            display: none; /* اسپینر را حذف کن */
         }
 
         .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
@@ -1125,7 +1127,7 @@
         }
 
         // ==============================
-        // PAYMENT SYSTEM - اصلاح شده با polling
+        // PAYMENT SYSTEM - اصلاح شده با polling و متن Processing...
         // ==============================
 
         // Helper function to convert Unicode string to Base64
@@ -1138,7 +1140,14 @@
         async function handlePayment(coins, usdPrice, btn) {
             const originalText = btn.textContent;
             btn.disabled = true;
-            btn.classList.add('loading');
+            
+            // فقط برای دکمه‌های خرید (USDT) متن را به Processing... تغییر بده
+            if (btn.classList.contains('buy-btn')) {
+                btn.textContent = 'Processing...';
+                btn.classList.add('loading');
+            } else {
+                btn.classList.add('loading');
+            }
 
             function resetBtn() {
                 btn.disabled = false;
