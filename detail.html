@@ -668,6 +668,40 @@
         }
 
         /* -------------------------
+           Loading Overlay
+           ------------------------- */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .loading-overlay p {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* -------------------------
            Utility / Responsive
            ------------------------- */
         @media (max-width:520px){
@@ -746,6 +780,12 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- Loading Overlay برای تسک‌ها -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Processing...</p>
+    </div>
+
     <!-- گرادیان پایین صفحه -->
     <div class="bottom-gradient"></div>
 
@@ -817,7 +857,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTask('task1', 100, 'reword.html', 'task1_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task1', 100, 'reword.html', 'task1_done')">claim</button>
             </div>
 
             <div class="task">
@@ -828,7 +868,7 @@
                         <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
-                <button class="task-button" onclick="completeTask('task2', 100, 'verify.html', 'task2_done')">claim</button>
+                <button class="task-button" onclick="completeTaskUrl('task2', 100, 'verify.html', 'task2_done')">claim</button>
             </div>
         </div>
 
@@ -993,7 +1033,7 @@
 
     <script>
         // ==============================
-        // INITIALIZATION & CORE FUNCTIONS
+        // CORE FUNCTIONS
         // ==============================
 
         // Function to update the coin display
@@ -1011,21 +1051,24 @@
         // Initial load
         updateCoinDisplay();
 
+        // ==============================
+        // TASK COMPLETION SYSTEM
+        // ==============================
+
         // Task completion with fake loading
-        function completeTask(taskId, reward, dummyUrl, taskStorageKey) {
+        function completeTaskUrl(taskId, reward, dummyUrl, taskStorageKey) {
             const today = new Date().toISOString().split('T')[0];
 
             if (localStorage.getItem(taskStorageKey) === today) {
                 return showNotification('⏳ This task has already been completed today.', 'warning');
             }
 
-            // Show loading on button
-            const button = event.target;
-            button.classList.add('loading');
+            // Show loading overlay
+            showLoadingOverlay("Processing...");
 
-            // Wait for 1s, then give reward
+            // Wait for 2s, then give reward
             setTimeout(() => {
-                button.classList.remove('loading');
+                hideLoadingOverlay();
 
                 // Save as done
                 localStorage.setItem(taskStorageKey, today);
@@ -1039,13 +1082,31 @@
 
                 // Notify
                 showNotification(`🎉 Congratulations! You earned ${reward.toLocaleString('en-US')} coins.`);
-            }, 1000);
+
+                // Sync with server
+                syncWithServer();
+            }, 2000);
+        }
+
+        function showLoadingOverlay(text = "Loading...") {
+            const overlay = document.getElementById("loadingOverlay");
+            const loadingText = document.getElementById("loadingText");
+            if (!overlay) return;
+            overlay.style.display = "flex";
+            loadingText.textContent = text;
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById("loadingOverlay");
+            if (!overlay) return;
+            overlay.style.display = "none";
         }
 
         // ==============================
-        // INVITE SYSTEM
+        // INVITE SYSTEM WITH DEEP LINK
         // ==============================
 
+        // ==== Invite System Configuration ====
         const TASK_CONFIG = {
             thresholds: {
                 invite3: 3,
@@ -1061,7 +1122,120 @@
             },
         };
 
-        // Complete Invite Task
+        // ==== Setup Invite Button with Deep Link ====
+        function setupInviteButton() {
+            const inviteButton = document.getElementById('inviteButton');
+            
+            if (!inviteButton) {
+                showNotification('❌ Invite UI not found.', 'error');
+                return;
+            }
+
+            // بررسی وجود userId در لوکال
+            let userId = localStorage.getItem('userId');
+            if (!userId) {
+                // Generate a unique user ID if not exists
+                userId = 'user_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userId', userId);
+            }
+
+            const inviteLink = `https://t.me/Daimonium_bot?start=${encodeURIComponent(userId)}`;
+
+            async function copyAndShare() {
+                if (!inviteLink) {
+                    showNotification('❌ No link available to copy.', 'error');
+                    return;
+                }
+
+                inviteButton.classList.add('loading');
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(inviteLink);
+                    } else {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = inviteLink;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        const copied = document.execCommand('copy');
+                        if (!copied) throw new Error('Fallback copy failed');
+                        document.body.removeChild(textArea);
+                    }
+
+                    showNotification('✅ Link copied!');
+
+                    // باز کردن صفحه اشتراک‌گذاری تلگرام
+                    const shareText = `👋 Hey, my friend! 
+
+💎 Welcome to Daimonium — the first Telegram Mini-App offering early access to token sales.
+
+🚀 Get in before tokens hit the market — while they're still under the radar.
+
+🛡️ No risk. No spam. No empty hype.  
+Just pure, real opportunity — made simple.
+
+🕓 Join now and be ahead of the curve.`;
+
+                    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`;
+                    window.open(shareUrl, '_blank');
+
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                    showNotification('❌ Failed to copy the link. Try manually.', 'error');
+                }
+
+                setTimeout(() => {
+                    inviteButton.classList.remove('loading');
+                }, 1000);
+            }
+
+            inviteButton.addEventListener('click', copyAndShare);
+        }
+
+        // ==== Invite Tracking Helpers ====
+        function incrementInviteCount(inviterId) {
+            const selfId = localStorage.getItem('userId');
+            if (inviterId === selfId) return;
+            
+            let invited = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            invited++;
+            localStorage.setItem('invitedFriends', invited);
+            
+            // Update display
+            updateInviteTaskStatus();
+            
+            // Sync with server
+            syncWithServer();
+        }
+
+        function registerReferral() {
+            try {
+                // Check for start parameter in Telegram WebApp
+                let referrerId = null;
+                
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp?.initDataUnsafe?.start_param) {
+                    referrerId = Telegram.WebApp.initDataUnsafe.start_param;
+                }
+                
+                // Also check URL parameters for fallback
+                if (!referrerId) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    referrerId = urlParams.get('start');
+                }
+                
+                if (referrerId && !localStorage.getItem('invitedBy')) {
+                    localStorage.setItem('invitedBy', referrerId);
+                    incrementInviteCount(referrerId);
+                    
+                    // Send referral data to server
+                    sendReferralData(referrerId);
+                }
+            } catch (e) {
+                console.warn('Referral registration skipped:', e);
+            }
+        }
+
+        // ==== Complete Invite Task ====
         async function completeInviteTask(taskName) {
             const userId = localStorage.getItem('userId');
             if (!userId) {
@@ -1085,11 +1259,13 @@
             }
 
             // Show loading on button
-            const button = event.target;
-            button.classList.add('loading');
+            const button = document.getElementById(`claim${taskName.charAt(0).toUpperCase() + taskName.slice(1)}`);
+            if (button) {
+                button.classList.add('loading');
+            }
 
             setTimeout(() => {
-                button.classList.remove('loading');
+                if (button) button.classList.remove('loading');
                 
                 // Grant reward
                 let coins = parseInt(localStorage.getItem('coins')) || 0;
@@ -1101,11 +1277,19 @@
                 updatePriceRangeDisplay();
                 updateInviteTaskStatus();
                 showNotification(`🎉 Congratulations! You received ${reward.toLocaleString()} coins`);
+
+                // Sync with server
+                syncWithServer();
             }, 1000);
         }
 
-        // Disable Buttons Only If Reward Claimed
+        // ==== Update Invite Task Status ====
         function updateInviteTaskStatus() {
+            // Update invited count display
+            const invitedFriends = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            document.getElementById('invitedCount').textContent = invitedFriends;
+
+            // Update task buttons
             ['invite3', 'invite5', 'invite10', 'invite20'].forEach(key => {
                 const btnId = `claim${key.charAt(0).toUpperCase() + key.slice(1)}`;
                 const btn = document.getElementById(btnId);
@@ -1118,24 +1302,25 @@
                     }
                 }
             });
-
-            // Update invited count display
-            const invitedCount = parseInt(localStorage.getItem('invitedFriends')) || 0;
-            document.getElementById('invitedCount').textContent = invitedCount;
         }
 
         // ==============================
         // PAYMENT SYSTEM
         // ==============================
 
+        function toBase64Unicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+                String.fromCharCode(parseInt(p1, 16))
+            ));
+        }
+
         async function handlePayment(coins, usdPrice, btn) {
             const originalText = btn.textContent;
             btn.disabled = true;
-            btn.classList.add('loading');
+            btn.textContent = 'Processing...';
 
             function resetBtn() {
                 btn.disabled = false;
-                btn.classList.remove('loading');
                 btn.textContent = originalText;
             }
 
@@ -1147,9 +1332,53 @@
                 localStorage.setItem("purchase_tokens", coins);
                 localStorage.setItem("purchase_usdt", usdPrice);
                 
-                // Wait 1 second before redirecting
-                setTimeout(() => {
-                    window.location.href = paymentUrl;
+                window.location.href = paymentUrl;
+
+                // Polling localStorage every 1s to detect payment success
+                const pollInterval = setInterval(async () => {
+                    const status = localStorage.getItem('payment_status');
+                    
+                    if (status === 'success') {
+                        clearInterval(pollInterval);
+                        const newBalance = localStorage.getItem('coins');
+                        localStorage.removeItem('payment_status'); // reset flag
+
+                        // به‌روزرسانی نمایش سکه‌ها
+                        const coinDisplay = document.getElementById('coinCount');
+                        if (coinDisplay) coinDisplay.textContent = parseInt(newBalance).toLocaleString('en-US');
+
+                        showNotification('✅ Payment successful!');
+
+                        // ارسال به سرور بک‌اند
+                        try {
+                            await fetch('https://vercel-app-108-6bhs.vercel.app/data', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`
+                                },
+                                body: JSON.stringify({
+                                    type: 'payment',
+                                    userId,
+                                    coins: parseInt(newBalance),
+                                    usdPrice: parseFloat(usdPrice),
+                                    status: 'success',
+                                    errorMsg: '',
+                                    timestamp: new Date().toISOString()
+                                })
+                            });
+                        } catch (syncErr) {
+                            console.error('Error syncing payment:', syncErr);
+                        }
+
+                        resetBtn();
+
+                    } else if (status === 'failed') {
+                        clearInterval(pollInterval);
+                        showNotification('❌ Payment failed: ' + (localStorage.getItem('payment_error') || 'Unknown error.'), 'error');
+                        localStorage.removeItem('payment_status');
+                        resetBtn();
+                    }
                 }, 1000);
 
             } catch (err) {
@@ -1158,6 +1387,113 @@
                 resetBtn();
             }
         }
+
+        // ==============================
+        // SERVER SYNC SYSTEM
+        // ==============================
+
+        const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+
+        async function syncWithServer() {
+            const userId = localStorage.getItem('userId');
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!userId || !authToken) {
+                console.warn('No user ID or auth token for sync');
+                return;
+            }
+
+            const payload = {
+                userId,
+                invitedBy: localStorage.getItem('invitedBy') || null,
+                invitedFriends: parseInt(localStorage.getItem('invitedFriends')) || 0,
+                coins: parseInt(localStorage.getItem('coins')) || 0,
+                total: parseInt(localStorage.getItem('total')) || 500,
+                power: parseInt(localStorage.getItem('power')) || 500,
+                count: parseInt(localStorage.getItem('count')) || 1,
+                tasks: {
+                    invite3: localStorage.getItem('invite3') || false,
+                    invite5: localStorage.getItem('invite5') || false,
+                    invite10: localStorage.getItem('invite10') || false,
+                    invite20: localStorage.getItem('invite20') || false,
+                },
+                payments: {
+                    successful: parseInt(localStorage.getItem('successful_payments')) || 0,
+                    failed: parseInt(localStorage.getItem('failed_payments')) || 0,
+                    totalAmount: parseFloat(localStorage.getItem('total_payment_amount')) || 0
+                },
+                lastUpdate: new Date().toISOString()
+            };
+
+            try {
+                const res = await fetch('https://vercel-app-108-6bhs.vercel.app/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!res.ok) throw new Error(res.statusText);
+                
+                localStorage.setItem('lastSyncDate', new Date().toISOString());
+                console.log('✅ Sync successful');
+                
+            } catch (e) {
+                console.error('Sync Error:', e);
+                showNotification('⚠️ Error syncing with server', 'warning');
+            }
+        }
+
+        async function sendReferralData(referrerId) {
+            const userId = localStorage.getItem('userId');
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!userId || !authToken) return;
+
+            try {
+                await fetch('https://vercel-app-108-6bhs.vercel.app/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        type: 'referral',
+                        userId,
+                        referrerId,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (e) {
+                console.error('Error sending referral data:', e);
+            }
+        }
+
+        // ==============================
+        // PRICE RANGE DISPLAY
+        // ==============================
+
+        function updatePriceRangeDisplay() {
+            const coins = parseInt(localStorage.getItem('coins')) || 0;
+            const minUsd = (coins * 0.0003).toFixed(2);
+            const maxUsd = (coins * 0.0007).toFixed(2);
+
+            const minEl = document.getElementById('minUsd');
+            const maxEl = document.getElementById('maxUsd');
+
+            if (minEl) minEl.textContent = `$${minUsd}`;
+            if (maxEl) maxEl.textContent = `$${maxUsd}`;
+        }
+
+        // به‌روزرسانی اولیه
+        updatePriceRangeDisplay();
+
+        // اگر مقدار سکه‌ها تغییر کرد، بازه دلاری هم به‌روز شود
+        window.addEventListener('storage', ({ key }) => {
+            if (key === 'coins') updatePriceRangeDisplay();
+        });
 
         // ==============================
         // NOTIFICATION SYSTEM
@@ -1198,31 +1534,7 @@
         })();
 
         // ==============================
-        // PRICE RANGE DISPLAY
-        // ==============================
-
-        function updatePriceRangeDisplay() {
-            const coins = parseInt(localStorage.getItem('coins')) || 0;
-            const minUsd = (coins * 0.0003).toFixed(2);
-            const maxUsd = (coins * 0.0007).toFixed(2);
-
-            const minEl = document.getElementById('minUsd');
-            const maxEl = document.getElementById('maxUsd');
-
-            if (minEl) minEl.textContent = `$${minUsd}`;
-            if (maxEl) maxEl.textContent = `$${maxUsd}`;
-        }
-
-        // به‌روزرسانی اولیه
-        updatePriceRangeDisplay();
-
-        // اگر مقدار سکه‌ها تغییر کرد، بازه دلاری هم به‌روز شود
-        window.addEventListener('storage', ({ key }) => {
-            if (key === 'coins') updatePriceRangeDisplay();
-        });
-
-        // ==============================
-        // WEB APP FALLBACK & INIT
+        // WEB APP FALLBACK & LOCAL STORAGE
         // ==============================
 
         // Fallback برای تست بدون وب‌اپ
@@ -1231,44 +1543,40 @@
             if (!isTelegramWebApp) {
                 console.warn('⚠️ WebApp context not detected. Applying fallback...');
                 if (!localStorage.getItem('userId')) {
-                    const fakeUserId = 'testuser_' + Math.floor(Math.random() * 100000);
+                    const fakeUserId = 'user_' + Math.random().toString(36).substr(2, 9);
                     localStorage.setItem('userId', fakeUserId);
-                    localStorage.setItem('authToken', 'test-token');
+                    localStorage.setItem('authToken', 'test-token-' + fakeUserId);
                 }
-            }
-        }
-
-        // Invite Tracking Helpers
-        function incrementInviteCount(inviterId) {
-            const selfId = localStorage.getItem('userId');
-            if (inviterId === selfId) return;
-            let invited = parseInt(localStorage.getItem('invitedFriends')) || 0;
-            invited++;
-            localStorage.setItem('invitedFriends', invited);
-            updateInviteTaskStatus();
-        }
-
-        function registerReferral() {
-            try {
-                const referrerId = Telegram.WebApp?.initDataUnsafe?.start_param;
-                if (referrerId && !localStorage.getItem('invitedBy')) {
-                    localStorage.setItem('invitedBy', referrerId);
-                    incrementInviteCount(referrerId);
-                }
-            } catch (e) {
-                console.warn('Referral registration skipped:', e);
             }
         }
 
         function initLocalStorageDefaults() {
-            if (localStorage.getItem('coins') == null) localStorage.setItem('coins', '0');
-            if (localStorage.getItem('invitedFriends') == null) localStorage.setItem('invitedFriends', '0');
+            // Set default values if not exist
+            const defaults = {
+                'coins': '0',
+                'invitedFriends': '0',
+                'total': '500',
+                'power': '500',
+                'count': '1',
+                'successful_payments': '0',
+                'failed_payments': '0',
+                'total_payment_amount': '0'
+            };
+
+            for (const [key, value] of Object.entries(defaults)) {
+                if (localStorage.getItem(key) === null) {
+                    localStorage.setItem(key, value);
+                }
+            }
+
+            // Update displays
             updateCoinDisplay();
+            updatePriceRangeDisplay();
             updateInviteTaskStatus();
         }
 
         // ==============================
-        // EVENT LISTENERS & SETUP
+        // INITIALIZATION & EVENT LISTENERS
         // ==============================
 
         document.addEventListener('DOMContentLoaded', function(){
@@ -1299,43 +1607,23 @@
                 setupEventListeners();
                 handleNavOverlayOnLoad();
                 setupScrollObserver();
+                
+                // Weekly sync check
+                const lastSync = localStorage.getItem('lastSyncDate');
+                if (!lastSync || Date.now() - new Date(lastSync) >= oneWeekMs) {
+                    syncWithServer();
+                }
             }, 900);
         });
 
         function initValues(){
-            updateCoinDisplay();
-            updatePriceRangeDisplay();
-            updateInviteTaskStatus();
             applyWebAppFallback();
             initLocalStorageDefaults();
             registerReferral();
+            setupInviteButton();
         }
 
         function setupEventListeners(){
-            // Invite button copy
-            document.getElementById('inviteButton').addEventListener('click', function(){
-                const button = this;
-                button.classList.add('loading');
-                
-                setTimeout(() => {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = "https://t.me/Daimonium_bot";
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try{
-                        document.execCommand('copy');
-                        showNotification('✅ Invite link copied to clipboard!');
-                    }catch(e){
-                        showNotification('❌ Failed to copy link. Please try again.', 'error');
-                    }
-                    document.body.removeChild(textArea);
-                    
-                    setTimeout(() => {
-                        button.classList.remove('loading');
-                    }, 300);
-                }, 1000);
-            });
-
             // Wallet connect
             document.getElementById('connectBtn').addEventListener('click', function(e){
                 e.preventDefault();
@@ -1344,7 +1632,7 @@
                 
                 setTimeout(() => {
                     button.classList.remove('loading');
-                    showNotification("🔒 Wallet connection will be available starting 2026/03/03, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏", 'warning');
+                    showNotification("🔒 Wallet connection will be available starting 2025/12/12, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏", 'warning');
                 }, 1000);
             });
 
