@@ -27,8 +27,52 @@
         }
 
         /* -------------------------
-           Body + Background
+           GESTURE & SELECTION BLOCKING
            ------------------------- */
+        /* جلوگیری از انتخاب متن */
+        html, body, * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+
+        /* حذف هایلایت آبی لمسی */
+        * {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        }
+
+        /* جلوگیری از درگ */
+        * {
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+        }
+
+        /* جلوگیری از بزرگ‌نمایی با دابل‌تپ */
+        body {
+            touch-action: manipulation !important;
+        }
+
+        /* لایهٔ مخصوص خنثی‌کننده long-press مرورگر */
+        #gesture-blocker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999999999;
+            background: transparent;
+            pointer-events: none; /* مهم! باعث می‌شود تداخلی با کلیک‌های اپ نداشته باشد */
+            touch-action: none;
+        }
+
+        /* اجازه انتخاب برای عناصر ضروری */
+        .temp-copy-area {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        /* Body + Background */
         body{
             min-height:100vh;
             background: #000000;
@@ -742,6 +786,9 @@
 
     <!-- الماس‌های متحرک به عنوان پس‌زمینه -->
     <div class="diamonds" id="diamonds"></div>
+
+    <!-- لایه بلاک کننده gesture ها -->
+    <div id="gesture-blocker"></div>
 
     <!-- Loading screen - فقط اسپینر -->
     <div class="loading-screen" id="loadingScreen">
@@ -1474,6 +1521,73 @@
         }
 
         // ==============================
+        // GESTURE & SELECTION BLOCKING SYSTEM
+        // ==============================
+
+        // جلوگیری از راست‌کلیک دسکتاپ
+        document.addEventListener('contextmenu', e => e.preventDefault(), true);
+
+        // جلوگیری از copy / cut / paste به جز برای textarea موقت کپی
+        document.addEventListener('copy', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        document.addEventListener('cut', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        document.addEventListener('paste', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        // جلوگیری از کلیدهای کپی مثل Ctrl+C / Cmd+C
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.metaKey) {
+                // اجازه دادن به کلیدهای ترکیبی برای textarea موقت
+                if (!e.target.classList.contains('temp-copy-area')) {
+                    e.preventDefault();
+                }
+            }
+        }, true);
+
+        // جلوگیری از long-press منوهای اندروید و iOS
+        let touchTimer;
+        document.addEventListener('touchstart', e => {
+            clearTimeout(touchTimer);
+            // اگر بیش از 350ms نگه‌داشته شود → بلاک
+            touchTimer = setTimeout(() => {
+                e.preventDefault();
+            }, 350);
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            clearTimeout(touchTimer);
+        });
+
+        // جلوگیری از gesture هایی مثل pinch-zoom
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+
+        // جلوگیری از منوی native روی لینک‌ها / فضای خالی (اندروید و iOS)
+        document.addEventListener('touchstart', e => {
+            if (e.target === document.body || e.target === document.documentElement) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // بلاک long-press مخصوص WebApp تلگرام
+        const blocker = document.getElementById('gesture-blocker');
+        blocker.style.pointerEvents = 'none'; 
+        // لایه فعال است ولی هیچ تداخلی با کلیک و تاچ اپ ندارد
+
+        // ==============================
         // EVENT LISTENERS & SETUP
         // ==============================
 
@@ -1554,6 +1668,7 @@
                     // کپی لینک به کلیپ‌بورد
                     const textArea = document.createElement('textarea');
                     textArea.value = inviteLink;
+                    textArea.className = 'temp-copy-area'; // اضافه کردن کلاس برای استثنا
                     document.body.appendChild(textArea);
                     textArea.select();
                     
