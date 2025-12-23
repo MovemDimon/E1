@@ -97,7 +97,7 @@
             position: absolute;
             width: 16px;
             height: 16px;
-            background: rgba(0, 300, 255, 0.35);
+            background: rgba(0, 400, 275, 0.45);
             clip-path: polygon(
                 80% 20%,   /* گوشه راست بالا */
                 100% 40%,  /* گوشه راست */
@@ -168,7 +168,7 @@
             display:flex; 
             align-items:center; 
             justify-content:center; 
-            margin:30px 0; /* افزایش فاصله */
+            margin:40px 0; /* افزایش فاصله */
             gap:12px; 
         }
         .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
@@ -186,7 +186,7 @@
             display:flex;
             justify-content:center;
             gap:12px;
-            margin:25px 0 35px; /* افزایش فاصله */
+            margin:35px 0 45px; /* افزایش فاصله */
             animation:fadeInUp .6s ease;
         }
 
@@ -237,7 +237,7 @@
            ------------------------- */
         .card{
             width:100%;
-            margin: 40px 0; /* فاصله 2 برابر شده */
+            margin: 80px 0; /* فاصله 2 برابر شده */
             border-radius:18px;
             padding:20px;
             transition:all .35s ease;
@@ -246,7 +246,7 @@
 
         /* MINI cards - 100% شفاف، بدون حاشیه، مشکی نیمه شفاف */
         .card.mini{
-            background: rgba(5, 5, 8, 0.9); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
+            background: rgba(5, 5, 8, 0.8); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
             border: none; /* حذف کامل حاشیه */
             backdrop-filter: blur(3px); /* کاهش blur برای شفافیت بیشتر */
             box-shadow: none; /* حذف سایه */
@@ -833,7 +833,7 @@
         <div class="token-display" id="headerSection">
             <div class="token-amount" id="coinCount">0</div>
             <div class="token-logo">
-                <img src="logo.png" alt="Daimonium Logo">
+                <img src="/material/images/logo.png" alt="Daimonium Logo">
             </div>
         </div>
 
@@ -860,10 +860,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="task.png" alt="Task Icon"></div>
+                    <div class="task-image"><img src="/material/images/Daily1.png" alt="Task Icon"></div>
                     <div class="task-info">
                         <h4>claim rewards</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
                 <button class="task-button" onclick="completeTask('task1', 100, 'reword.html', 'task1_done')">claim</button>
@@ -871,10 +871,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="task2.png" alt="Task Icon"></div>
+                    <div class="task-image"><img src="/material/images/Daily2.png" alt="Task Icon"></div>
                     <div class="task-info">
                         <h4>verify and earn</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100</h5></div>
                     </div>
                 </div>
                 <button class="task-button" onclick="completeTask('task2', 100, 'verify.html', 'task2_done')">claim</button>
@@ -897,10 +897,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="Invite.png" alt="Invite Icon"></div>
+                    <div class="task-image"><img src="/material/images/Invite3.png" alt="Invite Icon"></div>
                     <div class="task-info">
                         <h4>Invite 3 friends</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>5,000</h5></div>
                     </div>
                 </div>
                 <button class="task-button" id="claimInvite3" onclick="completeInviteTask('invite3')">claim</button>
@@ -908,10 +908,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="Invite.png" alt="Invite Icon"></div>
+                    <div class="task-image"><img src="/material/images/Invite5.png" alt="Invite Icon"></div>
                     <div class="task-info">
                         <h4>Invite 5 friends</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>10,000</h5></div>
                     </div>
                 </div>
                 <button class="task-button" id="claimInvite5" onclick="completeInviteTask('invite5')">claim</button>
@@ -919,10 +919,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="Invite.png" alt="Invite Icon"></div>
+                    <div class="task-image"><img src="/material/images/Invite10.png" alt="Invite Icon"></div>
                     <div class="task-info">
                         <h4>Invite 10 friends</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>30,000</h5></div>
                     </div>
                 </div>
                 <button class="task-button" id="claimInvite10" onclick="completeInviteTask('invite10')">claim</button>
@@ -930,10 +930,10 @@
 
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="Invite.png" alt="Invite Icon"></div>
+                    <div class="task-image"><img src="/material/images/Invite20.png" alt="Invite Icon"></div>
                     <div class="task-info">
                         <h4>Invite 20 friends</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>100,000</h5></div>
                     </div>
                 </div>
                 <button class="task-button" id="claimInvite20" onclick="completeInviteTask('invite20')">claim</button>
@@ -954,7 +954,7 @@
 
             <div class="package-row task">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
-                    <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">80,000</span>
                 </div>
                 <button class="buy-btn" onclick="handlePayment(80000, 5, this)">5 USDT</button>
@@ -962,7 +962,7 @@
 
             <div class="package-row task">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
-                    <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">200,000</span>
                 </div>
                 <button class="buy-btn" onclick="handlePayment(200000, 10, this)">10 USDT</button>
@@ -970,7 +970,7 @@
 
             <div class="package-row task">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
-                    <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">1,000,000</span>
                 </div>
                 <button class="buy-btn" onclick="handlePayment(1000000, 50, this)">50 USDT</button>
@@ -978,7 +978,7 @@
 
             <div class="package-row task">
                 <div class="package-info" style="display:flex;align-items:center;gap:10px;">
-                    <img src="logo.png" alt="Logo" style="width:30px;height:30px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:30px;height:30px;">
                     <span style="font-weight:700;color:white">3,000,000</span>
                 </div>
                 <button class="buy-btn" onclick="handlePayment(3000000, 100, this)">100 USDT</button>
@@ -991,10 +991,10 @@
         <div class="card mini wallet-card" id="walletSection">
             <div class="task">
                 <div class="task-detail">
-                    <div class="task-image"><img src="ton.png" alt="TON Icon"></div>
+                    <div class="task-image"><img src="/material/images/wallet.gif" alt="TON Icon"></div>
                     <div class="task-info">
                         <h4>Link your wallet</h4>
-                        <div class="task-data"><img src="logo.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>Daimonium</h5></div>
+                        <div class="task-data"><img src="/material/images/ton.png" alt="Coin Icon" style="width:18px;height:18px;"><h5>Daimonium</h5></div>
                     </div>
                 </div>
                 <button id="connectBtn" class="task-button">CONNECT</button>
@@ -1732,7 +1732,7 @@
                     
                     navItems.forEach(i=>{
                         i.classList.remove('active');
-                        i.style.opacity = '0.6';
+                        i.style.opacity = '0.4';
                     });
                     this.classList.add('active');
                     this.style.opacity = '1';
@@ -1852,3 +1852,4 @@
     </script>
 </body>
 </html>
+
