@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Daimonium Token Airdrop — Final UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* -------------------------
+           Base / Variables
+           ------------------------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
+        :root{
+            --primary: #001F3F;
+            --light: #f5f7ff;
+            --glass-weak: rgba(255,255,255,0.03);
+            --glass-weak-2: rgba(255,255,255,0.02);
+            --glass-border: rgba(255,255,255,0.08);
+            --nav-border-white: rgba(255,255,255,0.15);
+            --nav-bg-opaque: rgba(0,0,0,0.62);
+            --nav-bg-translucent: rgba(0,0,0,0.46);
+            --shadow-strong: 0 12px 36px rgba(0,0,0,0.6);
+            --green-pill: rgba(105,240,174,0.12);
+            --red-pill: rgba(255,82,82,0.12);
+            --blue-pill: rgba(33, 150, 243, 0.15);
+        }
+
+        /* -------------------------
+           GESTURE & SELECTION BLOCKING
+           ------------------------- */
+        /* جلوگیری از انتخاب متن */
+        html, body, * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+
+        /* حذف هایلایت آبی لمسی */
+        * {
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        }
+
+        /* جلوگیری از درگ */
+        * {
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+        }
+
+        /* جلوگیری از بزرگ‌نمایی با دابل‌تپ */
+        body {
+            touch-action: manipulation !important;
+        }
+
+        /* لایهٔ مخصوص خنثی‌کننده long-press مرورگر */
+        #gesture-blocker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999999999;
+            background: transparent;
+            pointer-events: none; /* مهم! باعث می‌شود تداخلی با کلیک‌های اپ نداشته باشد */
+            touch-action: none;
+        }
+
+        /* اجازه انتخاب برای عناصر ضروری */
+        .temp-copy-area {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        /* Body + Background */
+        body{
+            min-height:100vh;
+            background: #000000;
+            color:var(--light);
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
+            padding:20px;
+            overflow-x:hidden;
+            position:relative;
+        }
+
+        /* الماس‌های متحرک به عنوان پس‌زمینه */
+        .diamonds {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -3;
+        }
+
+        .diamond {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: rgba(0, 400, 275, 0.45);
+            clip-path: polygon(
+                80% 20%,   /* گوشه راست بالا */
+                100% 40%,  /* گوشه راست */
+                50% 100%,  /* نوک پایین */
+                0% 40%,    /* گوشه چپ */
+                20% 20%    /* گوشه چپ بالا */
+            );
+            opacity: 0;
+            filter: drop-shadow(0 0 3px rgba(0, 150, 255, 0.15));
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.6);
+            }
+            10% {
+                opacity: 0.28;
+            }
+            50% {
+                opacity: 0.18;
+                transform: translateY(-40px) scale(0.75);
+            }
+            90% {
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(-60px) scale(0.6);
+            }
+        }
+
+        /* -------------------------
+           Container / Layout
+           ------------------------- */
+        .container{
+            width:100%;
+            max-width:560px;
+            margin: 0 auto;
+            padding: 0 12px 140px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Loading screen - فقط اسپینر */
+        .loading-screen{
+            position:fixed; inset:0;
+            display:flex; align-items:center; justify-content:center;
+            z-index:9999;
+            background: #000000;
+            transition:opacity .4s ease, visibility .4s ease;
+        }
+        .loading-screen.hidden{ opacity:0; visibility:hidden; }
+
+        .spinner{
+            width:60px; height:60px; border-radius:50%;
+            border:8px solid rgba(255,255,255,0.08); /* ضخیم‌تر */
+            border-left:8px solid #fff; /* ضخیم‌تر */
+            animation:spin 1.8s linear infinite; /* سرعت کمتر */
+            margin-bottom:0; /* حذف margin */
+        }
+        @keyframes spin{ to { transform: rotate(360deg); } }
+
+        /* -------------------------
+           User Profile Pill - جدید
+           ------------------------- */
+        .user-pill {
+            position: absolute;
+            top: 0px; /* نزدیک‌تر به سقف */
+            left: 0px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px) saturate(1.1);
+            -webkit-backdrop-filter: blur(12px) saturate(1.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 100;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            max-width: 280px;
+            overflow: hidden;
+            margin: 5px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        /* -------------------------
+           Token display + price pills
+           ------------------------- */
+        .token-display{ 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            margin:40px 0; /* افزایش فاصله */
+            gap:12px; 
+        }
+        .token-amount{ font-size:3rem; font-weight:900; color:white; text-shadow:0 0 12px rgba(255,255,255,0.12); }
+        .token-logo{ 
+            width:58px; /* کمی بزرگتر از 51.2px و کوچکتر از 64px */
+            height:58px; /* کمی بزرگتر از 51.2px و کوچکتر از 64px */
+            border-radius:50%; 
+            display:flex; align-items:center; justify-content:center; 
+            overflow:hidden; 
+            background: none; /* حذف دایره آبی */
+            box-shadow: none; /* حذف سایه */
+        }
+        .token-logo img{ width:100%; height:100%; object-fit:contain; }
+
+        /* Price Pills */
+        .price-pills{
+            display:flex;
+            justify-content:center;
+            gap:12px;
+            margin:35px 0 45px; /* افزایش فاصله */
+            animation:fadeInUp .6s ease;
+        }
+
+        .price-pill{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            padding:8px 16px;
+            border-radius:999px;
+            font-size:0.78rem;
+            line-height:1;
+            min-height:36px;
+            box-sizing:border-box;
+            backdrop-filter: blur(8px) saturate(1.1);
+            -webkit-backdrop-filter: blur(8px) saturate(1.1);
+            border: 1px solid rgba(255,255,255,0.10);
+            cursor:default;
+            min-width: 90px;
+            position: relative;
+        }
+
+        .price-pill.min{
+            background: var(--red-pill);
+            color: #ff5252;
+        }
+
+        .price-pill.max{
+            background: var(--green-pill);
+            color: #69f0ae;
+        }
+
+        .price-pill.center{
+            background: rgba(255,255,255,0.05);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* انیمیشن ویبره برای علامت سوال داخل کپسول */
+        .question-shake {
+            display: inline-block;
+            animation: questionVibrate 4s ease-in-out infinite;
+        }
+
+        @keyframes questionVibrate {
+            0%, 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100% {
+                transform: translateX(0);
+            }
+            5%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95% {
+                transform: translateX(1px);
+            }
+            2.5%, 7.5%, 12.5%, 17.5%, 22.5%, 27.5%, 32.5%, 37.5%, 42.5%, 47.5%, 
+            52.5%, 57.5%, 62.5%, 67.5%, 72.5%, 77.5%, 82.5%, 87.5%, 92.5%, 97.5% {
+                transform: translateX(-1px);
+            }
+        }
+
+        .price-pill.center:hover {
+            transform: scale(1.05);
+        }
+
+        .price-label{ font-size:.78rem; margin-bottom:0; font-weight:500; }
+        .price-value{ font-size:0.85rem; font-weight:700; }
+
+        /* -------------------------
+           Card system
+           ------------------------- */
+        .card{
+            width:100%;
+            margin: 80px 0; /* فاصله 2 برابر شده */
+            border-radius:18px;
+            padding:20px;
+            transition:all .35s ease;
+            animation:fadeInUp .6s ease;
+        }
+
+        /* MINI cards - 100% شفاف، بدون حاشیه، مشکی نیمه شفاف */
+        .card.mini{
+            background: rgba(5, 5, 8, 0.8); /* مشکی نیمه شفاف - 10% با مشکی مطلق روشن‌تر */
+            border: none; /* حذف کامل حاشیه */
+            backdrop-filter: blur(3px); /* کاهش blur برای شفافیت بیشتر */
+            box-shadow: none; /* حذف سایه */
+        }
+
+        .card-title{ 
+            font-size:1.25rem; 
+            font-weight:700; 
+            color:white; 
+            text-align:center; 
+            margin-bottom:14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* تغییر به space-between */
+        }
+
+        /* task rows */
+        .task{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+        .task:last-child{ border-bottom:none; }
+        .task-detail{ display:flex; gap:12px; align-items:center; }
+        .task-image{ width:52px; height:52px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.18); }
+        .task-image img{ width:70%; height:70%; object-fit:contain; }
+        .task-info h4{ font-size:1rem; color:var(--light); margin-bottom:6px; text-transform:capitalize; }
+        .task-data{ display:flex; align-items:center; gap:8px; }
+        .task-data h5{ color:white; font-weight:700; font-size:.95rem; }
+
+        /* دکمه‌های کپسولی با اسپینر داخلی */
+        .task-button{
+            padding:10px 20px; 
+            border-radius:25px; /* گوشه‌های کاملاً گرد */
+            background:#fff; 
+            color:#000; 
+            border:none; 
+            font-weight:600; 
+            cursor:pointer;
+            font-size: 0.9rem;
+            min-width: 80px;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* انیمیشن کلیک برای دکمه‌های سفید */
+        .task-button:active,
+        .invite-button:active,
+        .buy-btn:active {
+            transform: scale(0.92);
+        }
+
+        .task-button.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .task-button.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 4px solid #000; /* ضخیم‌تر */
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
+        }
+
+        @keyframes button-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Invite / purchase buttons */
+        .invite-button{ 
+            width:100%; 
+            padding:14px; 
+            border-radius:25px; /* گوشه‌های کاملاً گرد */
+            background:#fff; 
+            color:#000; 
+            border:none; 
+            font-weight:700; 
+            cursor:pointer; 
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px; /* فاصله با کپسول بالایی */
+        }
+
+        .invite-button.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .invite-button.loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 4px solid #000; /* ضخیم‌تر */
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
+        }
+
+        /* Invite Stats Pill - کپسول آبی */
+        .invite-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            line-height: 1;
+            min-height: 36px;
+            box-sizing: border-box;
+            backdrop-filter: blur(8px) saturate(1.1);
+            -webkit-backdrop-filter: blur(8px) saturate(1.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            background: var(--blue-pill);
+            color: #4FC3F7;
+            font-weight: 700;
+        }
+
+        .invite-pill i {
+            font-size: 0.9rem;
+        }
+
+        /* دکمه‌های USDT هم اندازه دکمه‌های claim */
+        .buy-btn {
+            padding: 10px 20px !important;
+            border-radius: 25px !important;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            min-width: auto; /* ریسپانسیو نسبت به متن */
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buy-btn.loading {
+            color: #000 !important; /* متن سیاه باقی بماند */
+            pointer-events: none;
+            background-color: #e0e0e0; /* رنگ کمی خاکستری برای حالت لودینگ */
+        }
+
+        /* حذف اسپینر برای دکمه‌های خرید */
+        .buy-btn.loading::after {
+            display: none; /* اسپینر را حذف کن */
+        }
+
+        .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
+
+        /* Wallet small card - بزرگ کردن wallet.gif */
+        .wallet-card{ margin-bottom:28px; }
+        .wallet-card .task-image {
+            width: 104px; /* 2 برابر بزرگ‌تر */
+            height: 104px; /* 2 برابر بزرگ‌تر */
+            border-radius: 20px; /* افزایش radius برای ظاهر نرم‌تر */
+        }
+
+        /* -------------------------
+           Announcements Card - مشکی
+           ------------------------- */
+        .announcements-card {
+            background: rgba(5, 5, 8, 0.9) !important; /* مشکی مثل بقیه کارت‌ها */
+            border: none !important;
+            margin-top: 40px !important;
+            margin-bottom: 40px !important;
+        }
+
+        .announcements-card .card-title {
+            color: #FF6B35 !important; /* رنگ عنوان ثابت */
+        }
+
+        .announcements-content {
+            color: #FF6B35;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .announcements-content strong {
+            color: #FF8C5A;
+        }
+
+        .announcements-content em {
+            font-style: italic;
+            color: #FFA07A;
+        }
+
+        /* -------------------------
+           Bottom Navigation (fixed)
+           ------------------------- */
+        .bottom-nav{
+            position:fixed;
+            bottom:20px;
+            left:50%;
+            transform:translateX(-50%);
+            width: min(520px, calc(100% - 28px));
+            max-width:520px;
+            padding:8px 12px;
+            border-radius:32px; /* کپسولی کامل - افزایش radius */
+            display:flex;
+            justify-content:space-between;
+            gap:6px;
+            align-items:center;
+            z-index:120;
+            transition: all .25s ease, background .25s ease, box-shadow .25s ease;
+            box-shadow: var(--shadow-strong);
+            background: linear-gradient(90deg, 
+                rgba(80, 80, 80, 0.2) 0%, 
+                rgba(0, 0, 0, 0.62) 40%,
+                rgba(0, 0, 0, 0.62) 100%); /* گرادیان خاکستری از چپ */
+            border: 1px solid var(--nav-border-white);
+            backdrop-filter: blur(10px);
+        }
+
+        /* nav items */
+        .nav-item{
+            display:flex; 
+            flex-direction:column; 
+            align-items:center; 
+            justify-content:center;
+            gap:4px;
+            flex:1 1 0; 
+            min-width:56px;
+            padding:6px 8px;
+            border-radius:20px; /* کپسولی شکل */
+            cursor:pointer;
+            transition: all .18s ease;
+            opacity: 0.6; /* حالت کم‌نور پیش‌فرض */
+            position: relative;
+        }
+        .nav-item .nav-icon{ 
+            font-size:1.1rem;
+            color:rgba(255,255,255,0.7); 
+            transition: all .18s ease; 
+            z-index: 2;
+        }
+        .nav-item .nav-label{ 
+            font-size:.65rem;
+            color:rgba(207, 216, 227, 0.7); 
+            transition: all .18s ease;
+            display: block !important;
+            z-index: 2;
+        }
+
+        /* پس‌زمینه کپسولی برای بخش فعال */
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px; /* کپسولی شکل */
+            z-index: 1;
+            animation: activePulse 2s infinite;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .nav-item.active{ 
+            opacity: 1;
+        }
+        .nav-item.active .nav-icon{ 
+            color: #fff; 
+            transform: scale(1.05);
+        }
+        .nav-item.active .nav-label{ 
+            color: #fff; 
+            font-weight: 600;
+        }
+
+        /* حالت overlay هنگام اسکرول */
+        .bottom-nav.overlay{
+            background: linear-gradient(90deg, 
+                rgba(80, 80, 80, 0.15) 0%, 
+                rgba(0, 0, 0, 0.46) 40%,
+                rgba(0, 0, 0, 0.46) 100%);
+            backdrop-filter: blur(18px);
+        }
+
+        /* -------------------------
+           Modal Floating Card
+           ------------------------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3); /* شفاف‌تر */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: rgba(10, 10, 15, 0.95);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 10px;
+            float: right;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            margin-bottom: 10px;
+            z-index: 10001;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            color: white; /* متن سفید */
+            line-height: 1.6;
+            clear: both;
+            padding-top: 10px;
+        }
+
+        .modal-content h2 {
+            color: white; /* عنوان سفید */
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: white; /* متن سفید */
+        }
+
+        .modal-content strong {
+            color: white; /* strong سفید */
+        }
+
+        .modal-content .red-value {
+            color: #ff5252 !important;
+            font-weight: 700;
+        }
+
+        .modal-content .green-value {
+            color: #69f0ae !important;
+            font-weight: 700;
+        }
+
+        /* -------------------------
+           Bottom Gradient Overlay
+           ------------------------- */
+        .bottom-gradient {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(0, 0, 0, 0.6) 50%,
+                rgba(0, 0, 0, 0) 100%);
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* -------------------------
+           Notification Box - جدید
+           ------------------------- */
+        .notif-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0d1117;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.5);
+            max-width: 90%;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            border-left: 6px solid #4caf50;
+        }
+
+        .notif-box.warning { border-left-color: #ff9800; }
+        .notif-box.error   { border-left-color: #f44336; }
+
+        .notif-box.show {
+            opacity: 1;
+            pointer-events: auto;
+            animation: fadeInTop 0.6s ease forwards;
+        }
+
+        .notif-box.hide {
+            animation: fadeOutTop 0.5s ease forwards;
+        }
+
+        @keyframes fadeInTop {
+            from { opacity: 0; transform: translate(-50%, -30px); }
+            to   { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeOutTop { 
+            from { opacity: 1; transform: translate(-50%, 0); }
+            to   { opacity: 0; transform: translate(-50%, -30px); }
+        }
+
+        /* -------------------------
+           Utility / Responsive
+           ------------------------- */
+        @media (max-width:520px){
+            .container{ padding:0 12px 120px; max-width: 520px; }
+            .token-amount{ font-size:2.5rem; }
+            .price-pill{ min-width: 80px; padding: 6px 12px; }
+            .price-pills{ gap:10px; }
+            .bottom-nav{ 
+                width: calc(100% - 22px); 
+                padding:6px 10px;
+                border-radius: 28px;
+            }
+            .nav-item .nav-label{ display:block !important; font-size:.6rem; }
+            .card { margin: 30px 0; }
+            .task-button, .buy-btn { 
+                padding: 8px 16px !important; 
+                font-size: 0.85rem; 
+            }
+            .modal-card {
+                width: 95%;
+                padding: 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+            .task-button.loading::after,
+            .buy-btn.loading::after {
+                width: 16px;
+                height: 16px;
+                border-width: 3px;
+            }
+            .invite-button.loading::after {
+                width: 20px;
+                height: 20px;
+                border-width: 3px;
+            }
+            .invite-pill {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+            .card-title {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .user-pill {
+                max-width: 220px;
+                padding: 5px 12px;
+                margin: 3px;
+            }
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            .user-name {
+                font-size: 0.85rem;
+                max-width: 150px;
+            }
+            .wallet-card .task-image {
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        @media (max-width:380px){
+            .container{ padding:0 8px 110px; }
+            .nav-item .nav-label{ display:block !important; font-size:.55rem; }
+            .nav-item .nav-icon{ font-size:1rem; }
+            .price-pill{ min-width: 70px; padding: 5px 10px; font-size: 0.72rem; }
+            .task-button, .buy-btn { 
+                padding: 8px 14px !important; 
+                font-size: 0.8rem; 
+            }
+            .modal-card {
+                padding: 15px;
+            }
+            .user-pill {
+                max-width: 180px;
+                padding: 4px 10px;
+                margin: 2px;
+            }
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+            .user-name {
+                font-size: 0.75rem;
+                max-width: 130px;
+            }
+            .wallet-card .task-image {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        /* animations */
+        @keyframes fadeInUp{
+            from{ opacity:0; transform:translateY(18px);}
+            to{ opacity:1; transform:translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الماس‌های متحرک به عنوان پس‌زمینه -->
+    <div class="diamonds" id="diamonds"></div>
+
+    <!-- لایه بلاک کننده gesture ها -->
+    <div id="gesture-blocker"></div>
+
+    <!-- Loading screen - فقط اسپینر -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- گرادیان پایین صفحه -->
+    <div class="bottom-gradient"></div>
+
+    <!-- Modal Floating Card -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-card">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-content">
+                <h2>Welcome to Daimonium</h2>
+
+                <p><strong>Daimonium</strong> is a next-generation Telegram airdrop project — similar in structure to Notcoin — where users earn tokens through simple tasks and later exchange them after listing.</p>
+
+                <p>However, Daimonium introduces something completely new: <strong>the ability to pre-purchase tokens before listing</strong> using small amounts of USDT. This means you can invest early and potentially gain much more when the token goes live on a real exchange.</p>
+
+                <p>Our token distribution system is uniquely designed: only around <strong>2–5% of users are expected to purchase token packages</strong>. This gives buyers a major advantage compared to the 95% who only use the free route. Free users still earn tokens through daily tasks and referrals, but in smaller amounts.</p>
+
+                <p>In your <strong>Home</strong> page, below your token balance, you'll see a <strong>USD estimation</strong> of your holdings. This is based on realistic projections and current distribution trends. The <span class="red-value">red value</span> represents the lowest-case estimate, and the <span class="green-value">green value</span> shows a normal/good projection.</p>
+
+                <p>When you click to buy a token package, you'll be redirected to the <strong>Daimonium Telegram bot chat</strong>. There, the full step-by-step purchase process and payment instructions will be provided. You'll send USDT and submit your transaction hash for verification.</p>
+
+                <p>🚫 No promises of guaranteed profit — all token values are speculative until listing.<br>
+                ✅ Full transparency and risk notice is provided during the process.</p>
+
+                <p>Join us early, be part of a growing community, and access a unique opportunity in the Telegram crypto ecosystem. Your participation is voluntary and secure.</p>
+
+                <p>📢 For updates and info, check our official Telegram channel.<br>
+                💬 For support, reach out to our team directly in the bot.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- User Profile Pill - جدید -->
+        <div class="user-pill" id="userPill">
+            <div class="user-avatar" id="userAvatar">
+                <!-- Avatar will be inserted by JavaScript -->
+            </div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Header: token display -->
+        <div class="token-display" id="headerSection">
+            <div class="token-amount" id="coinCount">0</div>
+            <div class="token-logo">
+                <img src="/material/images/logo.png" alt="Daimonium Logo">
+            </div>
+        </div>
+
+        <!-- Price Pills -->
+        <div class="price-pills" aria-hidden="false">
+            <div class="price-pill min">
+                <div class="price-label">MIN</div>
+                <div class="price-value" id="minUsd">$0.0012</div>
+            </div>
+
+            <div class="price-pill center" id="infoButton">
+                <i class="fas fa-question question-shake" style="font-size:1.1rem;"></i>
+            </div>
+
+            <div class="price-pill max">
+                <div class="price-label">MAX</div>
+                <div class="price-value" id="maxUsd">$0.0034</div>
+            </div>
+        </div>
+
+        <!-- Daily Tasks -->
+        <div class="card mini" id="tasksSection">
+            <div class="card-title">Daily Tasks</div>
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Daily 1.png" alt="Task Icon"></div>
+                    <div class="task-info">
+                        <h4>Daily Reward 1</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>100</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" onclick="completeTask('task1', 100, 'reword.html', 'task1_done')">claim</button>
+            </div>
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Daily 2.png" alt="Task Icon"></div>
+                    <div class="task-info">
+                        <h4>Daily Reward 2</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>100</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" onclick="completeTask('task2', 100, 'verify.html', 'task2_done')">claim</button>
+            </div>
+        </div>
+
+        <!-- Invite Friends -->
+        <div class="card mini" id="inviteSection">
+            <div class="card-title">
+                <span>Invite Friends</span>
+                <div class="invite-pill" id="invitePill">
+                    <i class="fas fa-user-friends"></i>
+                    <span id="invitedCount">0</span>
+                </div>
+            </div>
+
+            <button class="invite-button" id="inviteButton"><i class="fas fa-user-friends"></i> Invite Friends</button>
+
+            <div style="margin-top: 20px; margin-bottom: 10px;"></div> <!-- فاصله بین دکمه و تسک‌ها -->
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Invite 3.png" alt="Invite Icon"></div>
+                    <div class="task-info">
+                        <h4>Invite 3 friends</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>5,000</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite3" onclick="completeInviteTask('invite3')">claim</button>
+            </div>
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Invite 5.png" alt="Invite Icon"></div>
+                    <div class="task-info">
+                        <h4>Invite 5 friends</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>10,000</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite5" onclick="completeInviteTask('invite5')">claim</button>
+            </div>
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Invite 10.png" alt="Invite Icon"></div>
+                    <div class="task-info">
+                        <h4>Invite 10 friends</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>30,000</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite10" onclick="completeInviteTask('invite10')">claim</button>
+            </div>
+
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/Invite 20.png" alt="Invite Icon"></div>
+                    <div class="task-info">
+                        <h4>Invite 20 friends</h4>
+                        <div class="task-data"><img src="/material/images/logo.png" alt="Coin Icon" style="width:20px;height:15px;"><h5>100,000</h5></div>
+                    </div>
+                </div>
+                <button class="task-button" id="claimInvite20" onclick="completeInviteTask('invite20')">claim</button>
+            </div>
+        </div>
+
+        <!-- Shopping / Purchase -->
+        <div class="card mini" id="purchaseSection">
+            <div class="card-title">Shopping Packages</div>
+
+            <div class="package-row task" style="border-bottom:1px solid rgba(255,255,255,0.03);">
+                <div class="package-info" style="display:flex;align-items:center;gap:10px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:33px;height:25px;">
+                    <span style="font-weight:700;color:white">10,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(10000, 1, this)">1 USDT</button>
+            </div>
+
+            <div class="package-row task">
+                <div class="package-info" style="display:flex;align-items:center;gap:10px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:33px;height:25px;">
+                    <span style="font-weight:700;color:white">80,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(80000, 5, this)">5 USDT</button>
+            </div>
+
+            <div class="package-row task">
+                <div class="package-info" style="display:flex;align-items:center;gap:10px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:33px;height:25px;">
+                    <span style="font-weight:700;color:white">200,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(200000, 10, this)">10 USDT</button>
+            </div>
+
+            <div class="package-row task">
+                <div class="package-info" style="display:flex;align-items:center;gap:10px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:33px;height:25px;">
+                    <span style="font-weight:700;color:white">1,000,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(1000000, 50, this)">50 USDT</button>
+            </div>
+
+            <div class="package-row task">
+                <div class="package-info" style="display:flex;align-items:center;gap:10px;">
+                    <img src="/material/images/logo.png" alt="Logo" style="width:33px;height:25px;">
+                    <span style="font-weight:700;color:white">3,000,000</span>
+                </div>
+                <button class="buy-btn" onclick="handlePayment(3000000, 100, this)">100 USDT</button>
+            </div>
+
+            <div class="payment-footer" style="margin-top:12px;color:#a0aec0">Payment with various digital currencies</div>
+        </div>
+
+        <!-- Wallet card -->
+        <div class="card mini wallet-card" id="walletSection">
+            <div class="task">
+                <div class="task-detail">
+                    <div class="task-image"><img src="/material/images/wallet.gif" alt="TON Icon"></div>
+                    <div class="task-info">
+                        <h4>Link your wallet</h4>
+                        <div class="task-data"><img src="/material/images/ton.png" alt="Coin Icon" style="width:23px;height:23px;"><h5>TON</h5></div>
+                    </div>
+                </div>
+                <button id="connectBtn" class="task-button">CONNECT</button>
+            </div>
+        </div>
+
+        <!-- Announcements Card -->
+        <div class="card mini announcements-card" id="announcementsSection">
+            <div class="card-title">Announcements</div>
+            <div class="announcements-content">
+                <h4>Community Channels Coming Soon</h4>
+                <p style="font-size:14px; color:#FF6B35; margin-top:5px; line-height:1.4;">
+                    Daimonium has not yet opened its official community channels.<br>
+                    Our communication platforms will become available once our family grows beyond 
+                    <strong>5 million members</strong>, ensuring that no one misses out on our most important announcements.<br>
+                    <em>Stay tuned — something truly remarkable is on the way.</em>
+                </p>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav" id="bottomNav" role="navigation" aria-label="Main navigation">
+        <div class="nav-item active" data-target="headerSection">
+            <i class="fas fa-home nav-icon"></i>
+            <div class="nav-label">Home</div>
+        </div>
+
+        <div class="nav-item" data-target="inviteSection">
+            <i class="fas fa-user-friends nav-icon"></i>
+            <div class="nav-label">Invite</div>
+        </div>
+
+        <div class="nav-item" data-target="purchaseSection">
+            <i class="fas fa-shopping-cart nav-icon"></i>
+            <div class="nav-label">Shop</div>
+        </div>
+
+        <div class="nav-item" data-target="walletSection">
+            <i class="fas fa-wallet nav-icon"></i>
+            <div class="nav-label">Wallet</div>
+        </div>
+    </div>
+
+    <script>
+        // ==============================
+        // USER PROFILE SYSTEM - بهبود یافته
+        // ==============================
+        
+        function setupUserProfile() {
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            
+            // بررسی وجود Telegram WebApp
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe) {
+                const user = Telegram.WebApp.initDataUnsafe.user;
+                
+                if (user) {
+                    // نمایش نام کامل کاربر از تلگرام
+                    let fullName = '';
+                    if (user.first_name) fullName += user.first_name;
+                    if (user.last_name) fullName += ' ' + user.last_name;
+                    
+                    // اگر نامی وجود نداشت
+                    if (!fullName.trim()) {
+                        if (user.username) {
+                            fullName = user.username;
+                        } else {
+                            fullName = 'Telegram User';
+                        }
+                    }
+                    
+                    userName.textContent = fullName;
+                    
+                    // نمایش آواتار کاربر از تلگرام
+                    if (user.photo_url) {
+                        const img = document.createElement('img');
+                        img.src = user.photo_url;
+                        img.alt = 'User Avatar';
+                        img.onerror = function() {
+                            // اگر تصویر بارگذاری نشد، از fallback استفاده کن
+                            setupFallbackAvatar(userAvatar, fullName);
+                        };
+                        userAvatar.innerHTML = '';
+                        userAvatar.appendChild(img);
+                    } else {
+                        // اگر آواتار نداشت، از fallback استفاده کن
+                        setupFallbackAvatar(userAvatar, fullName);
+                    }
+                    
+                    // ذخیره اطلاعات کاربر
+                    localStorage.setItem('tg_user_id', user.id);
+                    localStorage.setItem('tg_user_name', fullName);
+                    localStorage.setItem('tg_username', user.username || '');
+                    localStorage.setItem('tg_user_photo', user.photo_url || '');
+                    
+                } else {
+                    setupFallbackProfile();
+                }
+            } else {
+                setupFallbackProfile();
+            }
+        }
+        
+        function setupFallbackAvatar(avatarElement, fullName) {
+            // ایجاد آواتار fallback با حروف اول اسم
+            const initials = getInitials(fullName);
+            avatarElement.textContent = initials;
+            avatarElement.style.background = getRandomGradient();
+        }
+        
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(part => part.charAt(0))
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+        
+        function getRandomGradient() {
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            ];
+            return gradients[Math.floor(Math.random() * gradients.length)];
+        }
+        
+        function setupFallbackProfile() {
+            // فقط برای حالت تست بدون تلگرام از اطلاعات واقعی‌تر استفاده می‌کنیم
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            
+            // استفاده از نام‌های واقعی‌تر
+            const names = ['Arash Karimi', 'Sara Mohammadi', 'Ali Rezaei', 'Narges Ahmadi', 'Mohammad Hosseini'];
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const fullName = names[randomIndex];
+            
+            userName.textContent = fullName;
+            
+            // ایجاد آواتار fallback
+            const initials = getInitials(fullName);
+            userAvatar.textContent = initials;
+            userAvatar.style.background = getRandomGradient();
+            
+            // ذخیره اطلاعات
+            localStorage.setItem('tg_user_id', 'fallback_' + Date.now());
+            localStorage.setItem('tg_user_name', fullName);
+        }
+
+        // ==============================
+        // INITIALIZATION & CORE FUNCTIONS
+        // ==============================
+
+        // Function to update the coin display
+        function updateCoinDisplay() {
+            const coins = parseInt(localStorage.getItem('coins')) || 0;
+            const coinDisplay = document.getElementById('coinCount');
+            if (coinDisplay) coinDisplay.textContent = coins.toLocaleString('en-US');
+        }
+
+        // Update when coin value changes from other tabs
+        window.addEventListener('storage', ({ key }) => {
+            if (key === 'coins') updateCoinDisplay();
+        });
+
+        // Initial load
+        updateCoinDisplay();
+
+        // Task completion with fake loading
+        function completeTask(taskId, reward, dummyUrl, taskStorageKey) {
+            const today = new Date().toISOString().split('T')[0];
+
+            if (localStorage.getItem(taskStorageKey) === today) {
+                return showNotification('⏳ This task has already been completed today.', 'warning');
+            }
+
+            // Show loading on button
+            const button = event.target;
+            button.classList.add('loading');
+
+            // Wait for 1s, then give reward
+            setTimeout(() => {
+                button.classList.remove('loading');
+
+                // Save as done
+                localStorage.setItem(taskStorageKey, today);
+
+                // Add coins
+                let coins = parseInt(localStorage.getItem('coins')) || 0;
+                coins += reward;
+                localStorage.setItem('coins', coins);
+                updateCoinDisplay();
+                updatePriceRangeDisplay();
+
+                // Notify
+                showNotification(`🎉 Congratulations! You earned ${reward.toLocaleString('en-US')} coins.`);
+            }, 1000);
+        }
+
+        // ==============================
+        // INVITE SYSTEM - کاملاً اصلاح شده
+        // ==============================
+
+        const TASK_CONFIG = {
+            thresholds: {
+                invite3: 3,
+                invite5: 5,
+                invite10: 10,
+                invite20: 20,
+            },
+            rewards: {
+                invite3: 5000,
+                invite5: 10000,
+                invite10: 30000,
+                invite20: 100000,
+            },
+        };
+
+        // Complete Invite Task
+        async function completeInviteTask(taskName) {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                showNotification('⚠️ Please log in first', 'warning');
+                return;
+            }
+
+            if (localStorage.getItem(taskName) === 'true') {
+                showNotification('⚠️ You have already claimed this reward', 'warning');
+                return;
+            }
+
+            const required = TASK_CONFIG.thresholds[taskName];
+            const reward = TASK_CONFIG.rewards[taskName];
+            const invitedFriends = parseInt(localStorage.getItem('invitedFriends')) || 0;
+
+            if (invitedFriends < required) {
+                const remaining = required - invitedFriends;
+                showNotification(`⚠️ Invite ${remaining} more friend${remaining === 1 ? '' : 's'} to claim this reward`, 'warning');
+                return;
+            }
+
+            // Show loading on button
+            const button = event.target;
+            button.classList.add('loading');
+
+            setTimeout(() => {
+                button.classList.remove('loading');
+                
+                // Grant reward
+                let coins = parseInt(localStorage.getItem('coins')) || 0;
+                coins += reward;
+                localStorage.setItem('coins', coins);
+                localStorage.setItem(taskName, 'true');
+
+                updateCoinDisplay();
+                updatePriceRangeDisplay();
+                updateInviteTaskStatus();
+                showNotification(`🎉 Congratulations! You received ${reward.toLocaleString()} coins`);
+            }, 1000);
+        }
+
+        // Disable Buttons Only If Reward Claimed
+        function updateInviteTaskStatus() {
+            ['invite3', 'invite5', 'invite10', 'invite20'].forEach(key => {
+                const btnId = `claim${key.charAt(0).toUpperCase() + key.slice(1)}`;
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    const completed = localStorage.getItem(key) === 'true';
+                    btn.disabled = completed;
+                    if (completed) {
+                        btn.textContent = 'Claimed';
+                        btn.style.opacity = '0.7';
+                    }
+                }
+            });
+
+            // Update invited count display
+            const invitedCount = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            document.getElementById('invitedCount').textContent = invitedCount;
+        }
+
+        // ==============================
+        // PAYMENT SYSTEM - اصلاح شده با polling و متن Processing...
+        // ==============================
+
+        // Helper function to convert Unicode string to Base64
+        function toBase64Unicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+                String.fromCharCode(parseInt(p1, 16))
+            ));
+        }
+
+        async function handlePayment(coins, usdPrice, btn) {
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            
+            // فقط برای دکمه‌های خرید (USDT) متن را به Processing... تغییر بده
+            if (btn.classList.contains('buy-btn')) {
+                btn.textContent = 'Processing...';
+                btn.classList.add('loading');
+            } else {
+                btn.classList.add('loading');
+            }
+
+            function resetBtn() {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = originalText;
+            }
+
+            try {
+                let userId = localStorage.getItem('userId') || 'test-user';
+                const paymentUrl = `payment.html?coins=${encodeURIComponent(coins)}&usdPrice=${encodeURIComponent(usdPrice)}&userId=${encodeURIComponent(userId)}`;
+
+                // Store payment data
+                localStorage.setItem("purchase_tokens", coins);
+                localStorage.setItem("purchase_usdt", usdPrice);
+                localStorage.setItem("current_payment_userId", userId);
+                
+                // Wait 1 second before redirecting
+                setTimeout(() => {
+                    window.location.href = paymentUrl;
+                }, 1000);
+
+                // Start polling for payment status every 1 second
+                const pollInterval = setInterval(async () => {
+                    const status = localStorage.getItem('payment_status');
+                    const paymentUserId = localStorage.getItem('current_payment_userId');
+                    
+                    // فقط اگر وضعیت پرداخت مربوط به همین کاربر است
+                    if (status && paymentUserId === userId) {
+                        if (status === 'success') {
+                            clearInterval(pollInterval);
+                            
+                            // افزایش تعداد پرداخت‌های موفق
+                            const successfulPayments = parseInt(localStorage.getItem('successfulPayments')) || 0;
+                            localStorage.setItem('successfulPayments', successfulPayments + 1);
+                            
+                            // افزودن سکه‌ها به موجودی کاربر
+                            let currentCoins = parseInt(localStorage.getItem('coins')) || 0;
+                            currentCoins += coins;
+                            localStorage.setItem('coins', currentCoins);
+                            
+                            // پاک‌سازی وضعیت پرداخت
+                            localStorage.removeItem('payment_status');
+                            localStorage.removeItem('payment_error');
+                            localStorage.removeItem('current_payment_userId');
+                            localStorage.removeItem('purchase_tokens');
+                            localStorage.removeItem('purchase_usdt');
+                            
+                            // به‌روزرسانی نمایش
+                            updateCoinDisplay();
+                            updatePriceRangeDisplay();
+                            
+                            // ارسال اطلاعات به سرور خارجی
+                            await sendUserDataToServer('payment_success', {
+                                coins: currentCoins,
+                                purchasedCoins: coins,
+                                usdPrice: usdPrice
+                            });
+                            
+                            showNotification('✅ Payment successful! Tokens added to your balance.');
+                            resetBtn();
+                            
+                        } else if (status === 'failed') {
+                            clearInterval(pollInterval);
+                            
+                            // افزایش تعداد پرداخت‌های ناموفق
+                            const failedPayments = parseInt(localStorage.getItem('failedPayments')) || 0;
+                            localStorage.setItem('failedPayments', failedPayments + 1);
+                            
+                            const errorMsg = localStorage.getItem('payment_error') || 'Unknown error';
+                            
+                            // پاک‌سازی وضعیت پرداخت
+                            localStorage.removeItem('payment_status');
+                            localStorage.removeItem('payment_error');
+                            localStorage.removeItem('current_payment_userId');
+                            
+                            // ارسال اطلاعات به سرور خارجی
+                            await sendUserDataToServer('payment_failed', {
+                                error: errorMsg,
+                                usdPrice: usdPrice
+                            });
+                            
+                            showNotification(`❌ Payment failed: ${errorMsg}`, 'error');
+                            resetBtn();
+                        }
+                    }
+                }, 1000);
+
+                // توقف polling بعد از 5 دقیقه (برای جلوگیری از memory leak)
+                setTimeout(() => {
+                    clearInterval(pollInterval);
+                }, 300000);
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showNotification('❌ Unexpected error during payment process.', 'error');
+                resetBtn();
+            }
+        }
+
+        // ==============================
+        // NOTIFICATION SYSTEM
+        // ==============================
+
+        (function () {
+            let notifTimer;
+
+            function setupNotification() {
+                window.showNotification = function (message, type = 'success') {
+                    let box = document.querySelector('.notif-box');
+
+                    if (!box) {
+                        box = document.createElement('div');
+                        box.className = 'notif-box';
+                        document.body.appendChild(box);
+                    }
+
+                    box.textContent = message;
+                    box.className = `notif-box ${type} show`;
+
+                    clearTimeout(notifTimer);
+                    notifTimer = setTimeout(() => {
+                        box.classList.remove('show');
+                        box.classList.add('hide');
+                        setTimeout(() => {
+                            box.remove();
+                        }, 500);
+                    }, 3000);
+                };
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupNotification);
+            } else {
+                setupNotification();
+            }
+        })();
+
+        // ==============================
+        // PRICE RANGE DISPLAY
+        // ==============================
+
+        function updatePriceRangeDisplay() {
+            const coins = parseInt(localStorage.getItem('coins')) || 0;
+            const minUsd = (coins * 0.0003).toFixed(2);
+            const maxUsd = (coins * 0.0007).toFixed(2);
+
+            const minEl = document.getElementById('minUsd');
+            const maxEl = document.getElementById('maxUsd');
+
+            if (minEl) minEl.textContent = `$${minUsd}`;
+            if (maxEl) maxEl.textContent = `$${maxUsd}`;
+        }
+
+        // به‌روزرسانی اولیه
+        updatePriceRangeDisplay();
+
+        // اگر مقدار سکه‌ها تغییر کرد، بازه دلاری هم به‌روز شود
+        window.addEventListener('storage', ({ key }) => {
+            if (key === 'coins') updatePriceRangeDisplay();
+        });
+
+        // ==============================
+        // SERVER SYNC SYSTEM - جدید
+        // ==============================
+
+        // ارسال اطلاعات کاربر به سرور خارجی
+        async function sendUserDataToServer(eventType = 'weekly', additionalData = {}) {
+            try {
+                const userId = localStorage.getItem('userId');
+                const authToken = localStorage.getItem('authToken');
+                
+                if (!userId) {
+                    console.warn('Cannot send data: No userId found');
+                    return false;
+                }
+
+                const userData = {
+                    type: eventType,
+                    userId: userId,
+                    timestamp: new Date().toISOString(),
+                    coins: parseInt(localStorage.getItem('coins')) || 0,
+                    invitedFriends: parseInt(localStorage.getItem('invitedFriends')) || 0,
+                    successfulPayments: parseInt(localStorage.getItem('successfulPayments')) || 0,
+                    failedPayments: parseInt(localStorage.getItem('failedPayments')) || 0,
+                    ...additionalData
+                };
+
+                const response = await fetch('https://vercel-app-108-6bhs.vercel.app/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken || ''}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                if (response.ok) {
+                    console.log(`✅ Data sent to server (${eventType})`);
+                    // ذخیره زمان آخرین ارسال موفق
+                    if (eventType === 'weekly') {
+                        localStorage.setItem('lastWeeklySync', Date.now());
+                    }
+                    return true;
+                } else {
+                    console.error(`❌ Failed to send data to server (${eventType})`);
+                    return false;
+                }
+            } catch (error) {
+                console.error(`❌ Error sending data to server (${eventType}):`, error);
+                return false;
+            }
+        }
+
+        // بررسی و ارسال هفتگی اطلاعات
+        async function checkAndSendWeeklyData() {
+            const lastSync = localStorage.getItem('lastWeeklySync');
+            const oneWeek = 7 * 24 * 60 * 60 * 1000; // یک هفته به میلی‌ثانیه
+            const now = Date.now();
+            
+            // اگر اولین بار است یا بیش از یک هفته گذشته
+            if (!lastSync || (now - parseInt(lastSync)) > oneWeek) {
+                console.log('Sending weekly user data to server...');
+                await sendUserDataToServer('weekly');
+            } else {
+                const daysLeft = Math.ceil((oneWeek - (now - parseInt(lastSync))) / (24 * 60 * 60 * 1000));
+                console.log(`Next weekly sync in ${daysLeft} days`);
+            }
+        }
+
+        // ==============================
+        // WEB APP FALLBACK & INIT
+        // ==============================
+
+        // Fallback برای تست بدون وب‌اپ
+        function applyWebAppFallback() {
+            const isTelegramWebApp = typeof Telegram !== 'undefined' && Telegram.WebApp?.initDataUnsafe;
+            
+            // بررسی اینکه آیا قبلاً پیام خطا نشان داده شده است
+            const hasShownError = localStorage.getItem('hasShownWebAppError');
+            
+            if (!isTelegramWebApp) {
+                console.warn('⚠️ WebApp context not detected. Applying fallback...');
+                
+                // فقط یک بار پیام خطا نشان بده
+                if (!hasShownError) {
+                    setTimeout(() => {
+                        showNotification('⚠️ Running in fallback mode. Some features may be limited.', 'warning');
+                        localStorage.setItem('hasShownWebAppError', 'true');
+                    }, 2000);
+                }
+                
+                if (!localStorage.getItem('userId')) {
+                    const fakeUserId = 'user_' + Math.floor(Math.random() * 1000000) + '_' + Date.now();
+                    localStorage.setItem('userId', fakeUserId);
+                    localStorage.setItem('authToken', 'test-token-' + fakeUserId);
+                }
+            } else {
+                // اگر در محیط تلگرام هستیم، پیام خطا را پاک کن
+                if (hasShownError) {
+                    localStorage.removeItem('hasShownWebAppError');
+                }
+            }
+        }
+
+        // Invite Tracking Helpers
+        function incrementInviteCount(inviterId) {
+            const selfId = localStorage.getItem('userId');
+            if (inviterId === selfId) return;
+            
+            let invited = parseInt(localStorage.getItem('invitedFriends')) || 0;
+            invited++;
+            localStorage.setItem('invitedFriends', invited);
+            updateInviteTaskStatus();
+            
+            // ارسال اطلاعات به سرور
+            sendUserDataToServer('invite_added', { invitedBy: inviterId });
+        }
+
+        function registerReferral() {
+            try {
+                // تلگرام WebApp
+                const referrerId = Telegram?.WebApp?.initDataUnsafe?.start_param;
+                
+                if (referrerId && referrerId !== 'undefined' && referrerId !== 'null') {
+                    // بررسی اینکه آیا قبلاً ثبت شده است
+                    if (!localStorage.getItem('invitedBy')) {
+                        localStorage.setItem('invitedBy', referrerId);
+                        incrementInviteCount(referrerId);
+                        console.log(`✅ Registered referral from: ${referrerId}`);
+                    }
+                }
+                
+                // همچنین بررسی پارامتر URL (برای حالت‌های غیرتلگرام)
+                const urlParams = new URLSearchParams(window.location.search);
+                const refFromUrl = urlParams.get('ref') || urlParams.get('start');
+                
+                if (refFromUrl && !localStorage.getItem('invitedBy')) {
+                    localStorage.setItem('invitedBy', refFromUrl);
+                    incrementInviteCount(refFromUrl);
+                    console.log(`✅ Registered referral from URL: ${refFromUrl}`);
+                }
+            } catch (e) {
+                console.warn('Referral registration skipped:', e);
+            }
+        }
+
+        function initLocalStorageDefaults() {
+            const defaults = {
+                'coins': '0',
+                'invitedFriends': '0',
+                'successfulPayments': '0',
+                'failedPayments': '0',
+                'lastWeeklySync': '0'
+            };
+            
+            Object.entries(defaults).forEach(([key, value]) => {
+                if (localStorage.getItem(key) == null) {
+                    localStorage.setItem(key, value);
+                }
+            });
+            
+            updateCoinDisplay();
+            updateInviteTaskStatus();
+        }
+
+        // ==============================
+        // GESTURE & SELECTION BLOCKING SYSTEM
+        // ==============================
+
+        // جلوگیری از راست‌کلیک دسکتاپ
+        document.addEventListener('contextmenu', e => e.preventDefault(), true);
+
+        // جلوگیری از copy / cut / paste به جز برای textarea موقت کپی
+        document.addEventListener('copy', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        document.addEventListener('cut', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        document.addEventListener('paste', e => {
+            if (!e.target.classList.contains('temp-copy-area')) {
+                e.preventDefault();
+            }
+        }, true);
+
+        // جلوگیری از کلیدهای کپی مثل Ctrl+C / Cmd+C
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.metaKey) {
+                // اجازه دادن به کلیدهای ترکیبی برای textarea موقت
+                if (!e.target.classList.contains('temp-copy-area')) {
+                    e.preventDefault();
+                }
+            }
+        }, true);
+
+        // جلوگیری از long-press منوهای اندروید و iOS
+        let touchTimer;
+        document.addEventListener('touchstart', e => {
+            clearTimeout(touchTimer);
+            // اگر بیش از 350ms نگه‌داشته شود → بلاک
+            touchTimer = setTimeout(() => {
+                e.preventDefault();
+            }, 350);
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            clearTimeout(touchTimer);
+        });
+
+        // جلوگیری از gesture هایی مثل pinch-zoom
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+
+        // جلوگیری از منوی native روی لینک‌ها / فضای خالی (اندروید و iOS)
+        document.addEventListener('touchstart', e => {
+            if (e.target === document.body || e.target === document.documentElement) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // بلاک long-press مخصوص WebApp تلگرام
+        const blocker = document.getElementById('gesture-blocker');
+        blocker.style.pointerEvents = 'none'; 
+        // لایه فعال است ولی هیچ تداخلی با کلیک و تاچ اپ ندارد
+
+        // ==============================
+        // EVENT LISTENERS & SETUP
+        // ==============================
+
+        document.addEventListener('DOMContentLoaded', function(){
+            // ایجاد الماس‌های متحرک
+            const container = document.getElementById("diamonds");
+            const count = 25;
+
+            for (let i = 0; i < count; i++) {
+                const d = document.createElement("div");
+                d.classList.add("diamond");
+
+                const size = Math.random() * 10 + 6;
+                d.style.width = `${size}px`;
+                d.style.height = `${size}px`;
+
+                d.style.left = `${Math.random() * 100}%`;
+                d.style.top = `${Math.random() * 100}%`;
+
+                d.style.animationDuration = `${10 + Math.random() * 10}s`;
+                d.style.animationDelay = `${Math.random() * 8}s`;
+
+                container.appendChild(d);
+            }
+
+            setTimeout(function(){
+                document.getElementById('loadingScreen').classList.add('hidden');
+                initValues();
+                setupEventListeners();
+                handleNavOverlayOnLoad();
+                setupScrollObserver();
+            }, 900);
+        });
+
+        function initValues(){
+            // Setup user profile first
+            setupUserProfile();
+            
+            updateCoinDisplay();
+            updatePriceRangeDisplay();
+            updateInviteTaskStatus();
+            applyWebAppFallback();
+            initLocalStorageDefaults();
+            registerReferral();
+            
+            // بررسی ارسال هفتگی اطلاعات
+            setTimeout(() => {
+                checkAndSendWeeklyData();
+            }, 3000);
+        }
+
+        function setupEventListeners(){
+            // Invite button - کاملاً اصلاح شده
+            document.getElementById('inviteButton').addEventListener('click', function(){
+                const button = this;
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    const userId = localStorage.getItem('userId');
+                    if (!userId) {
+                        showNotification('⚠️ Please log in first', 'warning');
+                        button.classList.remove('loading');
+                        return;
+                    }
+
+                    // ساخت لینک دعوت منحصر به فرد
+                    const inviteLink = `https://t.me/Daimonium_bot?start=${encodeURIComponent(userId)}`;
+                    
+                    // متن دعوت
+                    const shareText = `👋 Hey, my friend! 
+
+💎 Welcome to Daimonium — the first Telegram Mini-App offering early access to token sales.
+
+🚀 Get in before tokens hit the market — while they're still under the radar.
+
+🛡️ No risk. No spam. No empty hype.  
+ Just pure, real opportunity — made simple.
+
+🕓 Join now and be ahead of the curve.`;
+
+                    // کپی لینک به کلیپ‌بورد
+                    const textArea = document.createElement('textarea');
+                    textArea.value = inviteLink;
+                    textArea.className = 'temp-copy-area'; // اضافه کردن کلاس برای استثنا
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        showNotification('✅ Invite link copied to clipboard!');
+                    } catch(e) {
+                        showNotification('❌ Failed to copy link. Please try again.', 'error');
+                        document.body.removeChild(textArea);
+                        button.classList.remove('loading');
+                        return;
+                    }
+                    document.body.removeChild(textArea);
+                    
+                    // باز کردن صفحه اشتراک‌گذاری تلگرام
+                    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`;
+                    window.open(shareUrl, '_blank');
+                    
+                    button.classList.remove('loading');
+                }, 1000);
+            });
+
+            // Wallet connect
+            document.getElementById('connectBtn').addEventListener('click', function(e){
+                e.preventDefault();
+                const button = this;
+                button.classList.add('loading');
+                
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    showNotification("🔒 Wallet connection will be available starting 2026/03/03, coinciding with the listing of Daimonium tokens on exchanges.\nWe kindly ask for your patience until then 🙏", 'warning');
+                }, 1000);
+            });
+
+            // Modal info button
+            document.getElementById('infoButton').addEventListener('click', function(){
+                document.getElementById('infoModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Modal close button
+            document.getElementById('closeModal').addEventListener('click', function(){
+                document.getElementById('infoModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // بستن modal با کلیک روی overlay
+            document.getElementById('infoModal').addEventListener('click', function(e){
+                if(e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // nav active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item=>{
+                item.addEventListener('click', function(){
+                    const targetId = this.getAttribute('data-target');
+                    scrollToSection(targetId);
+                    
+                    navItems.forEach(i=>{
+                        i.classList.remove('active');
+                        i.style.opacity = '0.4';
+                    });
+                    this.classList.add('active');
+                    this.style.opacity = '1';
+                });
+            });
+
+            // bottom nav overlay effect on scroll
+            window.addEventListener('scroll', throttle(handleNavOverlayOnScroll, 120), {passive:true});
+            window.addEventListener('resize', throttle(handleNavOverlayOnScroll, 200));
+        }
+
+        // ==============================
+        // SCROLL OBSERVER & NAVIGATION
+        // ==============================
+
+        // Intersection Observer برای تغییر اتوماتیک active nav
+        function setupScrollObserver() {
+            const sections = [
+                {id: 'headerSection', navIndex: 0},
+                {id: 'tasksSection', navIndex: 0},
+                {id: 'inviteSection', navIndex: 1},
+                {id: 'purchaseSection', navIndex: 2},
+                {id: 'walletSection', navIndex: 3},
+                {id: 'announcementsSection', navIndex: 3}
+            ];
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            let currentActiveIndex = 0;
+            let observerTimeout = null;
+            
+            const observer = new IntersectionObserver((entries) => {
+                if (observerTimeout) clearTimeout(observerTimeout);
+                
+                observerTimeout = setTimeout(() => {
+                    let activeIndex = currentActiveIndex;
+                    let maxVisibleRatio = 0;
+                    
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const visibleRatio = entry.intersectionRatio;
+                            if (visibleRatio > maxVisibleRatio) {
+                                maxVisibleRatio = visibleRatio;
+                                const section = sections.find(s => s.id === entry.target.id);
+                                if (section) {
+                                    activeIndex = section.navIndex;
+                                }
+                            }
+                        }
+                    });
+                    
+                    if (activeIndex !== currentActiveIndex && maxVisibleRatio > 0.3) {
+                        currentActiveIndex = activeIndex;
+                        navItems.forEach((item, index) => {
+                            if (index === activeIndex) {
+                                item.classList.add('active');
+                                item.style.opacity = '1';
+                            } else {
+                                item.classList.remove('active');
+                                item.style.opacity = '0.6';
+                            }
+                        });
+                    }
+                }, 100);
+            }, { 
+                threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                rootMargin: '-30% 0px -30% 0px'
+            });
+            
+            sections.forEach(section => {
+                const element = document.getElementById(section.id);
+                if (element) observer.observe(element);
+            });
+        }
+
+        /* Scroll to section - بهبود یافته برای وسط صفحه */
+        function scrollToSection(id){
+            const el = document.getElementById(id);
+            if(el) {
+                const elementRect = el.getBoundingClientRect();
+                const absoluteElementTop = elementRect.top + window.pageYOffset;
+                const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+                window.scrollTo({
+                    top: middle,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        /* -------------------------
+           Bottom nav overlay behavior
+           ------------------------- */
+        const bottomNav = document.getElementById('bottomNav');
+
+        function handleNavOverlayOnLoad(){
+            handleNavOverlayOnScroll();
+        }
+
+        function handleNavOverlayOnScroll(){
+            const trigger = window.scrollY || document.documentElement.scrollTop;
+            if(trigger > 50){
+                bottomNav.classList.add('overlay');
+            } else {
+                bottomNav.classList.remove('overlay');
+            }
+        }
+
+        // throttle helper
+        function throttle(fn, wait){
+            let time = Date.now();
+            return function(){
+                if((time + wait - Date.now()) < 0){
+                    fn();
+                    time = Date.now();
+                }
+            };
+        }
+    </script>
+</body>
+</html>
