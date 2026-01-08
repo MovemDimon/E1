@@ -1191,7 +1191,7 @@
 
     <script>
         // ==============================
-        // USER PROFILE SYSTEM - فقط اطلاعات واقعی تلگرام
+        // USER PROFILE SYSTEM - اصلاح شده برای حالت fallback
         // ==============================
         
         function isTelegramEnvironment() {
@@ -1232,14 +1232,35 @@
             const userName = document.getElementById('userName');
             const userPill = document.getElementById('userPill');
             
-            // فقط در محیط تلگرام تلاش می‌کنیم
+            // حالت fallback: نمایش VANTAR Platform
             if (!isTelegramEnvironment()) {
-                // در محیط غیرتلگرام، کپسول را مخفی می‌کنیم
-                userPill.style.display = 'none';
-                console.log('Not in Telegram environment, hiding user pill');
+                // در محیط غیرتلگرام، کپسول را با محتوای VANTAR Platform نمایش می‌دهیم
+                userName.textContent = 'VANTAR Platform';
+                
+                // تنظیم آواتار به تصویر vantar
+                const img = document.createElement('img');
+                img.src = '/material/images/vantar.png';
+                img.alt = 'VANTAR Platform';
+                img.onload = function() {
+                    console.log('VANTAR avatar loaded successfully');
+                };
+                img.onerror = function() {
+                    console.log('Failed to load VANTAR avatar, using placeholder');
+                    // اگر تصویر لود نشد، از حرف اول استفاده می‌کنیم
+                    userAvatar.textContent = 'V';
+                    userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                };
+                
+                userAvatar.innerHTML = '';
+                userAvatar.appendChild(img);
+                
+                // نمایش کپسول
+                userPill.style.display = 'flex';
+                console.log('Fallback mode: VANTAR Platform user pill displayed');
                 return;
             }
             
+            // اگر به اینجا رسیدیم، یعنی در محیط تلگرام هستیم
             console.log('Telegram environment detected, waiting for user data...');
             
             // تلگرام وجود دارد، منتظر می‌مانیم و تلاش می‌کنیم
@@ -1295,9 +1316,21 @@
                     console.log('User data not available yet, retrying... (attempt ' + attempts + '/' + maxAttempts + ')');
                     setTimeout(tryLoadUser, 500);
                 } else {
-                    // بعد از حداکثر تلاش‌ها، کپسول را مخفی می‌کنیم
-                    console.log('Failed to load user data after ' + maxAttempts + ' attempts, hiding user pill');
-                    userPill.style.display = 'none';
+                    // بعد از حداکثر تلاش‌ها، به حالت fallback برمی‌گردیم
+                    console.log('Failed to load user data after ' + maxAttempts + ' attempts, showing VANTAR Platform fallback');
+                    userName.textContent = 'VANTAR Platform';
+                    
+                    const img = document.createElement('img');
+                    img.src = '/material/images/vantar.png';
+                    img.alt = 'VANTAR Platform';
+                    img.onerror = function() {
+                        userAvatar.textContent = 'V';
+                        userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    };
+                    userAvatar.innerHTML = '';
+                    userAvatar.appendChild(img);
+                    
+                    userPill.style.display = 'flex';
                 }
             }
             
@@ -1880,7 +1913,7 @@
         });
 
         function initValues(){
-            // Setup user profile - فقط در تلگرام
+            // Setup user profile - در تلگرام یا حالت fallback
             setupUserProfile();
             
             updateCoinDisplay();
