@@ -6,6 +6,7 @@
     <title>Daimonium Token Airdrop — Final UI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* -------------------------
            Base / Variables
@@ -24,6 +25,157 @@
             --green-pill: rgba(105,240,174,0.12);
             --red-pill: rgba(255,82,82,0.12);
             --blue-pill: rgba(33, 150, 243, 0.15);
+            
+            /* Day mode variables */
+            --day-bg: #f5f5f5;
+            --day-card-bg: #ffffff;
+            --day-text: #1a1a1a;
+            --day-button-bg: #50A7EA; /* تغییر به رنگ آبی دلفینی */
+            --day-button-text: #ffffff;
+            --day-spinner: #ffffff;
+        }
+
+        /* حالت روز */
+        body.day-mode {
+            background: var(--day-bg);
+            color: var(--day-text);
+        }
+        
+        body.day-mode .card.mini {
+            background: var(--day-card-bg);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.day-mode .token-amount,
+        body.day-mode .task-info h4,
+        body.day-mode .task-data h5,
+        body.day-mode .card-title,
+        body.day-mode .announcements-content,
+        body.day-mode .announcements-content p,
+        body.day-mode .modal-content,
+        body.day-mode .modal-content h2,
+        body.day-mode .modal-content p,
+        body.day-mode .modal-content strong,
+        body.day-mode .invite-stats,
+        body.day-mode .user-name,
+        body.day-mode .package-row span,
+        body.day-mode .payment-footer {
+            color: var(--day-text) !important;
+        }
+        
+        body.day-mode .task {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        body.day-mode .task-button,
+        body.day-mode .invite-button,
+        body.day-mode .buy-btn {
+            background: var(--day-button-bg);
+            color: var(--day-button-text);
+        }
+        
+        /* اصلاح اسپینر در حالت روز */
+        body.day-mode .task-button.loading,
+        body.day-mode .invite-button.loading {
+            color: transparent !important;
+        }
+        
+        body.day-mode .task-button.loading::after,
+        body.day-mode .invite-button.loading::after {
+            border-color: var(--day-spinner);
+            border-top-color: transparent;
+        }
+        
+        /* اصلاح دکمه خرید در حالت روز */
+        body.day-mode .buy-btn.loading {
+            color: var(--day-button-text) !important; /* متن سفید در حالت روز */
+            background-color: #3a8bc8; /* آبی تیره‌تر برای حالت لودینگ */
+        }
+        
+        body.day-mode .price-pill.center {
+            background: rgba(81, 125, 162, 0.1);
+            color: #517DA2;
+            border: 1px solid rgba(81, 125, 162, 0.2);
+        }
+        
+        body.day-mode .announcements-card {
+            background: var(--day-card-bg) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        body.day-mode .announcements-card .card-title {
+            color: #FF6B35 !important;
+        }
+        
+        body.day-mode .bottom-nav {
+            background: linear-gradient(90deg, 
+                rgba(200, 200, 200, 0.2) 0%, 
+                rgba(255, 255, 255, 0.8) 40%,
+                rgba(255, 255, 255, 0.8) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        body.day-mode .nav-item .nav-icon,
+        body.day-mode .nav-item .nav-label {
+            color: rgba(0, 0, 0, 0.7);
+        }
+        
+        body.day-mode .nav-item.active .nav-icon,
+        body.day-mode .nav-item.active .nav-label {
+            color: #000000;
+        }
+        
+        body.day-mode .nav-item.active::before {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.day-mode .bottom-nav.overlay {
+            background: linear-gradient(90deg, 
+                rgba(200, 200, 200, 0.15) 0%, 
+                rgba(255, 255, 255, 0.7) 40%,
+                rgba(255, 255, 255, 0.7) 100%);
+        }
+        
+        body.day-mode .user-pill {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* -------------------------
+           نوار گرادیان بالای صفحه - بهبود یافته
+           ------------------------- */
+        .top-gradient-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px; /* ارتفاع 20px */
+            background: linear-gradient(to bottom, 
+                rgba(0, 0, 0, 0.98) 0%, 
+                rgba(0, 0, 0, 0.92) 10%,
+                rgba(0, 0, 0, 0.85) 20%,
+                rgba(0, 0, 0, 0.75) 35%,
+                rgba(0, 0, 0, 0.65) 50%,
+                rgba(0, 0, 0, 0.5) 65%,
+                rgba(0, 0, 0, 0.35) 80%,
+                rgba(0, 0, 0, 0.2) 90%,
+                rgba(0, 0, 0, 0) 100%);
+            pointer-events: none;
+            z-index: 998; /* پایین‌تر از کپسول */
+        }
+        
+        body.day-mode .top-gradient-bar {
+            background: linear-gradient(to bottom, 
+                rgba(0, 0, 0, 0.98) 0%, 
+                rgba(0, 0, 0, 0.92) 10%,
+                rgba(0, 0, 0, 0.85) 20%,
+                rgba(0, 0, 0, 0.75) 35%,
+                rgba(0, 0, 0, 0.65) 50%,
+                rgba(0, 0, 0, 0.5) 65%,
+                rgba(0, 0, 0, 0.35) 80%,
+                rgba(0, 0, 0, 0.2) 90%,
+                rgba(0, 0, 0, 0) 100%);
         }
 
         /* -------------------------
@@ -83,6 +235,7 @@
             padding:20px;
             overflow-x:hidden;
             position:relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* الماس‌های متحرک به عنوان پس‌زمینه */
@@ -162,63 +315,58 @@
         @keyframes spin{ to { transform: rotate(360deg); } }
 
         /* -------------------------
-           User Profile Pill - جدید
+           Theme Switch Pill - جدید (بالای نوار گرادیان)
            ------------------------- */
-        .user-pill {
+        .theme-pill {
             position: fixed;
-            top: 5px; /* نزدیک به سقف */
-            left: 10px;
+            top: 22px; /* افزایش به 22px برای قرارگیری پایین‌تر از نوار گرادیان */
+            right: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 6px 14px;
+            gap: 8px;
+            padding: 6px 12px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px) saturate(1.1);
             -webkit-backdrop-filter: blur(12px) saturate(1.1);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            z-index: 1000; /* بالا بودن روی همه چیز */
+            z-index: 1000; /* بالاتر از نوار گرادیان */
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            max-width: 280px;
+            max-width: 120px;
             overflow: hidden;
+            cursor: pointer;
         }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
+        .theme-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
         }
 
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .theme-icon.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
         }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            overflow: hidden;
+        
+        body.day-mode .theme-pill {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
-
-        .user-name {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
+        
+        body.day-mode .theme-icon {
+            color: rgba(0, 0, 0, 0.4);
+        }
+        
+        body.day-mode .theme-icon.active {
+            color: #000000;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         /* -------------------------
@@ -346,6 +494,7 @@
             border: none; /* حذف کامل حاشیه */
             backdrop-filter: blur(3px); /* کاهش blur برای شفافیت بیشتر */
             box-shadow: none; /* حذف سایه */
+            transition: all 0.3s ease;
         }
 
         .card-title{ 
@@ -404,9 +553,9 @@
         .task-button.loading::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 4px solid #000; /* ضخیم‌تر */
+            width: 16px; /* کوچک‌تر شده */
+            height: 16px; /* کوچک‌تر شده */
+            border: 3px solid #000; /* نازک‌تر */
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
@@ -444,9 +593,9 @@
         .invite-button.loading::after {
             content: '';
             position: absolute;
-            width: 24px;
-            height: 24px;
-            border: 4px solid #000; /* ضخیم‌تر */
+            width: 18px; /* کوچک‌تر شده */
+            height: 18px; /* کوچک‌تر شده */
+            border: 3px solid #000; /* نازک‌تر */
             border-radius: 50%;
             border-top-color: transparent;
             animation: button-spin 0.8s linear infinite;
@@ -496,6 +645,7 @@
             justify-content: center;
         }
 
+        /* حالت لودینگ برای دکمه‌های خرید - فقط متن Processing... */
         .buy-btn.loading {
             color: #000 !important; /* متن سیاه باقی بماند */
             pointer-events: none;
@@ -504,7 +654,7 @@
 
         /* حذف اسپینر برای دکمه‌های خرید */
         .buy-btn.loading::after {
-            display: none; /* اسپینر را حذف کن */
+            display: none !important; /* اسپینر را کاملاً حذف کن */
         }
 
         .invite-stats{ text-align:center; margin-bottom:12px; color:white; font-size:1rem; }
@@ -684,6 +834,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
+        
+        body.day-mode .modal-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
 
         .modal-overlay.active .modal-card {
             transform: scale(1);
@@ -710,10 +865,19 @@
             margin-bottom: 10px;
             z-index: 10001;
         }
+        
+        body.day-mode .modal-close {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
 
         .modal-close:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
+        }
+        
+        body.day-mode .modal-close:hover {
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .modal-content {
@@ -751,20 +915,27 @@
         }
 
         /* -------------------------
-           Bottom Gradient Overlay
+           Bottom Gradient Overlay - بهبود یافته
            ------------------------- */
         .bottom-gradient {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 80px;
+            height: 100px; /* افزایش ارتفاع برای نرم‌تر شدن */
             background: linear-gradient(to top, 
-                rgba(0, 0, 0, 0.9) 0%, 
-                rgba(0, 0, 0, 0.6) 50%,
+                rgba(0, 0, 0, 0.7) 0%,  /* کاهش شفافیت شروع */
+                rgba(0, 0, 0, 0.4) 50%,
                 rgba(0, 0, 0, 0) 100%);
             pointer-events: none;
             z-index: 50;
+        }
+        
+        body.day-mode .bottom-gradient {
+            background: linear-gradient(to top, 
+                rgba(245, 245, 245, 0.7) 0%, 
+                rgba(245, 245, 245, 0.4) 50%,
+                rgba(245, 245, 245, 0) 100%);
         }
 
         /* -------------------------
@@ -789,6 +960,12 @@
             z-index: 9999;
             transition: all 0.3s ease;
             border-left: 6px solid #4caf50;
+        }
+        
+        body.day-mode .notif-box {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
 
         .notif-box.warning { border-left-color: #ff9800; }
@@ -841,15 +1018,10 @@
                 font-size: 1.5rem;
             }
             .task-button.loading::after,
-            .buy-btn.loading::after {
-                width: 16px;
-                height: 16px;
-                border-width: 3px;
-            }
             .invite-button.loading::after {
-                width: 20px;
-                height: 20px;
-                border-width: 3px;
+                width: 14px;
+                height: 14px;
+                border-width: 2.5px;
             }
             .invite-pill {
                 font-size: 0.75rem;
@@ -860,24 +1032,23 @@
                 justify-content: center;
                 gap: 10px;
             }
-            .user-pill {
-                max-width: 220px;
-                padding: 5px 12px;
-                top: 3px;
-                left: 3px;
+            .theme-pill {
+                max-width: 100px;
+                padding: 5px 10px;
+                top: 20px; /* تنظیم برای موبایل */
+                right: 6px;
             }
-            .user-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-            .user-name {
-                font-size: 0.85rem;
-                max-width: 150px;
+            .theme-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
             }
             .wallet-card .task-image {
                 width: 90px;
                 height: 90px;
+            }
+            .top-gradient-bar {
+                height: 18px;
             }
         }
 
@@ -893,24 +1064,23 @@
             .modal-card {
                 padding: 15px;
             }
-            .user-pill {
-                max-width: 180px;
-                padding: 4px 10px;
-                top: 2px;
-                left: 2px;
+            .theme-pill {
+                max-width: 90px;
+                padding: 4px 8px;
+                top: 18px; /* تنظیم برای موبایل کوچک */
+                right: 5px;
             }
-            .user-avatar {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
-            .user-name {
-                font-size: 0.75rem;
-                max-width: 130px;
+            .theme-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 14px;
             }
             .wallet-card .task-image {
                 width: 80px;
                 height: 80px;
+            }
+            .top-gradient-bar {
+                height: 16px;
             }
         }
 
@@ -921,10 +1091,13 @@
         }
     </style>
 </head>
-<body>
+<body class="night-mode">
 
     <!-- الماس‌های متحرک به عنوان پس‌زمینه -->
     <div class="diamonds" id="diamonds"></div>
+
+    <!-- نوار گرادیان بالای صفحه - بهبود یافته -->
+    <div class="top-gradient-bar"></div>
 
     <!-- لایه بلاک کننده gesture ها -->
     <div id="gesture-blocker"></div>
@@ -934,7 +1107,7 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- گرادیان پایین صفحه -->
+    <!-- گرادیان پایین صفحه - بهبود یافته -->
     <div class="bottom-gradient"></div>
 
     <!-- Modal Floating Card -->
@@ -968,13 +1141,13 @@
     </div>
 
     <div class="container">
-        <!-- User Profile Pill - جدید -->
-        <div class="user-pill" id="userPill">
-            <div class="user-avatar" id="userAvatar">
-                <!-- Avatar will be inserted by JavaScript -->
+        <!-- Theme Switch Pill - جدید (بالای نوار گرادیان) -->
+        <div class="theme-pill" id="themePill">
+            <div class="theme-icon active" id="nightModeIcon">
+                <i class="fas fa-moon"></i>
             </div>
-            <div class="user-info">
-                <div class="user-name" id="userName">Loading...</div>
+            <div class="theme-icon" id="dayModeIcon">
+                <i class="fas fa-sun"></i>
             </div>
         </div>
 
@@ -1191,153 +1364,53 @@
 
     <script>
         // ==============================
-        // USER PROFILE SYSTEM - اصلاح شده برای حالت fallback
+        // THEME SWITCH SYSTEM
         // ==============================
         
-        function isTelegramEnvironment() {
-            return typeof Telegram !== 'undefined' && 
-                   Telegram.WebApp && 
-                   Telegram.WebApp.initData;
-        }
-        
-        function getTelegramUser() {
-            if (!isTelegramEnvironment()) {
-                return null;
-            }
+        // تابع تغییر حالت
+        function toggleTheme() {
+            const body = document.body;
+            const nightIcon = document.getElementById('nightModeIcon');
+            const dayIcon = document.getElementById('dayModeIcon');
             
-            Telegram.WebApp.ready();
-            return Telegram.WebApp.initDataUnsafe?.user || null;
-        }
-        
-        function formatTelegramUserName(user) {
-            // منطق UX تلگرام: first_name + last_name (با trim)
-            let displayName = '';
-            
-            if (user.first_name) {
-                displayName = user.first_name;
-                if (user.last_name) {
-                    displayName += ' ' + user.last_name;
-                }
-            } else if (user.username) {
-                displayName = user.username;
+            if (body.classList.contains('night-mode')) {
+                // تغییر به حالت روز
+                body.classList.remove('night-mode');
+                body.classList.add('day-mode');
+                nightIcon.classList.remove('active');
+                dayIcon.classList.add('active');
+                localStorage.setItem('theme', 'day');
             } else {
-                displayName = 'Telegram User';
+                // تغییر به حالت شب
+                body.classList.remove('day-mode');
+                body.classList.add('night-mode');
+                dayIcon.classList.remove('active');
+                nightIcon.classList.add('active');
+                localStorage.setItem('theme', 'night');
             }
-            
-            return displayName.trim();
         }
         
-        function setupUserProfile() {
-            const userAvatar = document.getElementById('userAvatar');
-            const userName = document.getElementById('userName');
-            const userPill = document.getElementById('userPill');
+        // بارگذاری حالت ذخیره شده
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const nightIcon = document.getElementById('nightModeIcon');
+            const dayIcon = document.getElementById('dayModeIcon');
             
-            // حالت fallback: نمایش VANTAR Platform
-            if (!isTelegramEnvironment()) {
-                // در محیط غیرتلگرام، کپسول را با محتوای VANTAR Platform نمایش می‌دهیم
-                userName.textContent = 'VANTAR Platform';
-                
-                // تنظیم آواتار به تصویر vantar
-                const img = document.createElement('img');
-                img.src = '/material/images/vantar.png';
-                img.alt = 'VANTAR Platform';
-                img.onload = function() {
-                    console.log('VANTAR avatar loaded successfully');
-                };
-                img.onerror = function() {
-                    console.log('Failed to load VANTAR avatar, using placeholder');
-                    // اگر تصویر لود نشد، از حرف اول استفاده می‌کنیم
-                    userAvatar.textContent = 'V';
-                    userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                };
-                
-                userAvatar.innerHTML = '';
-                userAvatar.appendChild(img);
-                
-                // نمایش کپسول
-                userPill.style.display = 'flex';
-                console.log('Fallback mode: VANTAR Platform user pill displayed');
-                return;
+            if (savedTheme === 'day') {
+                document.body.classList.remove('night-mode');
+                document.body.classList.add('day-mode');
+                nightIcon.classList.remove('active');
+                dayIcon.classList.add('active');
+            } else {
+                // حالت پیش‌فرض شب
+                document.body.classList.remove('day-mode');
+                document.body.classList.add('night-mode');
+                dayIcon.classList.remove('active');
+                nightIcon.classList.add('active');
+                localStorage.setItem('theme', 'night');
             }
-            
-            // اگر به اینجا رسیدیم، یعنی در محیط تلگرام هستیم
-            console.log('Telegram environment detected, waiting for user data...');
-            
-            // تلگرام وجود دارد، منتظر می‌مانیم و تلاش می‌کنیم
-            let attempts = 0;
-            const maxAttempts = 5;
-            
-            function tryLoadUser() {
-                attempts++;
-                const user = getTelegramUser();
-                
-                if (user && user.id) {
-                    console.log('User data loaded after', attempts, 'attempts:', user);
-                    
-                    const displayName = formatTelegramUserName(user);
-                    userName.textContent = displayName;
-                    
-                    // تنظیم آواتار
-                    if (user.photo_url) {
-                        const img = document.createElement('img');
-                        img.src = user.photo_url;
-                        img.alt = 'User Avatar';
-                        img.onload = function() {
-                            console.log('User avatar loaded successfully');
-                        };
-                        img.onerror = function() {
-                            console.log('Failed to load avatar, using initials');
-                            userAvatar.textContent = displayName.charAt(0).toUpperCase();
-                            userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                        };
-                        userAvatar.innerHTML = '';
-                        userAvatar.appendChild(img);
-                    } else {
-                        // اگر آواتار نیست، از حرف اول اسم استفاده می‌کنیم
-                        userAvatar.textContent = displayName.charAt(0).toUpperCase();
-                        userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                        console.log('No avatar URL, using initials');
-                    }
-                    
-                    // نمایش کپسول
-                    userPill.style.display = 'flex';
-                    
-                    // ذخیره اطلاعات کاربر
-                    localStorage.setItem('tg_user_id', user.id);
-                    localStorage.setItem('tg_user_name', displayName);
-                    localStorage.setItem('tg_username', user.username || '');
-                    localStorage.setItem('tg_user_photo', user.photo_url || '');
-                    localStorage.setItem('tg_is_premium', user.is_premium || false);
-                    
-                    console.log('Telegram user profile set successfully');
-                    
-                } else if (attempts < maxAttempts) {
-                    // هنوز داده کاربر نیامده، دوباره تلاش می‌کنیم
-                    console.log('User data not available yet, retrying... (attempt ' + attempts + '/' + maxAttempts + ')');
-                    setTimeout(tryLoadUser, 500);
-                } else {
-                    // بعد از حداکثر تلاش‌ها، به حالت fallback برمی‌گردیم
-                    console.log('Failed to load user data after ' + maxAttempts + ' attempts, showing VANTAR Platform fallback');
-                    userName.textContent = 'VANTAR Platform';
-                    
-                    const img = document.createElement('img');
-                    img.src = '/material/images/vantar.png';
-                    img.alt = 'VANTAR Platform';
-                    img.onerror = function() {
-                        userAvatar.textContent = 'V';
-                        userAvatar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    };
-                    userAvatar.innerHTML = '';
-                    userAvatar.appendChild(img);
-                    
-                    userPill.style.display = 'flex';
-                }
-            }
-            
-            // شروع تلاش برای بارگذاری کاربر
-            tryLoadUser();
         }
-
+        
         // ==============================
         // INITIALIZATION & CORE FUNCTIONS
         // ==============================
@@ -1471,7 +1544,7 @@
         }
 
         // ==============================
-        // PAYMENT SYSTEM - اصلاح شده با polling و متن Processing...
+        // PAYMENT SYSTEM - اصلاح شده با متن Processing...
         // ==============================
 
         async function handlePayment(coins, usdPrice, btn) {
@@ -1481,6 +1554,7 @@
             // فقط برای دکمه‌های خرید (USDT) متن را به Processing... تغییر بده
             if (btn.classList.contains('buy-btn')) {
                 btn.textContent = 'Processing...';
+                // فقط کلاس loading اضافه کن بدون اسپینر
                 btn.classList.add('loading');
             } else {
                 btn.classList.add('loading');
@@ -1720,7 +1794,7 @@
 
         // Fallback برای تست بدون وب‌اپ
         function applyWebAppFallback() {
-            const isTelegramWebApp = isTelegramEnvironment();
+            const isTelegramWebApp = typeof Telegram !== 'undefined' && Telegram.WebApp;
             
             // بررسی اینکه آیا قبلاً پیام خطا نشان داده شده است
             const hasShownError = localStorage.getItem('hasShownWebAppError');
@@ -1913,8 +1987,8 @@
         });
 
         function initValues(){
-            // Setup user profile - در تلگرام یا حالت fallback
-            setupUserProfile();
+            // بارگذاری حالت تم
+            loadTheme();
             
             updateCoinDisplay();
             updatePriceRangeDisplay();
@@ -1930,6 +2004,9 @@
         }
 
         function setupEventListeners(){
+            // Theme switch button
+            document.getElementById('themePill').addEventListener('click', toggleTheme);
+            
             // Invite button - کاملاً اصلاح شده
             document.getElementById('inviteButton').addEventListener('click', function(){
                 const button = this;
